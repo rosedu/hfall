@@ -1,0 +1,1 @@
+# Hammerfall package init script
