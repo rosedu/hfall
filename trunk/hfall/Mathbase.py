@@ -8,8 +8,6 @@ can be used by all other classes.
 __version__ = '0.2'
 __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
-# imports here
-
 class Vector2D:
     """
     A useful class for two dimensional geometry. Mainly it represents
