@@ -13,7 +13,7 @@ import Mathbase
 import OGLbase
 import base
 
-class Render(base.Kernel):
+class Render(base.Task):
     """
     The Render class. It represents one of the most important task in
     the game.
