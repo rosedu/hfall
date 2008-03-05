@@ -37,40 +37,33 @@ class Render(base.Task):
                     is drawn over the entire window.
 
         """
-        self.ogl=OGLbase.OGL()
+        self.ogl=OGLbase.OGL(width, height, video_flags, near, far, clearcolor)
+        hfk.log.msg('Rendering module started')
 
     def start(self):
-        """
-        bla
-
-        """
+        """Starting the rendering module"""
         pass
 
     def stop(self):
-        """
-        bla
-
-        """
-        pass
+        """Stopping the rendering module"""
+        hfk.log.msg('Rendering module ended')
 
     def pause(self):
-        """
-        bla
-
-        """
+        """Pausing the rendering module"""
         pass
 
     def resume(self):
-        """
-        bla
-
-        """
+        """Resuming the rendering module"""
+        pass
 
     def run(self):
         """
-        bla
-
+        The main part of the rendering module. It is used to render all 3D
+        game graphics.
+        
         """
+        pass
+        # TODO: to be done later, after loading the model
 
     def name(self):
         """
@@ -78,5 +71,13 @@ class Render(base.Task):
 
         """
         return 'Render'
+
+    def Render2D():
+        """
+        This function is used to render any 2D graphic, mainly used for
+        rendering the user interface.
+
+        """
+        pass
 
 # TODO: not completed yet
