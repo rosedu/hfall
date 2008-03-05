@@ -14,6 +14,8 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import Mathbase
 import Vertex
+import base
+from base import kernel as hfk
 
 
 class OGL:
@@ -41,7 +43,7 @@ class OGL:
         """
         self._clearcolor=clearcolor
         pygame.init()
-        pigame.display.set_mode((width, height), video_flags)
+        pygame.display.set_mode((width, height), video_flags)
 
         # resizing
         if height == 0:
@@ -62,6 +64,7 @@ class OGL:
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+        hfk.log.msg('Open GL started')
 
     # here we should define different functions to change OpenGL state
     # machine status. We should built functions to incrementally change
