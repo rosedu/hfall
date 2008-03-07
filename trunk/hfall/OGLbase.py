@@ -125,4 +125,24 @@ class OGL:
                 glVertex4f(vertex.position[0], vertex.position[1],\
                            vertex.position[2], vertex.position[3])
         glEnd()
-        
+
+    def Render2D(x, y, w=32.0, h=32.0, color=(0.0, 0.0, 0.0, 0.0)):
+        """
+        This function is used to render any 2D graphic, mainly used for
+        rendering the user interface.
+            x - the x position of the 2D rendered element
+            y - the y position of the 2D rendered element
+            w - the width of the 2D rendered element
+            h - the height of the 2D rendered element
+            color - the color of the rendered element. It is possible to
+                    use alpha blending.
+
+        """
+        # TODO: to save OpenGL state
+        glTranslate2f(x, y)
+        if len(color) == 3:
+            glColor3f(color[0], color[1], color[2])
+        else:
+            glColor4f(color[0], color[1], color[2], color[3])
+        # TODO: revert to old state
+        pass
