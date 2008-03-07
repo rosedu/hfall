@@ -37,6 +37,8 @@ class Render(base.Task):
                     is drawn over the entire window.
 
         """
+        self._3dlist=[]
+        self._2dlist=[]
         self.ogl=OGLbase.OGL(width, height, video_flags, near, far, clearcolor)
         hfk.log.msg('Rendering module started')
 
@@ -72,12 +74,78 @@ class Render(base.Task):
         """
         return 'Render'
 
-    def Render2D():
+    def Render2D(x, y, w=32.0, h=32.0, color=(0.0, 0.0, 0.0, 0.0)):
         """
         This function is used to render any 2D graphic, mainly used for
         rendering the user interface.
+            x - the x position of the 2D rendered element
+            y - the y position of the 2D rendered element
+            w - the width of the 2D rendered element
+            h - the height of the 2D rendered element
+            color - the color of the rendered element. It is possible to
+                    use alpha blending.
 
         """
+        # TODO: to save OpenGL state
+        glTranslate2f(x, y)
+        if len(color) == 3:
+            glColor3f(color[0], color[1], color[2])
+        else:
+            glColor4f(color[0], color[1], color[2], color[3])
+        # TODO: revert to old state
         pass
 
-# TODO: not completed yet
+    def add2D(self, x, y, w=32.0, h=32.0, color=(0.0, 0.0, 0.0, 0.0)):
+        """
+        This function is used to add a 2D object to the list of the models
+        to be drawn. This list keeps the models sorted by the insertion
+        order. This way the last inserted object will be drawn on top of
+        the others.
+            x - the x position of the 2D rendered element
+            y - the y position of the 2D rendered element
+            w - the width of the 2D rendered element
+            h - the height of the 2D rendered element
+            color - the color of the rendered element. It is possible to
+                    use alpha blending.
+        
+        """
+
+    def add3D(self):
+        """
+        This function is used to add a 3D model to the list of the
+        models to be drawn. This function sorts the list of 3D models
+        in a way that lets all model with the same texture to be grouped.
+        
+        """
+        pass
+        # TODO: to be done later after loading the model
+
+    def rem3D(self):
+        """
+        This function is used to remove a 3D object from the drawing list.
+        
+        """
+        # TODO: to be done later after loading the model
+        pass
+
+    def rem2D(self):
+        """
+        This function is used to remove a 2D object from the drawing list.
+        
+        """
+        # TODO: to be done later
+        pass
+
+    def clear3D(self):
+        """
+        A faster way to clear the 3D models list.
+        
+        """
+        self._3dlist=[]
+
+    def clear2D(self):
+        """
+        A faster way to clear the 2D models list.
+        
+        """
+        self._2dlist=[]
