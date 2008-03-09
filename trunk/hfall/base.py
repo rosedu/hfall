@@ -122,8 +122,8 @@ class Kernel:
         # Add the task in the list
         self._task_map[task.name()] = task
         self._task_list.append(task)
-        self.log.msg('Task `' + task.name() + '` added to the end of the task\
-                      list')
+        self.log.msg('Task `' + task.name() + '` added to the end of the task'\
+                      + 'list')
         
         task.start(self)
         return True
@@ -139,8 +139,8 @@ class Kernel:
         # Add the task in the list
         self._task_map[task.anme()] = task
         self._task_list.insert(0, task)
-        self.log.msg('Task `' + task.name() + '` added to the beginning of the\
-                      task list')
+        self.log.msg('Task `' + task.name() + '` added to the beginning of the'\
+                      + 'task list')
 
         task.start(self)
         return True
@@ -188,7 +188,7 @@ class Kernel:
     def remove(self, name):
         """
         Remove a task from the list.
-            name    Tha name of the task
+            name    The name of the task
 
         """
         if name not in self._task_map: return True
