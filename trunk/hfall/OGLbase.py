@@ -126,7 +126,7 @@ class OGL:
                            vertex.position[2], vertex.position[3])
         glEnd()
 
-    def Render2D(x, y, w=32.0, h=32.0, color=(0.0, 0.0, 0.0, 0.0)):
+    def Render2D(self, model):
         """
         This function is used to render any 2D graphic, mainly used for
         rendering the user interface.
@@ -138,11 +138,16 @@ class OGL:
                     use alpha blending.
 
         """
-        # TODO: to save OpenGL state
-        glTranslate2f(x, y)
-        if len(color) == 3:
-            glColor3f(color[0], color[1], color[2])
+        glLoadIdentity()
+        glTranslate2f(model.x, model.y)
+        glBegin(GL_QUADS)
+        if len(model.color) == 3:
+            glColor3f(model.color[0], model.color[1], model.color[2])
         else:
-            glColor4f(color[0], color[1], color[2], color[3])
-        # TODO: revert to old state
-        pass
+            glColor4f(model.color[0], model.color[1], model.color[2], \
+                      model.color[3])
+        glVertex2f(model.x, model.y)
+        glVertex2f(model.xx, model.y)
+        glVertex2f(model.xx, model.yy)
+        glVertex2f(model.x, model.yy)
+        glEnd()

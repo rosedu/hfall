@@ -14,6 +14,7 @@ import OGLbase
 import base
 import base
 from base import kernel as hfk
+import UI
 
 class Render(base.Task):
     """
@@ -65,8 +66,13 @@ class Render(base.Task):
         game graphics.
         
         """
-        pass
-        # TODO: to be done later, after loading the model
+        # TODO: camera manipulation
+        # TODO: 3D model drawing
+        # TODO: special effects here
+        # TODO: save OpenGL state here
+        for model in self._2dlist:
+            self.ogl.Render2D(model)
+        # TODO: restore OpenGL state here - saving not implemented yet
 
     def name(self):
         """
@@ -81,14 +87,10 @@ class Render(base.Task):
         to be drawn. This list keeps the models sorted by the insertion
         order. This way the last inserted object will be drawn on top of
         the others.
-            x - the x position of the 2D rendered element
-            y - the y position of the 2D rendered element
-            w - the width of the 2D rendered element
-            h - the height of the 2D rendered element
-            color - the color of the rendered element. It is possible to
-                    use alpha blending.
+            model - the two dimensional object to be added
         
         """
+        self._2dlist.append(model)
 
     def add3D(self):
         """
