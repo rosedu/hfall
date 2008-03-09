@@ -59,7 +59,8 @@ class OGL:
 
         # finalizing the initialization
         glShadeModel(GL_SMOOTH)
-        glClearColor(self._clearcolor)
+        glClearColor(self._clearcolor[0], self._clearcolor[1], \
+                     self._clearcolor[2], self._clearcolor[3])
         glClearDepth(1.0)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
