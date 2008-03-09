@@ -40,13 +40,14 @@ class Render(base.Task):
                     is drawn over the entire window.
 
         """
-        self._3dlist=[]
-        self._2dlist=[]
-        self.ogl=OGLbase.OGL(width, height, video_flags, near, far, clearcolor)
+        self._3dlist = []
+        self._2dlist = []
+        self.ogl = OGLbase.OGL(width, height, video_flags, near, far, clearcolor)
         
     def start(self, kernel):
         """Starting the rendering module"""
         kernel.log.msg('Rendering module started')
+        self._clock = pygame.time.Clock()
 
     def stop(self, kernel):
         """Stopping the rendering module"""
@@ -74,6 +75,7 @@ class Render(base.Task):
             self.ogl.Render2D(model)
         # TODO: restore OpenGL state here - saving not implemented yet
         pygame.display.flip()
+        self._clock.tick(4)
 
     def name(self):
         """
