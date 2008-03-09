@@ -43,25 +43,25 @@ class Render(base.Task):
         self._3dlist=[]
         self._2dlist=[]
         self.ogl=OGLbase.OGL(width, height, video_flags, near, far, clearcolor)
-        hfk.log.msg('Rendering module started')
+        kernel.log.msg('Rendering module started')
 
-    def start(self):
+    def start(self, kernel):
         """Starting the rendering module"""
         pass
 
-    def stop(self):
+    def stop(self, kernel):
         """Stopping the rendering module"""
         hfk.log.msg('Rendering module ended')
 
-    def pause(self):
+    def pause(self, kernel):
         """Pausing the rendering module"""
         pass
 
-    def resume(self):
+    def resume(self, kernel):
         """Resuming the rendering module"""
         pass
 
-    def run(self):
+    def run(self, kernel):
         """
         The main part of the rendering module. It is used to render all 3D
         game graphics.
@@ -75,6 +75,7 @@ class Render(base.Task):
             self.ogl.Render2D(model)
         # TODO: restore OpenGL state here - saving not implemented yet
         pygame.display.flip()
+        kernel.log.msg('New frame')
 
     def name(self):
         """
