@@ -43,15 +43,14 @@ class Render(base.Task):
         self._3dlist=[]
         self._2dlist=[]
         self.ogl=OGLbase.OGL(width, height, video_flags, near, far, clearcolor)
-        kernel.log.msg('Rendering module started')
-
+        
     def start(self, kernel):
         """Starting the rendering module"""
-        pass
+        kernel.log.msg('Rendering module started')
 
     def stop(self, kernel):
         """Stopping the rendering module"""
-        hfk.log.msg('Rendering module ended')
+        kernel.log.msg('Rendering module ended')
 
     def pause(self, kernel):
         """Pausing the rendering module"""
@@ -75,7 +74,6 @@ class Render(base.Task):
             self.ogl.Render2D(model)
         # TODO: restore OpenGL state here - saving not implemented yet
         pygame.display.flip()
-        kernel.log.msg('New frame')
 
     def name(self):
         """
