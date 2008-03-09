@@ -8,6 +8,7 @@ __version__ = '0.2'
 __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
 import time
+import pygame
 import Vertex
 import Mathbase
 import OGLbase
@@ -73,6 +74,7 @@ class Render(base.Task):
         for model in self._2dlist:
             self.ogl.Render2D(model)
         # TODO: restore OpenGL state here - saving not implemented yet
+        pygame.display.flip()
 
     def name(self):
         """
