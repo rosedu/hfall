@@ -12,6 +12,7 @@ __version__ = '0.2'
 __author__ = 'Savu Andrei (savu.andrei@gmail.com)'
 
 import time
+import sys
 
 class Task:
     'Basic Task class - no functionality - just the interface'
@@ -209,6 +210,7 @@ class Kernel:
         self._task_list = []
         self._task_map = {}
         self.log.msg('Kernel shutdown')
+        sys.exit()
 
     def run(self):
         """
