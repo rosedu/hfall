@@ -13,7 +13,7 @@ class Model2D:
 
     """
     
-    def __init__(self,  x, y, w=32.0, h=32.0, color=(0.0, 0.0, 0.0, 0.0)):
+    def __init__(self,  x, y, w=2.0, h=2.0, color=(0.0, 0.0, 0.0, 0.0)):
         """
         Model2D class initialization.
             x - the x position of the 2D rendered element

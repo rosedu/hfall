@@ -140,7 +140,7 @@ class OGL:
 
         """
         glLoadIdentity()
-        glTranslate2f(model.x, model.y)
+        glTranslatef(0.0,0.0,-6.0);
         glBegin(GL_QUADS)
         if len(model.color) == 3:
             glColor3f(model.color[0], model.color[1], model.color[2])
