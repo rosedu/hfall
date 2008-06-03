@@ -54,18 +54,18 @@ class Console(base.Task):
         """		
 	
     def name(self):
-	    return 'Console'
+        return 'Console'
        
     def run(self):
-	    map(Console.show_line, self.lines)
+	map(Console.show_line, self.lines)
 	
     def put(self, text):
-		"""
-		Puts one line at the end of the lines list
+	"""
+	Puts one line at the end of the lines list
 		
-		"""
+	"""
 		
-		self.lines.push(text)
+	self.lines.push(text)
 				
     def show_line(self, line):
         """

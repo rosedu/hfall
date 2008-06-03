@@ -13,6 +13,7 @@ __author__ = 'Savu Andrei (savu.andrei@gmail.com)'
 
 import time
 import sys
+"""import pygame"""
 
 class Task:
     'Basic Task class - no functionality - just the interface'

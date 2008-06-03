@@ -1,18 +1,20 @@
 """
 Hamerfall Render class. All drawings to the screen should be done using
-this class.
+this class. This class also provides a context surface where drawings
+could take place via OpenGL or any other rendering API.
 
 """
 
-__version__ = '0.2'
+__version__ = '0.3'
 __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
-import time
-import pygame
+import pyglet
+from pyglet.gl import *
+from pyglet import window
+from pyglet import clock
 import Vertex
 import Mathbase
 import OGLbase
-import base
 import base
 from base import kernel as hfk
 import UI
@@ -24,13 +26,12 @@ class Render(base.Task):
 
     """
     
-    def __init__(self, width, height, video_flags, near=0.1, far=100.0,\
+    def __init__(self, width, height, near=0.1, far=100.0,\
                  clearcolor=(0.0, 0.0, 0.0, 0.0)):
         """
-        Render task initialization. It starts pygame and OpenGL behind.
+        Render task initialization. It starts pyglet and OpenGL.
             width - the width of the game window
             height - the height of the game window
-            video_flags - consult pygame documentation for those
             near - near distance. All objects closer to the camera than
                     this distance will not be rendered
             far - far distance. All objects farther to the camera than
@@ -42,12 +43,21 @@ class Render(base.Task):
         """
         self._3dlist = []
         self._2dlist = []
-        self.ogl = OGLbase.OGL(width, height, video_flags, near, far, clearcolor)
         
+        try:
+            # Try to create a window with antialising
+            # TODO: add other possible config via another parameter
+            config = Config(sample_buffers=1, samples=4, depth_size=16,\
+                          double_buffer=True)
+            self.w = window.Window(resizable=True, config=config)
+        except window.NoSuchConfigException:
+            self.w = window.Window(resizable=True, fullscreen=True)
+
+        self.ogl = OGLbase.OGL(self.w, width, height, near, far, clearcolor)
+                
     def start(self, kernel):
         """Starting the rendering module"""
         kernel.log.msg('Rendering module started')
-        self._clock = pygame.time.Clock()
 
     def stop(self, kernel):
         """Stopping the rendering module"""
@@ -67,15 +77,24 @@ class Render(base.Task):
         game graphics.
         
         """
-        # TODO: camera manipulation
-        # TODO: 3D model drawing
-        # TODO: special effects here
-        # TODO: save OpenGL state here
-        for model in self._2dlist:
-            self.ogl.Render2D(model)
-        # TODO: restore OpenGL state here - saving not implemented yet
-        pygame.display.flip()
-        self._clock.tick(4)
+        if self.w.has_exit:
+            # TODO: add a possibility to run kernel modules after the window
+            # is closed
+            kernel.shutdown()
+        else:
+            dt=clock.tick()
+            self.w.dispatch_events()
+
+            # TODO: camera manipulation
+            # TODO: 3D model drawing
+            # TODO: special effects here
+            # TODO: save openGL state here
+            for model in self._2dlist:
+                self.ogl.Render2D(model)
+            
+            self.w.flip()
+            self.fps=clock.get_fps()
+            print self.fps
 
     def name(self):
         """

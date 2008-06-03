@@ -1,17 +1,16 @@
 """
 Hamerfall OpenGL class. This class initializes the OpenGL interface and
 then draws vertices and lines to the screen, after changing properly the
-state of the OpenGL finite-state machine. Also this module contains all
-code needed to initialize pygame and use it.
+state of the OpenGL finite-state machine.
 
 """
 
 __version__ = '0.2'
 __author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)'
 
-import pygame
-from OpenGL.GL import *
-from OpenGL.GLU import *
+import pyglet
+from pyglet.gl import *
+from pyglet import window
 import Mathbase
 import Vertex
 import base
@@ -25,13 +24,13 @@ class OGL:
 
     """
 
-    def __init__(self, width, height, video_flags, near=0.1, far=100.0, \
+    def __init__(self, w, width, height, near=0.1, far=100.0, \
                  clearcolor=(0.0, 0.0, 0.0, 0.0)):
         """
-        OpenGL and pygame initialization.
+        OpenGL and pyglet initialization.
+            w - the window which provides the rendering surface
             width - the width of the game window
             height - the height of the game window
-            video_flags - consult pygame documentation for those
             near - near distance. All objects closer to the camera than
                     this distance will not be rendered
             far - far distance. All objects farther to the camera than
@@ -41,29 +40,24 @@ class OGL:
                     is drawn over the entire window.
 
         """
-        self._clearcolor=clearcolor
-        pygame.init()
-        pygame.display.set_mode((width, height), video_flags)
-
-        # resizing
-        if height == 0:
-            height = 1
-        if near == 0.0:
-            near = 0.1 # tricks to prevent division by 0
-        glViewport(0, 0, width, height)
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-        gluPerspective(45, 1.0 * width / height, near, far)
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-
+        self.w=w
+        @self.w.event
+        def on_resize(width, height):
+            glViewport(0, 0, width, height)
+            glMatrixMode(GL_PROJECTION)
+            glLoadIdentity()
+            if height == 0:
+                height = 1
+            gluPerspective(60.0, width / float(height), .1, 1000.0)
+            glMatrixMode(GL_MODELVIEW)
+        
         # finalizing the initialization
+        glClearColor(clearcolor[0], clearcolor[1], clearcolor[2], \
+                     clearcolor[3])
         glShadeModel(GL_SMOOTH)
-        glClearColor(self._clearcolor[0], self._clearcolor[1], \
-                     self._clearcolor[2], self._clearcolor[3])
-        glClearDepth(1.0)
-        glEnable(GL_DEPTH_TEST)
-        glDepthFunc(GL_LEQUAL)
+        #glClearDepth(1.0)
+        #glEnable(GL_DEPTH_TEST)
+        #glDepthFunc(GL_LEQUAL)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
         hfk.log.msg('Open GL started')
 
