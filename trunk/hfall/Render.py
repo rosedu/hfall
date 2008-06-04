@@ -85,6 +85,9 @@ class Render(base.Task):
             dt=clock.tick()
             self.w.dispatch_events()
 
+            glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+            glLoadIdentity()
+            
             # TODO: camera manipulation
             # TODO: 3D model drawing
             # TODO: special effects here

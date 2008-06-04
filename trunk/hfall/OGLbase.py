@@ -55,9 +55,9 @@ class OGL:
         glClearColor(clearcolor[0], clearcolor[1], clearcolor[2], \
                      clearcolor[3])
         glShadeModel(GL_SMOOTH)
-        #glClearDepth(1.0)
-        #glEnable(GL_DEPTH_TEST)
-        #glDepthFunc(GL_LEQUAL)
+        glClearDepth(1.0)
+        glEnable(GL_DEPTH_TEST)
+        glDepthFunc(GL_LEQUAL)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
         hfk.log.msg('Open GL started')
 
