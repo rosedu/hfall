@@ -14,3 +14,11 @@
 [Mon Jul 07 11:21:27 2008] Rendering module started
 [Mon Jul 07 11:21:31 2008] Rendering module ended
 [Mon Jul 07 11:21:31 2008] Kernel shutdown
+[Mon Jul 07 11:31:13 2008] Kernel instance created
+[Mon Jul 07 11:31:13 2008] Open GL started
+[Mon Jul 07 11:31:13 2008] Task `drawer` added to the end of the tasklist
+[Mon Jul 07 11:31:13 2008] Drawer started
+[Mon Jul 07 11:31:13 2008] Task `Render` added to the end of the tasklist
+[Mon Jul 07 11:31:13 2008] Rendering module started
+[Mon Jul 07 11:31:14 2008] Rendering module ended
+[Mon Jul 07 11:31:14 2008] Kernel shutdown

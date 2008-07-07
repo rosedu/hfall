@@ -48,7 +48,7 @@ class Render(base.Task):
             # Try to create a window with antialising
             # TODO: add other possible config via another parameter
             config = Config(sample_buffers=1, samples=4, depth_size=16,\
-                          double_buffer=True)
+                          double_buffer=True, fullscreen=True)
             self.w = window.Window(resizable=True, config=config)
         except window.NoSuchConfigException:
             self.w = window.Window(resizable=True, fullscreen=True)
