@@ -15,26 +15,26 @@ class drawer(hfall.base.Task):
     """
     def __init__(self):
         self._maxframe=100
-        vertexes = []
+        self._vertexes = []
         pass
 
     def start(self, kernel):
         kernel.log.msg("Drawer started");
-        self._vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
-        self._vertexes.append(hfall.Vertex([-1, -1, 1], [0, 1, 0]))
-        self._vertexes.append(hfall.Vertex([1, -1, 1], [0, 0, 1]))
+        self._vertexes.append(hfall.Vertex.Vertex([0, 1, 0], [1, 0, 0]))
+        self._vertexes.append(hfall.Vertex.Vertex([-1, -1, 1], [0, 1, 0]))
+        self._vertexes.append(hfall.Vertex.Vertex([1, -1, 1], [0, 0, 1]))
 
-        self._vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
-        self._vertexes.append(hfall.Vertex([1, -1, 1], [0, 0, 1]))
-        self._vertexes.append(hfall.Vertex([1, -1, -1], [0, 1, 0]))
+        self._vertexes.append(hfall.Vertex.Vertex([0, 1, 0], [1, 0, 0]))
+        self._vertexes.append(hfall.Vertex.Vertex([1, -1, 1], [0, 0, 1]))
+        self._vertexes.append(hfall.Vertex.Vertex([1, -1, -1], [0, 1, 0]))
 
-        self._vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
-        self._vertexes.append(hfall.Vertex([1, -1, -1], [0, 1, 0]))
-        self._vertexes.append(hfall.Vertex([-1, -1, -1], [0, 0, 1]))
+        self._vertexes.append(hfall.Vertex.Vertex([0, 1, 0], [1, 0, 0]))
+        self._vertexes.append(hfall.Vertex.Vertex([1, -1, -1], [0, 1, 0]))
+        self._vertexes.append(hfall.Vertex.Vertex([-1, -1, -1], [0, 0, 1]))
 
-        self._vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
-        self._vertexes.append(hfall.Vertex([-1, -1, -1], [0, 0, 1]))
-        self._vertexes.append(hfall.Vertex([-1, -1, 1], [0, 1, 0]))
+        self._vertexes.append(hfall.Vertex.Vertex([0, 1, 0], [1, 0, 0]))
+        self._vertexes.append(hfall.Vertex.Vertex([-1, -1, -1], [0, 0, 1]))
+        self._vertexes.append(hfall.Vertex.Vertex([-1, -1, 1], [0, 1, 0]))
 
         render.add3D(self._vertexes)
 

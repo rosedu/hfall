@@ -47,11 +47,11 @@ class Render(base.Task):
         try:
             # Try to create a window with antialising
             # TODO: add other possible config via another parameter
-            config = Config(sample_buffers=1, samples=4, depth_size=16,\
-                          double_buffer=True, fullscreen=True)
-            self.w = window.Window(resizable=True, fullscreen = True, config=config)
+            config = Config(sample_buffers = 1, samples = 4, depth_size = 16,\
+                          double_buffer = True, fullscreen = False)
+            self.w = window.Window(resizable = True, fullscreen = False, config=config)
         except window.NoSuchConfigException:
-            self.w = window.Window(resizable=True, fullscreen=True)
+            self.w = window.Window(resizable = True, fullscreen = False)
         self.ogl = OGLbase.OGL(self.w, width, height, near, far, clearcolor)
                 
     def start(self, kernel):
@@ -90,7 +90,7 @@ class Render(base.Task):
             # TODO: camera manipulation
             # TODO: 3D model drawing
             for vertex in self._3dlist:
-                render(GL_TRIANGLES, vertex)
+                self.ogl.render(GL_TRIANGLES, vertex)
             # TODO: special effects here
             # TODO: save openGL state here
             for model in self._2dlist:
