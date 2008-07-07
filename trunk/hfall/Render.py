@@ -43,6 +43,8 @@ class Render(base.Task):
         """
         self._3dlist = []
         self._2dlist = []
+
+        "To be deleted later on, examples"
         self._angle = 0;
         self._xpos = -1;
         try:
@@ -104,10 +106,12 @@ class Render(base.Task):
             self.w.flip()
             self.fps=clock.get_fps()
             print self.fps
+            "To be deleted later on, examples"
             self._angle += 0.2
             if self._xpos > 3 :
                 self._xpos = -3
             self._xpos += 0.05
+            
     def name(self):
         """
         Returns the name of the task for an integration with the kernel

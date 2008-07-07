@@ -31,14 +31,14 @@ class OGL:
             w - the window which provides the rendering surface
             width - the width of the game window
             height - the height of the game window
-            near - near distance. All objects closer to the camera than
-                    this distance will not be rendered
-            far - far distance. All objects farther to the camera than
-                    this distance will not be rendered
+            near - minimum distance. All objects closer to the camera than
+                   this distance will not be rendered
+            far - maximum distance. All objects further away from the camera than
+                  this distance will not be rendered
             clearcolor - the color used for clearing the buffer. Mainly
-                    it represents the background color when nothing
-                    is drawn over the entire window.
-
+                         it represents the background color when nothing
+                         is drawn over the entire window.
+                    
         """
         self.w=w
         @self.w.event
