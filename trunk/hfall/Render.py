@@ -88,6 +88,8 @@ class Render(base.Task):
             glLoadIdentity()
             
             # TODO: camera manipulation
+            point_to_translate = Mathbase.Vector3D(-1.5, 0, -6)
+            self.ogl.translate( point_to_translate)
             # TODO: 3D model drawing
             for vertex in self._3dlist:
                 self.ogl.render(GL_TRIANGLES, vertex)
