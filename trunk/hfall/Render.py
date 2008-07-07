@@ -89,6 +89,8 @@ class Render(base.Task):
             
             # TODO: camera manipulation
             # TODO: 3D model drawing
+            for vertex in self._3dlist:
+                render(GL_TRIANGLES, vertex)
             # TODO: special effects here
             # TODO: save openGL state here
             for model in self._2dlist:
@@ -116,14 +118,14 @@ class Render(base.Task):
         """
         self._2dlist.append(model)
 
-    def add3D(self):
+    def add3D(self, vertexes):
         """
         This function is used to add a 3D model to the list of the
         models to be drawn. This function sorts the list of 3D models
         in a way that lets all model with the same texture to be grouped.
         
         """
-        pass
+        self._3dlist.append(vertexes)
         # TODO: to be done later after loading the model
 
     def rem3D(self):
