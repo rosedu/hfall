@@ -6,6 +6,7 @@ import hfall.OGLbase
 import hfall.UI
 import hfall.Render
 import hfall.Vertex
+from hfall.Console import Console
 from hfall.base import kernel as hfk
 
 class drawer(hfall.base.Task):
@@ -59,4 +60,5 @@ class drawer(hfall.base.Task):
 render = hfall.Render.Render(800, 600)
 hfk.insert(drawer())
 hfk.insert(render)
+hfk.insert(Console(render))
 hfk.run()
