@@ -43,7 +43,8 @@ class Render(base.Task):
         """
         self._3dlist = []
         self._2dlist = []
-        
+        self._angle = 0;
+        self._xpos = -1;
         try:
             # Try to create a window with antialising
             # TODO: add other possible config via another parameter
@@ -88,8 +89,10 @@ class Render(base.Task):
             glLoadIdentity()
             
             # TODO: camera manipulation
-            point_to_translate = Mathbase.Vector3D(-1.5, 0, -6)
+            point_to_translate = Mathbase.Vector3D(self._xpos, 0, -6)
             self.ogl.translate( point_to_translate)
+            direction_to_rotate = Mathbase.Vector3D(0, 1 ,0)
+            self.ogl.rotate(self._angle, direction_to_rotate) 
             # TODO: 3D model drawing
             for vertex in self._3dlist:
                 self.ogl.render(GL_TRIANGLES, vertex)
@@ -101,7 +104,10 @@ class Render(base.Task):
             self.w.flip()
             self.fps=clock.get_fps()
             print self.fps
-
+            self._angle += 0.2
+            if self._xpos > 3 :
+                self._xpos = -3
+            self._xpos += 0.05
     def name(self):
         """
         Returns the name of the task for an integration with the kernel

@@ -85,7 +85,13 @@ class OGL:
 
         """
         glTranslatef(position.x, position.y, position.z)
-        
+
+    def rotate(self, angle, direction):
+        """
+        Does a basic rotation based on a given angle and direction
+        """
+        glRotatef(angle, direction.x, direction.y, direction.z)
+    
     def render(self, mode, vertexes):
         """
         The render function of the OpenGL.
