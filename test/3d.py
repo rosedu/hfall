@@ -25,16 +25,16 @@ class drawer(hfall.base.Task):
         vertexes.append(hfall.Vertex([1, -1, 1], [0, 0, 1]))
 
         vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
-        vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
-        vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
+        vertexes.append(hfall.Vertex([1, -1, 1], [0, 0, 1]))
+        vertexes.append(hfall.Vertex([1, -1, -1], [0, 1, 0]))
 
         vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
-        vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
-        vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
+        vertexes.append(hfall.Vertex([1, -1, -1], [0, 1, 0]))
+        vertexes.append(hfall.Vertex([-1, -1, -1], [0, 0, 1]))
 
         vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
-        vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
-        vertexes.append(hfall.Vertex([0, 1, 0], [1, 0, 0]))
+        vertexes.append(hfall.Vertex([-1, -1, -1], [0, 0, 1]))
+        vertexes.append(hfall.Vertex([-1, -1, 1], [0, 1, 0]))
 
     def stop(self, kernel):
         pass
