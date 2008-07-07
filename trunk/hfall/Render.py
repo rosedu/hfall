@@ -49,9 +49,9 @@ class Render(base.Task):
             # TODO: add other possible config via another parameter
             config = Config(sample_buffers = 1, samples = 4, depth_size = 16,\
                           double_buffer = True, fullscreen = False)
-            self.w = window.Window(resizable = True, fullscreen = False, config=config)
+            self.w = window.Window(resizable = True, fullscreen = True, config=config)
         except window.NoSuchConfigException:
-            self.w = window.Window(resizable = True, fullscreen = False)
+            self.w = window.Window(resizable = True, fullscreen = True)
         self.ogl = OGLbase.OGL(self.w, width, height, near, far, clearcolor)
                 
     def start(self, kernel):
