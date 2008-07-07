@@ -1,6 +1,6 @@
 import sys
 sys.path.insert(0, "../trunk")
-
+"Gigi e mare"
 import hfall.base
 import hfall.OGLbase
 import hfall.UI
