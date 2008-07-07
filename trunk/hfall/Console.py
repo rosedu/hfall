@@ -8,6 +8,8 @@ __version__ = '0.1'
 __author__ = 'Alex Eftimie (alexeftimie@gmail.com)'
 
 import base
+import Render
+import UI
 
 class Console(base.Task):
     """
@@ -16,38 +18,41 @@ class Console(base.Task):
 
     """
 		
-    def __init__(self):
+    def __init__(self,surface):
         """
         About constructor.
         
         """
         'Lines list'
         self.lines = []
+	self.background = UI.Model2D(-3,2,7,4,(0.33,0.33,0.33))
+	surface.add2D(self.background)
+	
         
         pass
 
-    def start(self):
+    def start(self,kernel):
         """
         bla
 
         """
         pass
 
-    def stop(self):
+    def stop(self,kernel):
         """
         bla
 
         """
         pass
 
-    def pause(self):
+    def pause(self,kernel):
         """
         bla
 
         """
         pass
 
-    def resume(self):
+    def resume(self,kernel):
         """
         bla
 
@@ -56,7 +61,7 @@ class Console(base.Task):
     def name(self):
         return 'Console'
        
-    def run(self):
+    def run(self,kernel):
 	map(Console.show_line, self.lines)
 	
     def put(self, text):
