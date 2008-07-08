@@ -56,6 +56,8 @@ class Render(base.Task):
         except window.NoSuchConfigException:
             self.w = window.Window(resizable = True, fullscreen = True)
         self.ogl = OGLbase.OGL(self.w, width, height, near, far, clearcolor)
+  	self.width = width
+	self.height = height
                 
     def start(self, kernel):
         """Starting the rendering module"""
