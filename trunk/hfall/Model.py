@@ -20,6 +20,6 @@ class Model:
     """
 
     
-    def __init__(self, mes, mat):
+    def __init__(self, mes, matrix):
         self.meshes = mes
-        self.matrix4 = mat
+        self.matrix4 = matrix

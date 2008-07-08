@@ -56,8 +56,6 @@ class Render(base.Task):
         except window.NoSuchConfigException:
             self.w = window.Window(resizable = True, fullscreen = True)
         self.ogl = OGLbase.OGL(self.w, width, height, near, far, clearcolor)
-  	self.width = width
-	self.height = height
                 
     def start(self, kernel):
         """Starting the rendering module"""
@@ -98,8 +96,8 @@ class Render(base.Task):
             direction_to_rotate = Mathbase.Vector3D(0, 1 ,0)
             self.ogl.rotate(self._angle, direction_to_rotate) 
             # TODO: 3D model drawing
-            for vertex in self._3dlist:
-                self.ogl.render(GL_TRIANGLES, vertex)
+            for model in self._3dlist:
+                self.ogl.Render3D(model)
             # TODO: special effects here
             # TODO: save openGL state here
             for model in self._2dlist:
@@ -132,14 +130,14 @@ class Render(base.Task):
         """
         self._2dlist.append(model)
 
-    def add3D(self, vertexes):
+    def add3D(self, model):
         """
         This function is used to add a 3D model to the list of the
         models to be drawn. This function sorts the list of 3D models
         in a way that lets all model with the same texture to be grouped.
         
         """
-        self._3dlist.append(vertexes)
+        self._3dlist.append(model)
         # TODO: to be done later after loading the model
 
     def rem3D(self):

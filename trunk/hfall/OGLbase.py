@@ -14,6 +14,7 @@ from pyglet import window
 import Mathbase
 import Vertex
 import base
+import array
 from base import kernel as hfk
 
 
@@ -57,6 +58,8 @@ class OGL:
         glShadeModel(GL_SMOOTH)
         glClearDepth(1.0)
         glEnable(GL_DEPTH_TEST)
+        glEnable(GL_COLOR_ARRAY)
+        glEnable(GL_VERTEX_ARRAY)
         glDepthFunc(GL_LEQUAL)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
         hfk.log.msg('Open GL started')
@@ -133,8 +136,6 @@ class OGL:
         rendering the user interface.
             x - the x position of the 2D rendered element
             y - the y position of the 2D rendered element
-            w - the width of the 2D rendered element
-            h - the height of the 2D rendered element
             color - the color of the rendered element. It is possible to
                     use alpha blending.
 
@@ -152,3 +153,33 @@ class OGL:
         glVertex2f(model.xx, model.yy)
         glVertex2f(model.x, model.yy)
         glEnd()
+
+    def RenderMesh(self, mesh):
+        glPushMatrix()
+        glMultMatrixf(mesh.matrix4)
+        glColor3f(0, 0, 1)
+        print "mesh.vertices:", mesh.vertices
+        glVertexPointer(3, GL_FLOAT, 0, "0, 1, 0, -1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, -1")
+        # glVertexPointerf(mesh.vertices)
+        for face in mesh.faces:
+            print "ARRAY:",((array.array('i', face)).tostring())
+            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, array.array('B', face).tostring())
+            print face
+        glPopMatrix()
+        
+    def Render3D(self, model):
+        """
+        This function is used to render any 3D graphic.
+            x - the x position of the 2D rendered element
+            y - the y position of the 2D rendered element
+            w - the width of the 2D rendered element
+            h - the height of the 2D rendered element
+            color - the color of the rendered element. It is possible to
+                    use alpha blending.
+
+        """
+        glLoadIdentity()
+        glMultMatrixf(model.matrix4)
+        for mesh in model.meshes:
+            self.RenderMesh(mesh)
+        

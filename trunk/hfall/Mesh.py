@@ -18,7 +18,8 @@ class Mesh:
     """
 
     
-    def __init__(self, fac, vert, mats):
+    def __init__(self, fac, vert, mats, matrix):
         self.faces = fac
         self.vertices = vert
         self.materials = mats
+        self.matrix4 = matrix
