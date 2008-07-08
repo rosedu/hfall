@@ -35,6 +35,23 @@ class Model2D:
         self.yy = y + h
         self.color = color
 	
+"""
+Collection of Event Overrides
+"""
+global_render = None
+global_UI = None
+
+def on_key_press(symbol,modifiers):
+	print("Key was pressed!")
+	if symbol==window.key.ESCAPE:
+		global_render.w.has_exit = True
+	elif symbol==window.key.U:
+		global_UI.unload_full_text()
+		global_UI.unload_full_2DUI()
+	elif symbol==window.key.L:
+		global_UI.load_full_text()
+		global_UI.load_full_2DUI()
+		
 
 class UI(Task):
   	""" 
@@ -42,11 +59,15 @@ class UI(Task):
 	"""
 
 	"""
-		Global variable list:
+		External variable list:
 		 - surface (Render)
-  		 - console_bck (Model2D object)
   		 - console (Console)
   	"""
+	_width_pt = 0
+	_height_pt = 0
+	_2Dlist = []
+	_textlist = []
+
 	def x_topt(self,x):
 		return x*self._width_pt/self.surface.width - self._width_pt/2	
 
@@ -57,18 +78,53 @@ class UI(Task):
   		return 1.0*px/86
 
 	def __init__(self,render):
+	  	#Gain access to render
 	  	self.surface = render
+		global global_render 
+		global_render = render
+		global global_UI
+		global_UI = self
+
 		self._height_pt = 7 
 		self._width_pt = 9.2 
 
-		self.console_bck = Model2D(self.x_topt(50),self.y_topt(50),\
-		    self.px_topt(25), self.px_topt(25),(0.8,0.8,0.8))
-		self.surface.add2D(self.console_bck)
+		#Load some rectangles/text
+		self.testing()
+
+		self.load_full_2DUI()
+  		self.load_full_text()
+
+		#Load key events
+  		self.surface.w.on_key_press = on_key_press
+		
+	def load_full_2DUI(self):
+	  	for graphic in self._2Dlist:
+			self.surface.add2D(graphic)
 	
-  		self.console = Console()
-  		self.console.enable()
-  		ft = font.load('Arial',36)
-	  	self.some_gibberish = font.Text(ft,"Hello, Console!",0,0,(240,0,0))
+	def unload_full_2DUI(self):
+	  	for graphic in self._2Dlist:
+			self.surface.rem2D(graphic)
+	
+	def load_full_text(self):
+  		for text in self._textlist:
+			self.surface.addtext(text)
+
+  	def unload_full_text(self):
+  		for text in self._textlist:
+			self.surface.remtext(text)
+	
+	def load_2DUI(self,x):
+  		self._2Dlist.append(x)
+
+  	def unload_2DUI(self,x):
+  		self._2Dlist.remove(x)
+	
+	def load_text(self,x):
+	  	self._textlist.append(x)
+	
+	def unload_text(self,x):
+	  	self._textlist.remove(x)
+
 
 	def start(self,kernel):
 	  	pass
@@ -84,8 +140,22 @@ class UI(Task):
 
 	def run(self,kernel):
 	  	#Render text
-		self.some_gibberish.draw()
 	  	pass
 	
 	def name(self):
-	  	return "" 
+	  	return "UI Process" 
+	
+	def testing(self):
+
+		self.console_bck = Model2D(self.x_topt(0),self.y_topt(140),\
+		    self.px_topt(global_render.width), \
+  		    self.px_topt(140),(0.7,0.7,0.9))
+		self._2Dlist.append(self.console_bck)
+
+  		self.console = Console()
+  		self.console.enable()
+  		ft = font.load('Times New Roman',6)
+	  	self._textlist.append(font.Text(ft,"console",self.x_topt(0),\
+		      self.y_topt(500),0,(0,0.6,0.6,255)))
+
+

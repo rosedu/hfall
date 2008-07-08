@@ -43,6 +43,7 @@ class Render(base.Task):
         """
         self._3dlist = []
         self._2dlist = []
+	self._textlist = []
 
         "To be deleted later on, examples"
         self._angle = 0;
@@ -88,6 +89,14 @@ class Render(base.Task):
             self.w.dispatch_events()
 
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+  
+  	    #ALIEN CODE - might damage program
+  	    #glMatrixMode(GL_PROJECTION)
+  	    #widthRatio = self.w.width / self.w.height
+  	    #gluOrtho2D(-widthRatio,widthRatio,-1,1)
+	
+	    #END
+
             glLoadIdentity()
             
             # TODO: camera manipulation
@@ -102,6 +111,9 @@ class Render(base.Task):
             # TODO: save openGL state here
             for model in self._2dlist:
                 self.ogl.Render2D(model)
+  	    #Alien code here - text rendering
+  	    for text in self._textlist:
+	        text.draw()
             
             self.w.flip()
             self.fps=clock.get_fps()
@@ -140,20 +152,30 @@ class Render(base.Task):
         self._3dlist.append(model)
         # TODO: to be done later after loading the model
 
-    def rem3D(self):
+    def addtext(self,text):
+        self._textlist.append(text)
+
+    def remtext(self,x):
+        self._textlist.remove(x)
+        pass
+
+    def cleartext(self):
+        self._textlist = []
+
+    def rem3D(self,x):
         """
         This function is used to remove a 3D object from the drawing list.
         
         """
-        # TODO: to be done later after loading the model
+	self._3dlist.remove(x)
         pass
 
-    def rem2D(self):
+    def rem2D(self,x):
         """
         This function is used to remove a 2D object from the drawing list.
         
         """
-        # TODO: to be done later
+	self._2dlist.remove(x)
         pass
 
     def clear3D(self):
