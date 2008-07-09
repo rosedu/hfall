@@ -403,7 +403,6 @@ void MaxParser::readTextureChunk(TextureChunk &texture, int bytes)
 			}
 			case MAP_V_SCALE:
 			{
-				float scale;
 				fread(&texture.vScale,sizeof(float),1,f);
 				debugPrintf("    V Scale: %.2f\n",texture.vScale);
 				break;
@@ -518,26 +517,16 @@ void MaxParser::readMeshData(MeshData &mesh, int bytes)
 			{
 				fread(&mesh.nrOfVertices,2,1,f);
 				mesh.vertices = (float *) malloc(3*mesh.nrOfVertices*sizeof(float));
-				int j = 0;
-				for(int i = 0; i<mesh.nrOfVertices; i++)
-				{
-					fread(&mesh.vertices[j],sizeof(float),3,f);
-					j+= 3;
-				}
+				fread(mesh.vertices,sizeof(float), 3*mesh.nrOfVertices, f);
 				debugPrintf("    Number of vertices: %d\n",mesh.nrOfVertices);
 				break;
 			}
 			case MAPPING_COORDINATES_LIST:
 			{
-				fread(&mesh.nrOfCoordrinates,2,1,f);
-				mesh.coordinates = (float *) malloc(2*mesh.nrOfCoordrinates*sizeof(float));
-				int j = 0;
-				for(int i = 0; i<mesh.nrOfCoordrinates; i++)
-				{
-					fread(&mesh.coordinates[j],sizeof(float),2,f);
-					j+= 2;
-				}
-				debugPrintf("    Number of map coordonates: %d\n",mesh.nrOfCoordrinates);
+				fread(&mesh.nrOfCoordinates,2,1,f);
+				mesh.coordinates = (float *) malloc(2*mesh.nrOfCoordinates*sizeof(float));
+				fread(mesh.coordinates, sizeof(float), 2*mesh.nrOfCoordinates, f);
+				debugPrintf("    Number of map coordonates: %d\n",mesh.nrOfCoordinates);
 				break;
 			}
 			case FACES_DESCRIPTION:
@@ -617,8 +606,7 @@ void MaxParser::readFacesChunk(FacesChunk &faces, int bytes)
 				group.materialName = readName();
 				fread(&group.nrOfFaces,sizeof(unsigned short),1,f);
 				group.faces = (unsigned short *) malloc(group.nrOfFaces*sizeof(unsigned short));
-				for(int i = 0; i<group.nrOfFaces; i++)
-					fread(&group.faces[i],sizeof(unsigned short),1,f);
+				fread(group.faces, sizeof(unsigned short), group.nrOfFaces, f);	
 				debugPrintf("    Mesh Group\n");
 				debugPrintf("     Material name: %s\n",group.materialName);
 				debugPrintf("     Number of faces: %d\n",group.nrOfFaces);
@@ -628,8 +616,7 @@ void MaxParser::readFacesChunk(FacesChunk &faces, int bytes)
 			case SMOOTHING_GROUP_LIST:
 			{
 				faces.smoothingList = (long *) malloc(faces.nrOfFaces*sizeof(long));
-				for(int i=0;i<faces.nrOfFaces;i++)
-					fread(&faces.smoothingList[i],4,1,f);
+				fread(faces.smoothingList, 4, faces.nrOfFaces, f);	
 				debugPrintf("    Face Smoothing Group\n");
 				break;
 			}

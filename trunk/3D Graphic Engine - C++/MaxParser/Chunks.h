@@ -76,7 +76,7 @@ class MaterialGroupChunk
 		unsigned short nrOfFaces;
 		unsigned short *faces;
 		MaterialGroupChunk() : materialName(NULL), 
-		faces(NULL), nrOfFaces(0) {};
+		nrOfFaces(0), faces(NULL) {};
 };
 
 class FacesChunk
@@ -87,8 +87,8 @@ class FacesChunk
 		unsigned short *flags;
 		long *smoothingList;
 		Array<MaterialGroupChunk> materialGroups;
-		FacesChunk() : faces(NULL), flags(NULL),
-		smoothingList(NULL), nrOfFaces(0) {};
+		FacesChunk() : nrOfFaces(0), faces(NULL),
+		flags(NULL), smoothingList(NULL) {};
 };
 
 class TextureInfoChunk
@@ -108,7 +108,7 @@ class MeshData
 {
 	public:
 		unsigned short nrOfVertices;
-		unsigned short nrOfCoordrinates;
+		unsigned short nrOfCoordinates;
 		float *vertices;
 		float *coordinates;
 		float matrix[4][3];
