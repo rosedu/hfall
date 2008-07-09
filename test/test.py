@@ -34,10 +34,12 @@ glEnableClientState(GL_VERTEX_ARRAY)
 glDepthFunc(GL_LEQUAL)
 glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
 
-points = array([[0,0,0],[1,0,0],[1,1,0],[0,1,0]], 'f')
-cpoints = numpy.ascontiguousarray(points)
-indices = array( range(len(points)), 'i')
-cindices = numpy.ascontiguousarray(indices)
+points = [0,0,0, 1,0,0, 1,1,0, 0,1,0]
+ppoints = (GLfloat * len(points))(*points)
+colors = [1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1]
+pcolors = (GLfloat * len(colors))(*colors)
+#indices = array( range(len(points)), 'i')
+#cindices = numpy.ascontiguousarray(indices)
 
 while not w.has_exit:
     w.dispatch_events()
@@ -45,14 +47,20 @@ while not w.has_exit:
 
     #OGL code
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
     glTranslatef(0.0, 0.0, -6.0)
-    print cpoints.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
-    print cindices
+    glEnableClientState(GL_VERTEX_ARRAY)
+    glEnableClientState(GL_COLOR_ARRAY)
+    glColorPointer(3, GL_FLOAT, 0, pcolors)
+    glVertexPointer(3, GL_FLOAT, 0, ppoints)
+    #print cpoints.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
+    #print cindices
     #glVertexPointer(4, GL_FLOAT, 0, points)
-    glVertexPointer(4, GL_FLOAT, 0, cpoints.ctypes.data_as(ctypes.POINTER(ctypes.c_float)))
+    #glVertexPointer(4, GL_FLOAT, 0, cpoints.ctypes.data_as(ctypes.POINTER(ctypes.c_float)))
     #glEnableClientState(GL_VERTEX_ARRAY);
-    glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cindices.ctypes.data_as(ctypes.POINTER(ctypes.c_int)))
+    #glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cindices.ctypes.data_as(ctypes.POINTER(ctypes.c_int)))
+    glDrawArrays(GL_QUADS, 0, len(ppoints))
     
     
     #end here
