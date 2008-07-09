@@ -13,6 +13,7 @@ from pyglet.gl import *
 from pyglet import window
 import numpy
 import ctypes
+import buffers
 import Mathbase
 import Vertex
 import base
@@ -172,15 +173,21 @@ class OGL:
         #glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, "0, 1, 2")
         #glDrawElementsub(GL_TRIANGLES, "0, 1, 2")
         #    print face
-        print "Starting"
-        vert = numpy.array(mesh.vertices, 'f')
-        points = numpy.array([[0,0,0],[1,0,0],[1,1,0],[0,1,0]], dtype=numpy.float32)
-        cpoints = numpy.ascontiguousarray(points)
-        indices = numpy.array( range(len(points)), 'i')
-        cindices = numpy.ascontiguousarray(indices)
-        glVertexPointer(3, GL_FLOAT, 0, cpoints.ctypes.data_as(ctypes.POINTER(ctypes.c_float)))
-        glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, cindices.ctypes.data_as(ctypes.POINTER(ctypes.c_int)) )
+        #print "Starting"
+        #vert = numpy.array(mesh.vertices, 'f')
+        #points = numpy.array([[0,0,0],[1,0,0],[1,1,0],[0,1,0]], dtype=numpy.float32)
+        #cpoints = numpy.ascontiguousarray(points)
+        #indices = numpy.array( range(len(points)), 'i')
+        #cindices = numpy.ascontiguousarray(indices)
+        #glVertexPointer(3, GL_FLOAT, 0, cpoints.ctypes.data_as(ctypes.POINTER(ctypes.c_float)))
+        #glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, cindices.ctypes.data_as(ctypes.POINTER(ctypes.c_int)) )
         #glVertexPointerf(points)
+        vert = numpy.array(mesh.vertices, dtype=numpy.float32)
+        print vert
+        buffer = buffers.VertexBuffer(vert, GL_STATIC_DRAW)
+        glEnableClientState(GL_VERTEX_ARRAY)
+        buffer.bind_vertexes(3, GL_FLOAT)
+        glDrawElementsui(GL_TRIANGLES, indexes)
         glPopMatrix()
         
     def Render3D(self, model):
