@@ -104,16 +104,143 @@ class MaxParser:
             self.file.seek(header.start_position + header.chunk_length, os.SEEK_SET)
             bytes = self.updateBytesToRead(bytes, header.chunk_length)
 
-
     def readMaterialChunk(self, bytes):
-        pass
+        header = Chunks.ChunkHeader()
+        material = Chunks.MaterialChunk()
+        while bytes > 0:
+            self.readChunkHeader(header)
+            for case in switch(header.chunk_id):
+                if case(_3DS.MATERIAL_NAME):
+                    material.name = self.readName()
+                    print "   Name: %s" %(material.name)
+                    break
+                if case(_3DS.AMBIENT_COLOR):
+                    print "   Ambient color: "
+                    material.ambientColor = self.readColor()
+                    break
+                if case(_3DS.DIFFUSE_COLOR):
+                    print "   Diffuse color: "
+                    material.diffuseColor = self.readColor()
+                    break
+                if case(_3DS.SPECULAR_COLOR):
+                    print "   Specular color: "
+                    material.specularColor = self.readColor()
+                    break
+                if case(_3DS.SHININESS_PERCENT):
+                    print "   Shininess percent: "
+                    material.shininess = self.readPercent()
+                    break
+                if case(_3DS.SHIN2PCT_PERCENT):
+                    print "   Shininess sterngth: "
+                    material.shininessSterngth = self.readPercent()
+                    break
+                if case(_3DS.SHIN3PCT_PERCENT):
+                    print "   Shininess secoind sterngth: "
+                    material.secondShininessSterength = self.readPercent()
+                    break
+                if case(_3DS.TRANSPARENCY_PERCENT):
+                    print "   Transparency percent: "
+                    material.transparency = self.readPercent()
+                    break
+                if case(_3DS.TRANSP_FALLOF_PERCENT):
+                    print "   Transparency fallof percent: "
+                    material.transparencyFallof = self.readPercent()
+                    break
+                if case(_3DS.REFLECTION_BLUR_PERCENT):
+                    print "   Reflection Blur percent: "
+                    material.reflectionBlur = self.readPercent()
+                    break
+                if case(_3DS.SELF_ILLUM):
+                    print "   Self illuminted"
+                    material.isSelfIlluminated = True
+                    break
+                if case(_3DS.TWO_SIDE):
+                    print "   Two-sided lighting"
+                    material.twoSided = True
+                    break
+                if case(_3DS.ADDITIVE):
+                    print "   Additive blend"
+                    material.aditive = True
+                    break
+                if case(_3DS.WIREFRAME):
+                    print "   Wireframe"
+                    material.wireframe = True
+                    break
+                if case(_3DS.WIRESIZE):
+                    material.wireSize = self.file.readFloat()
+                    print "   Wire size: %f" %(material.wireSize)
+                    break
+                if case(_3DS.SHADING):
+                    material.shadingType = self.file.readShort()
+                    print "   Shading: %d" %(material.shadingType)
+                    break
+                if case(_3DS.TEXTURE_MAP_1):
+                    print "   Texture Map 1\n    Percentage: "
+                    self.readTextureChunk(material.textureMap1, header.chunk_length - 6)
+                    break
+                if case(_3DS.TEXTURE_MAP_2):
+                    print "   Texture Map 2\n    Percentage: "
+                    self.readTextureChunk(material.textureMap2, header.chunk_length - 6)
+                    break
+                if case(_3DS.BUMP_MAP):
+                    print "   Bump Map\n    Percentage: "
+                    self.readTextureChunk(material.bumpMap, header.chunk_length - 6)
+                    break
+                if case(_3DS.SPECULAR_MAP):
+                    print "   Specular Map\n    Percentage: "
+                    self.readTextureChunk(material.specularMap, header.chunk_length - 6)
+                    break
+                if case(_3DS.REFLECTION_MAP):
+                    print "   Reflection Map\n    Percentage: "
+                    self.readTextureChunk(material.reflectionMap, header.chunk_length - 6)
+                    break
+                if case(_3DS.OPACITY_MAP):
+                    print "   Opacity Map\n    Percentage: "
+                    self.readTextureChunk(material.opacityMap, header.chunk_length - 6)
+                    break
+                if case(_3DS.SHININESS_MAP):
+                    print "   Shininess Map\n    Percentage: "
+                    self.readTextureChunk(material.shininessMap, header.chunk_length - 6)
+                    break
+                if case(_3DS.TEXTURE_1_MASK):
+                    print "   Texture 1 mask"
+                    self.readTextureChunk(material.textureMask1, header.chunk_length - 6)
+                    break
+                if case(_3DS.TEXTURE_2_MASK):
+                    print "   Texture 2 mask"
+                    self.readTextureChunk(material.textureMask2, header.chunk_length - 6)
+                    break
+                if case(_3DS.OPACITY_MASK):
+                    print "   Opacity mask"
+                    self.readTextureChunk(material.opacityMask, header.chunk_length - 6)
+                    break
+                if case(_3DS.BUMP_MASK):
+                    print "   Bump mask"
+                    self.readTextureChunk(material.bumpMask, header.chunk_length - 6)
+                    break
+                if case(_3DS.SHININESS_MASK):
+                    print "   Shininess mask"
+                    self.readTextureChunk(material.shininessMask, header.chunk_length - 6)
+                    break
+                if case(_3DS.SPECULAR_MASK):
+                    print "   Specular mask"
+                    self.readTextureChunk(material.specularMask, header.chunk_length - 6)
+                    break
+                if case(_3DS.REFLECTION_MASK):
+                    print "   Reflection mask"
+                    self.readTextureChunk(material.reflectionMask, header.chunk_length - 6)
+                    break
+                if case():
+                    print "  Skip unknown %X subchunk" %(header.chunk_id)
+            self.file.seek(header.start_position + header.chunk_length, os.SEEK_SET)
+            bytes = self.updateBytesToRead(bytes, header.chunk_length)
+        self.object
 
     def readMeshChunk(self, bytes):
         pass
 
     def readKeyFrameChunk(self, bytes):
         pass
-
 
     def readFloatColor(self):
         pass
