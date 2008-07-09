@@ -11,10 +11,12 @@ __author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)'
 import pyglet
 from pyglet.gl import *
 from pyglet import window
+import numpy
+import ctypes
 import Mathbase
 import Vertex
 import base
-import array
+#import array
 from base import kernel as hfk
 
 
@@ -156,20 +158,29 @@ class OGL:
 
     def RenderMesh(self, mesh):
         glPushMatrix()
+        glLoadIdentity()
         # glMultMatrixf(mesh.matrix4)
-        glColor3f(0, 0, 1)
-        print "mesh.vertices:", mesh.vertices
-        glVertexPointer(3, GL_FLOAT, 0, "1.000, 0.000, 0.000, 0.959, 0.282, 0.000,0.841,0.541,0.000,0.655,0.756,0.000,0.415,0.910,0.000,0.142,0.990,0.000,\
-	-0.142,0.990,0.000,-0.415,0.910,0.000,-0.655,0.756,0.000,-0.841,0.541,0.000,-0.959,0.282,0.000,-1.000,0.000,0.000,-0.959,-0.282,0.000,-0.841,-0.541,0.000,\
-	-0.655,-0.756,0.000,-0.415,-0.910,0.000,-0.142,-0.990,0.000,0.142,-0.990,0.000,0.415,-0.910,0.000,0.655,-0.756,0.000,0.841,-0.541,0.000,\
-	0.959,-0.282,0.000,0.000,0.000,0.500")
+        glColor3f(1.0, 0.0, 1.0)
+        #print "mesh.vertices:", mesh.vertices
+        #glVertexPointer(3, GL_FLOAT, 0, "0, 1, 0,  -1, -1, 1,  1, -1, 1,  1, -1, -1,  -1, -1, -1")
         # glVertexPointerf(mesh.vertices)
         # for face in mesh.faces:
-        print "test"
-        glDrawElements(GL_TRIANGLES, 33, GL_UNSIGNED_BYTE, "22, 1, 2, 22, 3, 4, 22, 5, 6, 22, 7, 8, 22, 9, 10, 22, 11, 12,\
-	22, 13, 14, 22, 15, 16, 22, 17, 18, 22, 19, 20, 22, 21, 0")
-        # glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, "0, 1, 2")
+        #print "test"
+        #glEnableClientState(GL_VERTEX_ARRAY);
+        #glDrawElements(GL_TRIANGLES, 33, GL_UNSIGNED_BYTE, "0, 1, 2,  0, 2, 3, 0, 3, 4, 0, 4, 1")
+        #glDrawArrays(GL_TRIANGLES, 0, 5)
+        #glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, "0, 1, 2")
+        #glDrawElementsub(GL_TRIANGLES, "0, 1, 2")
         #    print face
+        #print "Starting"
+        #vert = numpy.array(mesh.vertices, 'f')
+        points = numpy.array([[0,0,0],[1,0,0],[1,1,0],[0,1,0]], dtype=numpy.float32)
+        cpoints = numpy.ascontiguousarray(points)
+        indices = numpy.array( range(len(points)), 'i')
+        cindices = numpy.ascontiguousarray(indices)
+        glVertexPointer(3, GL_FLOAT, 0, cpoints.ctypes.data_as(ctypes.POINTER(ctypes.c_float)))
+        glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, cindices.ctypes.data_as(ctypes.POINTER(ctypes.c_int)) )
+        #glVertexPointerf(points)
         glPopMatrix()
         
     def Render3D(self, model):
