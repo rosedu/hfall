@@ -159,12 +159,12 @@ class OGL:
         # glMultMatrixf(mesh.matrix4)
         glColor3f(0, 0, 1)
         print "mesh.vertices:", mesh.vertices
-        glVertexPointer(3, GL_FLOAT, 0, "0, 1, 0, -1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, -1")
+        glVertexPointer(3, GL_FLOAT, 0, "1, 0, 0, 0, 1, 0, 0, 0, 1")
         # glVertexPointerf(mesh.vertices)
         # for face in mesh.faces:
         print "test"
-        # glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, "0, 1, 2") #,  0, 2, 3, 0, 3, 4, 0, 4, 1")
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, "0, 1, 2")
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, "0, 1, 2")
+        # glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, "0, 1, 2")
         #    print face
         glPopMatrix()
         
