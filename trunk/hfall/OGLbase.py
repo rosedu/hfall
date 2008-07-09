@@ -21,6 +21,11 @@ import base
 from base import kernel as hfk
 
 
+points = [0,0,0, 1,0,0, 1,1,0, 0,1,0]
+ppoints = (GLfloat * len(points))(*points)
+colors = [1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1]
+pcolors = (GLfloat * len(colors))(*colors)
+
 class OGL:
     """
     This is the class that encapsulates all OpenGL API calls. All acces
@@ -155,39 +160,17 @@ class OGL:
         glVertex2f(model.xx, model.y)
         glVertex2f(model.xx, model.yy)
         glVertex2f(model.x, model.yy)
-        glEnd()
+        glEnd()      
 
     def RenderMesh(self, mesh):
         glPushMatrix()
-        glLoadIdentity()
-        # glMultMatrixf(mesh.matrix4)
-        glColor3f(1.0, 0.0, 1.0)
-        #print "mesh.vertices:", mesh.vertices
-        #glVertexPointer(3, GL_FLOAT, 0, "0, 1, 0,  -1, -1, 1,  1, -1, 1,  1, -1, -1,  -1, -1, -1")
-        # glVertexPointerf(mesh.vertices)
-        # for face in mesh.faces:
-        #print "test"
-        #glEnableClientState(GL_VERTEX_ARRAY);
-        #glDrawElements(GL_TRIANGLES, 33, GL_UNSIGNED_BYTE, "0, 1, 2,  0, 2, 3, 0, 3, 4, 0, 4, 1")
-        #glDrawArrays(GL_TRIANGLES, 0, 5)
-        #glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, "0, 1, 2")
-        #glDrawElementsub(GL_TRIANGLES, "0, 1, 2")
-        #    print face
-        #print "Starting"
-        #vert = numpy.array(mesh.vertices, 'f')
-        #points = numpy.array([[0,0,0],[1,0,0],[1,1,0],[0,1,0]], dtype=numpy.float32)
-        #cpoints = numpy.ascontiguousarray(points)
-        #indices = numpy.array( range(len(points)), 'i')
-        #cindices = numpy.ascontiguousarray(indices)
-        #glVertexPointer(3, GL_FLOAT, 0, cpoints.ctypes.data_as(ctypes.POINTER(ctypes.c_float)))
-        #glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, cindices.ctypes.data_as(ctypes.POINTER(ctypes.c_int)) )
-        #glVertexPointerf(points)
-        vert = numpy.array(mesh.vertices, dtype=numpy.float32)
-        print vert
-        buffer = buffers.VertexBuffer(vert, GL_STATIC_DRAW)
+        #glLoadIdentity()
+        #glTranslatef(0.0, 0.0, -6.0)
         glEnableClientState(GL_VERTEX_ARRAY)
-        buffer.bind_vertexes(3, GL_FLOAT)
-        glDrawElementsui(GL_TRIANGLES, indexes)
+        glEnableClientState(GL_COLOR_ARRAY)
+        glColorPointer(3, GL_FLOAT, 0, pcolors)
+        glVertexPointer(3, GL_FLOAT, 0, ppoints)
+        glDrawArrays(GL_QUADS, 0, len(ppoints))    
         glPopMatrix()
         
     def Render3D(self, model):
@@ -201,7 +184,7 @@ class OGL:
                     use alpha blending.
 
         """
-        glLoadIdentity()
+        #glLoadIdentity()
         # glMultMatrixf(model.matrix4)
         # for mesh in model.meshes:
         self.RenderMesh(model.meshes)
