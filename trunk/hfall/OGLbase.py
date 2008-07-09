@@ -159,7 +159,7 @@ class OGL:
         # glMultMatrixf(mesh.matrix4)
         glColor3f(0, 0, 1)
         print "mesh.vertices:", mesh.vertices
-        glVertexPointer(3, GL_FLOAT, 0, "1, 0, 0, 0, 1, 0, 0, 0, 1")
+        glVertexPointer(9, GL_FLOAT, 0, "1, 0, 0, 0, 1, 0, 0, 0, 1")
         # glVertexPointerf(mesh.vertices)
         # for face in mesh.faces:
         print "test"
