@@ -163,7 +163,8 @@ class OGL:
         # glVertexPointerf(mesh.vertices)
         # for face in mesh.faces:
         print "test"
-        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_BYTE, "0, 1, 2,  0, 2, 3, 0, 3, 4, 0, 4, 1")
+        # glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, "0, 1, 2") #,  0, 2, 3, 0, 3, 4, 0, 4, 1")
+        glDrawElementsub(GL_TRIANGLES, "0, 1, 2")
         #    print face
         glPopMatrix()
         
