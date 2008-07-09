@@ -172,8 +172,8 @@ class OGL:
         #glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, "0, 1, 2")
         #glDrawElementsub(GL_TRIANGLES, "0, 1, 2")
         #    print face
-        #print "Starting"
-        #vert = numpy.array(mesh.vertices, 'f')
+        print "Starting"
+        vert = numpy.array(mesh.vertices, 'f')
         points = numpy.array([[0,0,0],[1,0,0],[1,1,0],[0,1,0]], dtype=numpy.float32)
         cpoints = numpy.ascontiguousarray(points)
         indices = numpy.array( range(len(points)), 'i')
