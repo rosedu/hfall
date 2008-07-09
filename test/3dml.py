@@ -6,6 +6,8 @@ import hfall.OGLbase
 import hfall.UI
 import hfall.Render
 import hfall.Vertex
+import hfall.Mesh
+import hfall.Model
 from hfall.Console import Console
 from hfall.base import kernel as hfk
 
@@ -17,27 +19,18 @@ class drawer(hfall.base.Task):
     def __init__(self):
         self._maxframe=100
         self._vertexes = []
+        self._faces = []
+        self.mesh = None
+        self.model = None
         pass
 
     def start(self, kernel):
         kernel.log.msg("Drawer started");
-        self._vertexes.append(hfall.Vertex.Vertex([0, 1, 0], [1, 0, 0]))
-        self._vertexes.append(hfall.Vertex.Vertex([-1, -1, 1], [0, 1, 0]))
-        self._vertexes.append(hfall.Vertex.Vertex([1, -1, 1], [0, 0, 1]))
-
-        self._vertexes.append(hfall.Vertex.Vertex([0, 1, 0], [1, 0, 0]))
-        self._vertexes.append(hfall.Vertex.Vertex([1, -1, 1], [0, 0, 1]))
-        self._vertexes.append(hfall.Vertex.Vertex([1, -1, -1], [0, 1, 0]))
-
-        self._vertexes.append(hfall.Vertex.Vertex([0, 1, 0], [1, 0, 0]))
-        self._vertexes.append(hfall.Vertex.Vertex([1, -1, -1], [0, 1, 0]))
-        self._vertexes.append(hfall.Vertex.Vertex([-1, -1, -1], [0, 0, 1]))
-
-        self._vertexes.append(hfall.Vertex.Vertex([0, 1, 0], [1, 0, 0]))
-        self._vertexes.append(hfall.Vertex.Vertex([-1, -1, -1], [0, 0, 1]))
-        self._vertexes.append(hfall.Vertex.Vertex([-1, -1, 1], [0, 1, 0]))
-
-        render.add3D(self._vertexes)
+        self._vertexes = [0, 1, 0,  -1, -1, 1,  1, -1, 1,  1, -1, -1,  -1, -1, -1]
+        self._faces = [0, 1, 2,  0, 2, 3, 0, 3, 4, 0, 4, 1]
+        self.mesh = hfall.Mesh.Mesh(self._faces, self._vertexes, None, None)
+        self.model = hfall.Model.Model(self.mesh, None)
+        render.add3D(self.model)
 
     def stop(self, kernel):
         pass

@@ -150,7 +150,6 @@ class Render(base.Task):
         
         """
         self._3dlist.append(model)
-        # TODO: to be done later after loading the model
 
     def addtext(self,text):
         self._textlist.append(text)
