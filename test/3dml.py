@@ -53,5 +53,5 @@ class drawer(hfall.base.Task):
 render = hfall.Render.Render(800, 600)
 hfk.insert(drawer())
 hfk.insert(render)
-hfk.insert(Console(render))
+# hfk.insert(Console(render))
 hfk.run()

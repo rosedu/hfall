@@ -156,15 +156,15 @@ class OGL:
 
     def RenderMesh(self, mesh):
         glPushMatrix()
-        glMultMatrixf(mesh.matrix4)
+        # glMultMatrixf(mesh.matrix4)
         glColor3f(0, 0, 1)
         print "mesh.vertices:", mesh.vertices
         glVertexPointer(3, GL_FLOAT, 0, "0, 1, 0, -1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, -1")
         # glVertexPointerf(mesh.vertices)
-        for face in mesh.faces:
-            print "ARRAY:",((array.array('i', face)).tostring())
-            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, array.array('B', face).tostring())
-            print face
+        # for face in mesh.faces:
+        print "test"
+        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_BYTE, "0, 1, 2,  0, 2, 3, 0, 3, 4, 0, 4, 1")
+        #    print face
         glPopMatrix()
         
     def Render3D(self, model):
@@ -179,7 +179,7 @@ class OGL:
 
         """
         glLoadIdentity()
-        glMultMatrixf(model.matrix4)
-        for mesh in model.meshes:
-            self.RenderMesh(mesh)
+        # glMultMatrixf(model.matrix4)
+        # for mesh in model.meshes:
+        self.RenderMesh(model.meshes)
         
