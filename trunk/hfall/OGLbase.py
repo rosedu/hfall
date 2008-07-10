@@ -13,17 +13,14 @@ from pyglet.gl import *
 from pyglet import window
 import numpy
 import ctypes
-import buffers
+#import buffers
 import Mathbase
 import Vertex
 import base
 #import array
 from base import kernel as hfk
 
-
-points = [0,0,0, 1,0,0, 1,1,0, 0,1,0]
-ppoints = (GLfloat * len(points))(*points)
-colors = [1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1]
+colors = [1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.6, 0.2]
 pcolors = (GLfloat * len(colors))(*colors)
 
 class OGL:
@@ -66,8 +63,8 @@ class OGL:
         glShadeModel(GL_SMOOTH)
         glClearDepth(1.0)
         glEnable(GL_DEPTH_TEST)
-        glEnable(GL_COLOR_ARRAY)
-        glEnable(GL_VERTEX_ARRAY)
+        glEnableClientState(GL_VERTEX_ARRAY)
+        glEnableClientState(GL_COLOR_ARRAY)
         glDepthFunc(GL_LEQUAL)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
         hfk.log.msg('Open GL started')
@@ -166,11 +163,9 @@ class OGL:
         glPushMatrix()
         #glLoadIdentity()
         #glTranslatef(0.0, 0.0, -6.0)
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glEnableClientState(GL_COLOR_ARRAY)
         glColorPointer(3, GL_FLOAT, 0, pcolors)
-        glVertexPointer(3, GL_FLOAT, 0, ppoints)
-        glDrawArrays(GL_QUADS, 0, len(ppoints))    
+        glVertexPointer(3, GL_FLOAT, 0, mesh.vertices)
+        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, mesh.faces)
         glPopMatrix()
         
     def Render3D(self, model):
