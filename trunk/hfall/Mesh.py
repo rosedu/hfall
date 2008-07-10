@@ -7,6 +7,9 @@ used to draw our models to screen.
 __version__ = '0.001'
 __author__ = 'Andrei Buhaiu(andreibuhaiu@gmail.com)'
 
+import pyglet
+from pyglet.gl import *
+
 class Mesh:
     """
     This is pur Vertex class. Basically it includes the position, the
@@ -18,9 +21,10 @@ class Mesh:
     """
 
     
-    def __init__(self, fac, vert, mats, matrix, color = None):
+    def __init__(self, fac, vert, mats, matrix, color = None, draw_mode = GL_TRIANGLES):
         self.faces = fac
         self.vertices = vert
         self.materials = mats
         self.matrix4 = matrix
         self.colors = color
+        self.mode = draw_mode

@@ -162,7 +162,7 @@ class OGL:
         #glTranslatef(0.0, 0.0, -6.0)
         glColorPointer(3, GL_FLOAT, 0, mesh.colors)
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices)
-        glDrawElements(GL_TRIANGLES, len(mesh.faces), GL_UNSIGNED_INT, mesh.faces)
+        glDrawElements(mesh.mode, len(mesh.faces), GL_UNSIGNED_INT, mesh.faces)
         glPopMatrix()
         
     def Render3D(self, model):
