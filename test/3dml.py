@@ -2,7 +2,6 @@ import sys
 import pyglet
 from pyglet.gl import *
 sys.path.insert(0, "../trunk")
-import numpy
 import ctypes
 import hfall.base
 import hfall.OGLbase
@@ -34,11 +33,13 @@ class drawer(hfall.base.Task):
         ppoints = (GLfloat * len(points))(*points)
         faces = [0, 1, 2, 0,2,3,0,3,4,0,4,1]
         pfaces = (GLuint * len(faces))(*faces)
+        colors = ((len(points) // 2) + 1)* [1, 0, 0, 0, 0, 1]
+        pcolors = (GLfloat * len(colors))(*colors) 
 
         self._vertexes = ppoints
         self._faces = pfaces
-        self.mesh = hfall.Mesh.Mesh(self._faces, self._vertexes, None, None)
-        self.model = hfall.Model.Model(self.mesh, None)
+        self.mesh = hfall.Mesh.Mesh(self._faces, self._vertexes, None, None, pcolors)
+        self.model = hfall.Model.Model([self.mesh], None)
         render.add3D(self.model)
 
     def stop(self, kernel):

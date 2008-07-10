@@ -11,16 +11,13 @@ __author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)'
 import pyglet
 from pyglet.gl import *
 from pyglet import window
-import numpy
 import ctypes
-#import buffers
 import Mathbase
 import Vertex
 import base
-#import array
 from base import kernel as hfk
 
-colors = [1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.6, 0.2]
+colors = ((5 // 2) + 1)* [1, 1, 1, 0, 1, 0]
 pcolors = (GLfloat * len(colors))(*colors)
 
 class OGL:
@@ -163,7 +160,7 @@ class OGL:
         glPushMatrix()
         #glLoadIdentity()
         #glTranslatef(0.0, 0.0, -6.0)
-        glColorPointer(3, GL_FLOAT, 0, pcolors)
+        glColorPointer(3, GL_FLOAT, 0, mesh.colors)
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices)
         glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, mesh.faces)
         glPopMatrix()
@@ -181,6 +178,6 @@ class OGL:
         """
         #glLoadIdentity()
         # glMultMatrixf(model.matrix4)
-        # for mesh in model.meshes:
-        self.RenderMesh(model.meshes)
+        for mesh in model.meshes:
+            self.RenderMesh(mesh)
         
