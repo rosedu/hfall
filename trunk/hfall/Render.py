@@ -27,7 +27,7 @@ class Render(base.Task):
     """
     
     def __init__(self, width, height, near=0.1, far=100.0,\
-                 clearcolor=(0.0, 0.0, 0.0, 0.0)):
+                 clearcolor=(0.0, 0.0, 0.0, 0.0), posx = 0, posy = 0, posz = 0):
         """
         Render task initialization. It starts pyglet and OpenGL.
             width - the width of the game window
@@ -44,6 +44,9 @@ class Render(base.Task):
         self._3dlist = []
         self._2dlist = []
 	self._textlist = []
+	self.transx = posx;
+	self.transy = posy;
+        self.transz = posz;
 
         "To be deleted later on, examples"
         self._angle = 0;
@@ -100,9 +103,11 @@ class Render(base.Task):
             glLoadIdentity()
             
             # TODO: camera manipulation
-            point_to_translate = Mathbase.Vector3D(0, 0, -110)
+            # For dodecadron testing
+            point_to_translate = Mathbase.Vector3D(self.transx,\
+                                self.transy, self.transz)
             self.ogl.translate( point_to_translate)
-            direction_to_rotate = Mathbase.Vector3D(0, 1 ,0)
+            direction_to_rotate = Mathbase.Vector3D(0, 0.1 ,0)
             self.ogl.rotate(self._angle, direction_to_rotate) 
             # TODO: 3D model drawing
             for model in self._3dlist:
@@ -119,7 +124,7 @@ class Render(base.Task):
             self.fps=clock.get_fps()
             print self.fps
             "To be deleted later on, examples"
-            self._angle += 1
+            self._angle += 0.5
             # if self._xpos > 3 :
             #    self._xpos = -3
             # self._xpos += 0.05

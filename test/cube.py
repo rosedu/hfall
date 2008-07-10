@@ -69,7 +69,7 @@ class drawer(hfall.base.Task):
     def name(self):
         return "drawer"
 
-render = hfall.Render.Render(800, 600)
+render = hfall.Render.Render(800, 600, posz = -6)
 hfk.insert(drawer())
 hfk.insert(render)
 # hfk.insert(Console(render))

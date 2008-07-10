@@ -54,12 +54,21 @@ class drawer(hfall.base.Task):
         pcolors = (GLfloat * len(colors))(*colors)
         self._vertexes = ppoints
 
-        faces = [0,1,4,7,2,0,2,6,9,3,0,3,8,5,1,1,5,11,10,4,2,7,13,12,6,3,9,15,14,8,\
-                 4,10,16,13,7,5,8,14,17,11,6,12,18,15,9,10,11,17,19,16,12,13,16,19,18,\
+        faces = [0,1,4,7,2,\
+                 0,2,6,9,3,\
+                 0,3,8,5,1,\
+                 1,5,11,10,4,\
+                 2,7,13,12,6,\
+                 3,9,15,14,8,\
+                 4,10,16,13,7,\
+                 5,8,14,17,11,\
+                 6,12,18,15,9,\
+                 10,11,17,19,16,\
+                 12,13,16,19,18,\
                  14,15,18,19,17]
         pfaces = (GLuint * len(faces))(*faces)
         self._faces = pfaces
-        self.mesh.append(hfall.Mesh.Mesh(self._faces, self._vertexes, None, None, None, GL_LINE_STRIP))
+        self.mesh.append(hfall.Mesh.Mesh(self._faces, self._vertexes, None, None, None, GL_TRIANGLE_FAN))
 
         
         self.model = hfall.Model.Model(self.mesh, None)
@@ -83,7 +92,7 @@ class drawer(hfall.base.Task):
     def name(self):
         return "drawer"
 
-render = hfall.Render.Render(800, 600)
+render = hfall.Render.Render(800, 600, posx = 20, posy = -25, posz = -110)
 hfk.insert(drawer())
 hfk.insert(render)
 # hfk.insert(Console(render))
