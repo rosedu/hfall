@@ -100,9 +100,9 @@ class Render(base.Task):
             glLoadIdentity()
             
             # TODO: camera manipulation
-            point_to_translate = Mathbase.Vector3D(self._xpos, 0, -6)
+            point_to_translate = Mathbase.Vector3D(0, 0, -10)
             self.ogl.translate( point_to_translate)
-            direction_to_rotate = Mathbase.Vector3D(0, 1 ,0)
+            direction_to_rotate = Mathbase.Vector3D(0, 1 ,0.5)
             self.ogl.rotate(self._angle, direction_to_rotate) 
             # TODO: 3D model drawing
             for model in self._3dlist:
@@ -119,10 +119,10 @@ class Render(base.Task):
             self.fps=clock.get_fps()
             print self.fps
             "To be deleted later on, examples"
-            self._angle += 0.2
-            if self._xpos > 3 :
-                self._xpos = -3
-            self._xpos += 0.05
+            self._angle += 1
+            # if self._xpos > 3 :
+            #    self._xpos = -3
+            # self._xpos += 0.05
             
     def name(self):
         """
