@@ -93,7 +93,7 @@ class drawer(hfall.base.Task):
 
         pfaces = (GLuint * len(faces))(*faces)
         self._faces = pfaces
-        self.mesh.append(hfall.Mesh.Mesh(self._faces, self._vertexes, None, None, None, GL_LINE_STRIP))
+        self.mesh.append(hfall.Mesh.Mesh(self._faces, self._vertexes, None, None, None, GL_TRIANGLES))
 
         
         self.model = hfall.Model.Model(self.mesh, None)

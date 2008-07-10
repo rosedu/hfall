@@ -6,7 +6,8 @@ state of the OpenGL finite-state machine.
 """
 
 __version__ = '0.2'
-__author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)'
+__author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)' ,\
+              'Andrei Buhaiu (andreibuhaiu@gmail.com)'
 
 import pyglet
 from pyglet.gl import *
@@ -159,10 +160,16 @@ class OGL:
     def RenderMesh(self, mesh):
         glPushMatrix()
         #glLoadIdentity()
-        #glTranslatef(0.0, 0.0, -6.0)
-        glColorPointer(3, GL_FLOAT, 0, mesh.colors)
+        if (mesh.materials == None):
+            # selects the color that will be used if
+            # no material was given
+            glColorPointer(3, GL_FLOAT, 0, mesh.colors)
+        # We send the actual vertices to OpenGL so that it may render them
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices)
+        # We draw that actual faces that form the model
         glDrawElements(mesh.mode, len(mesh.faces), GL_UNSIGNED_INT, mesh.faces)
+        # We extract the perspective matrix that we used
+        # so that the new mesh is built on its own matrix
         glPopMatrix()
         
     def Render3D(self, model):
@@ -178,6 +185,7 @@ class OGL:
         """
         #glLoadIdentity()
         # glMultMatrixf(model.matrix4)
+        # We render each mesh in the model
         for mesh in model.meshes:
             self.RenderMesh(mesh)
         

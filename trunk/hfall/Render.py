@@ -6,7 +6,8 @@ could take place via OpenGL or any other rendering API.
 """
 
 __version__ = '0.3'
-__author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
+__authors__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)' ,\
+              'Andrei Buhaiu (andreibuhaiu@gmail.com)'
 
 import pyglet
 from pyglet.gl import *
@@ -156,6 +157,8 @@ class Render(base.Task):
         """
         for mesh in model.meshes:
             if (mesh.materials == None and mesh.colors == None):
+                # if we have no texture or color specified we use the
+                # default white & white
                 colors = ((len(mesh.vertices) // 2) + 1)* [1, 1, 1, 0, 1, 0]
                 mesh.colors = (GLfloat * len(colors))(*colors) 
         self._3dlist.append(model)

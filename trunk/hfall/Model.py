@@ -1,5 +1,5 @@
 """
-Hamerfall Vertex class. This class holds information about each vertex
+Hamerfall Model class. This class holds information about each model
 used to draw our models to screen. 
 
 """
@@ -11,15 +11,17 @@ import Mesh
 
 class Model:
     """
-    This is pur Vertex class. Basically it includes the position, the
-    colour, the texture coordinate and the normal vector asociated to
-    each vertex. It is not compulsory to have all of them defined for a
-    set of vertices from one model. If one of them is not defined it is
-    replaced with None.
+    This is our Model class. It contains the perspective and
+    the meshes matrix that form the model.
 
     """
 
     
     def __init__(self, mes, matrix):
+        """
+        meshes  - the actual meshes that form the model and that
+                  are given to be render to OpenGL
+        matrix4 - the perspective matrix
+        """
         self.meshes = mes
         self.matrix4 = matrix
