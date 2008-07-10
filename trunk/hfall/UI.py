@@ -11,6 +11,9 @@ from base import Task
 from pyglet import window
 from Console import Console
 from pyglet import font 
+from pyglet import image
+from pyglet.gl import *
+import Mathbase
 
 class Model2D:
     """
@@ -51,6 +54,8 @@ def on_key_press(symbol,modifiers):
 	elif symbol==window.key.L:
 		global_UI.load_full_text()
 		global_UI.load_full_2DUI()
+	elif symbol==window.key.A:
+		global_render.ogl.translate(Mathbase.Vector3D(0,-100,-1))
 		
 
 class UI(Task):
@@ -156,6 +161,11 @@ class UI(Task):
   		self.console.enable()
   		ft = font.load('Times New Roman',6)
 	  	self._textlist.append(font.Text(ft,"console",self.x_topt(0),\
-		      self.y_topt(500),0,(0,0.6,0.6,255)))
+		      self.y_topt(500),0,(0,0.6,0.6,255),0))
+		pic = image.load("symbol.jpg")
+		width, height = pic.width,pic.height
+		subimage = pic.get_region(0, 0, 10, height)
+  		self.surface.addgr(pic)
+  		
 
 
