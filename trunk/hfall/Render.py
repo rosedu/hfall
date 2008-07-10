@@ -100,9 +100,9 @@ class Render(base.Task):
             glLoadIdentity()
             
             # TODO: camera manipulation
-            point_to_translate = Mathbase.Vector3D(0, 0, -10)
+            point_to_translate = Mathbase.Vector3D(0, 0, -110)
             self.ogl.translate( point_to_translate)
-            direction_to_rotate = Mathbase.Vector3D(0, 1 ,0.5)
+            direction_to_rotate = Mathbase.Vector3D(0, 1 ,0)
             self.ogl.rotate(self._angle, direction_to_rotate) 
             # TODO: 3D model drawing
             for model in self._3dlist:
