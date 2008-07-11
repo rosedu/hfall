@@ -51,7 +51,6 @@ class Render(base.Task):
 
         "To be deleted later on, examples"
         self._angle = 0;
-        self._xpos = -1;
         try:
             # Try to create a window with antialising
             # TODO: add other possible config via another parameter
