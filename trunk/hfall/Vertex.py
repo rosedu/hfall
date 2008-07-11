@@ -19,7 +19,7 @@ class Vertex:
 
     """
 
-    def __init__(self, position, color=None, texture=None, normal=None):
+    def __init__(self, position, texel=None, normal=None):
         """
         Our Vertex constructor. The only compulsory argument is the one
         representing the position of the vertex. All other arguments may
@@ -46,6 +46,5 @@ class Vertex:
         """
         # TODO: to do the verifications for the formats
         self.position = position
-        self.color = color
-        self.texture = texture
+        self.texel = texel
         self.normal = normal

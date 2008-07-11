@@ -5,12 +5,8 @@ from switch import switch
 import _3DS
 
 class MaxParser:
-    def __init__(self):
-        self.keyframe = None
-        self.object = Chunks.ObjectChunk()
-        self.filename = None
-    
-    def __init__(self, filename):
+
+    def __init__(self, filename = None):
         self.keyframe = None
         self.object = Chunks.ObjectChunk()
         self.filename = filename
@@ -22,6 +18,10 @@ class MaxParser:
        # print "------------\n%d" %(header.start_position)
        # print "%X" %(header.chunk_id)
        # print "%d\n---------------" %(header.chunk_length)
+
+    def parseFile(self, filename):
+        self.filename = filename
+        return self.parse()
 
     def parse(self, obj = True, anim = False):
         if self.filename == None:
