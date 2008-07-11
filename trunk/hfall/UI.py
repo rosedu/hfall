@@ -13,6 +13,7 @@ from Console import Console
 from pyglet import font 
 from pyglet import image
 from pyglet.gl import *
+from Sprite import Sprite
 import Mathbase
 
 class Model2D:
@@ -55,7 +56,7 @@ def on_key_press(symbol,modifiers):
 		global_UI.load_full_text()
 		global_UI.load_full_2DUI()
 	elif symbol==window.key.A:
-		global_render.ogl.translate(Mathbase.Vector3D(0,-100,-1))
+		global_render.ogl.translate(Mathbase.Vector3D(0,-1,-1))
 		
 
 class UI(Task):
@@ -166,6 +167,7 @@ class UI(Task):
 		width, height = pic.width,pic.height
 		subimage = pic.get_region(0, 0, 10, height)
   		self.surface.addgr(pic)
+  		sprite = Sprite(-2,-2)
   		
 
 
