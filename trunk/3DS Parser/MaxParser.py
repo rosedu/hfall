@@ -374,9 +374,10 @@ class MaxParser:
                     data.faces = self.readFacesChunk(header.chunk_length - 6)
                     break
                 if case(_3DS.LOCAL_COORDINATES_SYSTEM):
+                    print "    Mesh Matrix: "
                     data.matrix = self.file.readArray(12, 'f')
                     for i in range(0, 4):
-                        print "    %.2f %.2f %.2f" %(data.matrix[i*3], data.matrix[i*3+1], data.matrix[i*3+2])
+                        print "     %.2f %.2f %.2f" %(data.matrix[i*3], data.matrix[i*3+1], data.matrix[i*3+2])
                     break
                 if case(_3DS.MESH_COLOR):
                     data.color = self.file.readByte()
@@ -389,7 +390,7 @@ class MaxParser:
                     data.textureInfo.icon = self.file.readFloat()
                     data.textureInfo.matrix = self.file.readArray(12, 'f')
                     data.textureInfo.planIconW = self.file.readFloat()
-                    data.textureInof.planIconH = self.file.readFloat()
+                    data.textureInfo.planIconH = self.file.readFloat()
                     data.textureInfo.cylIconH = self.file.readFloat()
                     print "    Mesh Texture info"
                     break

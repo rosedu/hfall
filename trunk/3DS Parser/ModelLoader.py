@@ -21,13 +21,13 @@ class ModelLoader:
             for i in range(0, 3):
                 for j in range(0, 4):
                     mesh.matrix4[i*3+j] = m.data.matrix[i+j*3]
-            
-            for i in range(1, len(m.data.vertices)):
-                m.data.vertices[0] += m.data.vertices[i]
-                m.data.coordinates[0] += m.data.coordinates[i]
-                # vertex = Vertex(m.data.vertices[i], m.data.coordinates[i])
-            mesh.vertices = m.data.vertices[0]
-            mesh.texels = m.data.coordinates[0]
+            if m.data.coordinates:
+                for i in range(1, len(m.data.vertices)):
+                    m.data.vertices[0] += m.data.vertices[i]
+                    m.data.coordinates[0] += m.data.coordinates[i]
+                    # vertex = Vertex(m.data.vertices[i], m.data.coordinates[i])
+                mesh.vertices = m.data.vertices[0]
+                mesh.texels = m.data.coordinates[0]
 
             # mesh.faces = m.data.faces.faces
             for face in range(1, len(m.data.faces.faces)):
