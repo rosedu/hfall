@@ -27,7 +27,7 @@ class ModelLoader:
                 m.data.coordinates[0] += m.data.coordinates[i]
                 # vertex = Vertex(m.data.vertices[i], m.data.coordinates[i])
             mesh.vertices = m.data.vertices[0]
-            mesh.coordinates = m.data.coordinates[0]
+            mesh.texels = m.data.coordinates[0]
 
             # mesh.faces = m.data.faces.faces
             for face in range(1, m.data.faces.nrOfFaces):
