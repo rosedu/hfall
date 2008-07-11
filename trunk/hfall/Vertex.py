@@ -7,7 +7,6 @@ used to draw our models to screen.
 __version__ = '0.2'
 __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
-import Mathbase
 
 class Vertex:
     """

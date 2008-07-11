@@ -164,6 +164,7 @@ class OGL:
             # selects the color that will be used if
             # no material was given
             glColorPointer(3, GL_FLOAT, 0, mesh.colors)
+        """
         else:
             im = open(mesh.materials)
 	    try:
@@ -219,13 +220,17 @@ class OGL:
             glTexCoord2f(1.0, 1.0); glVertex3f(-1.0,  1.0,  1.0);
             glTexCoord2f(0.0, 1.0); glVertex3f(-1.0,  1.0, -1.0);
             glEnd()
-            
+        """
+        print len(mesh.vertices), mesh.vertices
+        print len(mesh.faces), mesh.faces
         # We send the actual vertices to OpenGL so that it may render them
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices)
         # We draw that actual faces that form the model
-        glDrawElements(mesh.mode, len(mesh.faces), GL_UNSIGNED_INT, mesh.faces)
+        print "test pre draw"
+        glDrawElements(GL_TRIANGLES, len(mesh.faces), GL_UNSIGNED_INT, mesh.faces)
         # We extract the perspective matrix that we used
         # so that the new mesh is built on its own matrix
+        print "test"
         glPopMatrix()
         
     def Render3D(self, model):

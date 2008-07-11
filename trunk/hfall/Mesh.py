@@ -18,7 +18,7 @@ class Mesh:
     """
 
     
-    def __init__(self, fac, vert, mats, matrix, color = None, draw_mode = GL_TRIANGLES):
+    def __init__(self, fac, vert, texels, mats, matrix, color = None, draw_mode = GL_TRIANGLES):
         
         """
         faces       - the faces formed with the vertices
@@ -33,6 +33,7 @@ class Mesh:
         
         self.faces = fac
         self.vertices = vert
+        self.texels = texels
         self.materials = mats
         self.matrix4 = matrix
         self.colors = color
