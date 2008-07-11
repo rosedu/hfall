@@ -107,7 +107,7 @@ class Render(base.Task):
             point_to_translate = Mathbase.Vector3D(self.transx,\
                                 self.transy, self.transz)
             self.ogl.translate( point_to_translate)
-            direction_to_rotate = Mathbase.Vector3D(0, 0.1 ,0)
+            direction_to_rotate = Mathbase.Vector3D(0, 1 ,0.5)
             self.ogl.rotate(self._angle, direction_to_rotate) 
             # TODO: 3D model drawing
             for model in self._3dlist:
@@ -155,7 +155,8 @@ class Render(base.Task):
         
         """
         for mesh in model.meshes:
-            if (mesh.materials == None and mesh.colors == None):
+            if ((mesh.materials == [] or mesh.materials == None)\
+               and mesh.colors == None):
                 # if we have no texture or color specified we use the
                 # default white & white
                 colors = ((len(mesh.vertices) // 2) + 1)* [1, 1, 1, 0, 1, 0]
