@@ -22,7 +22,7 @@ class ModelLoader:
                 for j in range(0, 4):
                     mesh.matrix4[i*3+j] = m.data.matrix[i+j*3]
             
-            for i in range(1, m.data.nrOfVertices):
+            for i in range(1, len(m.data.vertices)):
                 m.data.vertices[0] += m.data.vertices[i]
                 m.data.coordinates[0] += m.data.coordinates[i]
                 # vertex = Vertex(m.data.vertices[i], m.data.coordinates[i])
@@ -30,8 +30,8 @@ class ModelLoader:
             mesh.texels = m.data.coordinates[0]
 
             # mesh.faces = m.data.faces.faces
-            for face in range(1, m.data.faces.nrOfFaces):
-                m.data.faces.faces[0] += m.data.faces.faces[i]
+            for face in range(1, len(m.data.faces.faces)):
+                m.data.faces.faces[0] += m.data.faces.faces[face]
             mesh.faces = m.data.faces.faces[0]
             
             for group in m.data.faces.materialGroups:
