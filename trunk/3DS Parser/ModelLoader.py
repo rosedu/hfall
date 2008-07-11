@@ -30,14 +30,15 @@ class ModelLoader:
                 mesh.texels = m.data.coordinates[0]
 
             # mesh.faces = m.data.faces.faces
-            for face in range(1, len(m.data.faces.faces)):
-                m.data.faces.faces[0] += m.data.faces.faces[face]
-            mesh.faces = m.data.faces.faces[0]
+            if m.data.faces:
+                for face in range(1, len(m.data.faces.faces)):
+                    m.data.faces.faces[0] += m.data.faces.faces[face]
+                mesh.faces = m.data.faces.faces[0]
             
-            for group in m.data.faces.materialGroups:
-                mat = MeshMaterialGroup(group.materialName, group.faces)
-                mesh.materials.append(mat)
-            self.model.meshes.append(mesh)
+                for group in m.data.faces.materialGroups:
+                    mat = MeshMaterialGroup(group.materialName, group.faces)
+                    mesh.materials.append(mat)
+                self.model.meshes.append(mesh)
         return True
     
     def getModel(self):

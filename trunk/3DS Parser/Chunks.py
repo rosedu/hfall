@@ -18,8 +18,9 @@ class TextureInfoChunk:
     pass
 
 class MeshData:
-    def __init__(self, coordinates = None):
+    def __init__(self, coordinates = None, faces = None):
         self.coordinates = coordinates
+        self.faces = faces
     pass
 
 class SpotLightChunk:
