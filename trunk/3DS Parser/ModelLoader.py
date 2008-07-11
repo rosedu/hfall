@@ -16,18 +16,23 @@ class ModelLoader:
         for m in self.parser.object.meshes:
             if m.type != 1:
                 continue
-            mesh = Mesh([], [], [], 16*[0])
+            mesh = Mesh([], [], [], [], 16*[0])
             
             for i in range(0, 3):
                 for j in range(0, 4):
                     mesh.matrix4[i*3+j] = m.data.matrix[i+j*3]
             
-            for i in range(0, m.data.nrOfVertices):
-                vertex = Vertex(m.data.vertices[i], m.data.coordinates[i])
-                mesh.vertices.append(vertex)
+            for i in range(1, m.data.nrOfVertices):
+                m.data.vertices[0] += m.data.vertices[i]
+                m.data.coordinates[0] += m.data.coordinates[i]
+                # vertex = Vertex(m.data.vertices[i], m.data.coordinates[i])
+            mesh.vertices = m.data.vertices[0]
+            mesh.coordinates = m.data.coordinates[0]
 
-            for face in m.data.faces.faces:
-                mesh.faces.append(face)
+            # mesh.faces = m.data.faces.faces
+            for face in range(1, m.data.faces.nrOfFaces):
+                m.data.faces.faces[0] += m.data.faces.faces[i]
+            mesh.faces = m.data.faces.faces[0]
             
             for group in m.data.faces.materialGroups:
                 mat = MeshMaterialGroup(group.materialName, group.faces)
