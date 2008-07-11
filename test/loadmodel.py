@@ -42,6 +42,8 @@ class drawer(hfall.base.Task):
         Loader = hfall.ModelLoader.ModelLoader()
         Loader.loadModel("test.3ds")
         self.model = Loader.getModel()
+        #print self.model.meshes[0].vertices
+        #print self.model.meshes[0].faces
         for i in range(0,len(self.model.meshes)):
             self.model.meshes[i].vertices = (GLfloat * len(self.model.meshes[i].vertices))(*self.model.meshes[i].vertices)
             self.model.meshes[i].faces = (GLuint * len(self.model.meshes[i].faces))(*self.model.meshes[i].faces)
@@ -67,7 +69,7 @@ class drawer(hfall.base.Task):
     def name(self):
         return "drawer"
 
-render = hfall.Render.Render(800, 600, posx = 10, posy = 0, posz = -50)
+render = hfall.Render.Render(800, 600, posx = 0, posy = 0, posz = -6)
 hfk.insert(drawer())
 hfk.insert(render)
 # hfk.insert(Console(render))

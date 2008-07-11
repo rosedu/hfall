@@ -8,7 +8,7 @@ could take place via OpenGL or any other rendering API.
 __version__ = '0.3'
 __authors__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)' ,\
               'Andrei Buhaiu (andreibuhaiu@gmail.com)'
-
+import math
 import pyglet
 from pyglet.gl import *
 from pyglet import window
@@ -107,7 +107,7 @@ class Render(base.Task):
             point_to_translate = Mathbase.Vector3D(self.transx,\
                                 self.transy, self.transz)
             self.ogl.translate( point_to_translate)
-            direction_to_rotate = Mathbase.Vector3D(0, 1 ,0.5)
+            direction_to_rotate = Mathbase.Vector3D(0, 1 ,0)
             self.ogl.rotate(self._angle, direction_to_rotate) 
             # TODO: 3D model drawing
             for model in self._3dlist:

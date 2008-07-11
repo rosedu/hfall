@@ -160,10 +160,12 @@ class OGL:
     def RenderMesh(self, mesh):
         glPushMatrix()
         #glLoadIdentity()
-        if (mesh.materials == []):
+        colors = ((len(mesh.vertices) // 2) + 1)* [1, 1, 1, 0, 1, 0]
+        mesh.colors = (GLfloat * len(colors))(*colors) 
+        # if (mesh.materials == []):
             # selects the color that will be used if
             # no material was given
-            glColorPointer(3, GL_FLOAT, 0, mesh.colors)
+        glColorPointer(3, GL_FLOAT, 0, mesh.colors)
         """
         else:
             im = open(mesh.materials)
