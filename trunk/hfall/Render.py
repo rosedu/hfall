@@ -101,10 +101,7 @@ class Render(base.Task):
             point_to_translate = Mathbase.Vector3D(self.transx,\
                                 self.transy, self.transz)
             self.ogl.translate( point_to_translate)
-            direction_to_rotate = Mathbase.Vector3D(1, 0, 0)
-            self.ogl.rotate(270, direction_to_rotate)
-
-            direction_to_rotate = Mathbase.Vector3D(0, 0, 1)
+            direction_to_rotate = Mathbase.Vector3D(0, 1 ,1)
             self.ogl.rotate(self._angle, direction_to_rotate) 
             # TODO: 3D model drawing
             for model in self._3dlist:
@@ -121,10 +118,11 @@ class Render(base.Task):
             self.fps=clock.get_fps()
             print self.fps
             "To be deleted later on, examples"
-            self._angle += 5
+            #self._angle += 0.5
             # if self._xpos > 3 :
             #    self._xpos = -3
             # self._xpos += 0.05
+            print "angle=",self._angle
             
     def name(self):
         """

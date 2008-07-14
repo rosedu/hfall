@@ -62,11 +62,16 @@ class OGL:
                      clearcolor[3])
         glShadeModel(GL_SMOOTH)
         glClearDepth(1.0)
-        glEnable(GL_DEPTH_TEST)
+        #glEnable(GL_DEPTH_TEST)
+  	
+  	#glDepthFunc(GL_LEQUAL)
+  	#glBlendFunc(GL_SRC_ALPHA, GL_ONE)
+  	#glEnable(GL_BLEND)
+  	#glAlphaFunc(GL_GREATER,0.1)
+  	glEnable(GL_ALPHA_TEST)
   	glEnable(GL_TEXTURE_2D)
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_COLOR_ARRAY)
-        glDepthFunc(GL_LEQUAL)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
         hfk.log.msg('Open GL started')
 

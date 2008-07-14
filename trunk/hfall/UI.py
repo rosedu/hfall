@@ -24,17 +24,43 @@ global_UI = None
 
 def on_key_press(symbol,modifiers):
 	print("Key was pressed!")
+	if global_UI.input_handler == "Engine":
+                engine_get(symbol,modifiers)
+        elif global_UI.input_handler == "Console":
+                console_get(symbol,modifiers)
+        else:
+                game_get(symbol,modifiers)
+
+def engine_get(symbol,modifiers):
 	if symbol==window.key.ESCAPE:
 		global_render.w.has_exit = True
 	elif symbol==window.key.U:
-		global_UI.unload_full_text()
 		global_UI.unload_full_2DUI()
 	elif symbol==window.key.L:
-		global_UI.load_full_text()
 		global_UI.load_full_2DUI()
 	elif symbol==window.key.A:
 		global_render.ogl.translate(Mathbase.Vector3D(0,-1,-1))
+        elif symbol==window.key.QUOTELEFT:
+                global_UI.switch_focus()
+        elif symbol==window.key.UP:
+                global_render._angle+=1
+        elif symbol==window.key.DOWN:
+                global_render._angle-=1
+        elif symbol==window.key.W:
+                global_render.transz+=1
+        elif symbol==window.key.S:
+                global_render.transz-=1
+                
 		
+def console_get(symbol,modifiers):
+        if symbol==window.key.QUOTELEFT:
+                global_UI.switch_focus()
+        elif symbol==window.key.ESCAPE:
+                global_UI.switch_focus()
+
+
+def game_get(symbol,modifiers):
+        pass
 
 class UI(Task):
   	""" 
@@ -49,7 +75,15 @@ class UI(Task):
 	_width_pt = 0
 	_height_pt = 0
 	_2Dlist = []
-	_textlist = []
+	_frozen = False
+	input_handler = ""
+	path_console_gr = "console.bmp"
+	path_engine_gr = "engine.bmp"
+	path_game_gr = ""
+	console_sprite = None
+	engine_sprite = None
+	game_sprite = None
+	current_sprite = None
 
 	def x_topt(self,x):
 		return x*self._width_pt/self.surface.width - self._width_pt/2	
@@ -72,42 +106,44 @@ class UI(Task):
 		self._width_pt = 9.2 
 
 		#Load some rectangles/text
-		self.testing()
-
-		self.load_full_2DUI()
-  		self.load_full_text()
+		self.testing()	
 
 		#Load key events
   		self.surface.w.on_key_press = on_key_press
-		
+
+		#Control goes to engine
+  		self.console_sprite = Sprite(3.3,-3.3,1,0.5,self.path_console_gr)
+  		self.engine_sprite = Sprite(3.3,-3.3,1,0.5,self.path_engine_gr)
+  		self.load_2DUI(self.engine_sprite)
+  		self.current_sprite = self.engine_sprite
+  		self.switch_focus("Engine")
+
+  		self.load_full_2DUI()
+  		
 	def load_full_2DUI(self):
+                if self._frozen == False:
+                        return
 	  	for graphic in self._2Dlist:
 			self.surface.add2D(graphic)
+		self._frozen = False
 	
 	def unload_full_2DUI(self):
+                if self._frozen == True:
+                        return
 	  	for graphic in self._2Dlist:
 			self.surface.rem2D(graphic)
-	
-	def load_full_text(self):
-  		for text in self._textlist:
-			self.surface.addtext(text)
-
-  	def unload_full_text(self):
-  		for text in self._textlist:
-			self.surface.remtext(text)
+		self._frozen = True
 	
 	def load_2DUI(self,x):
+                if self._frozen == False:
+                        self.surface.add2D(x)
   		self._2Dlist.append(x)
 
   	def unload_2DUI(self,x):
+                if self._frozen == False:
+                        self.surface.rem2D(x)
   		self._2Dlist.remove(x)
-	
-	def load_text(self,x):
-	  	self._textlist.append(x)
-	
-	def unload_text(self,x):
-	  	self._textlist.remove(x)
-
+                
 
 	def start(self,kernel):
 	  	pass
@@ -122,12 +158,48 @@ class UI(Task):
 	  	pass
 
 	def run(self,kernel):
-	  	#Render text
 	  	pass
 	
 	def name(self):
-	  	return "UI Process" 
-	
+	  	return "UI Process"
+
+	def switch_focus(self,target=""):
+                self.unload_2DUI(self.current_sprite)
+                print "Old: "+ self.input_handler
+                if target=="Engine":
+                        self.input_handler = "Engine"
+                elif target=="Game":
+                        self.input_handler = "Game"
+                elif target=="Console":
+                        self.input_handler = "Console"
+                elif target!="":
+                        pass
+                        kernel.log.error("Unknown focus switch parameter: " + \
+                                        target)
+                elif self.input_handler == "Console":
+                        self.input_handler = "Engine"
+                elif self.input_handler == "Engine":
+                        self.input_handler = "Console"
+                else:
+                        kernel.log.error("Warning - unsafe focus switch" + \
+                                         " operation not completed.")
+                        pass
+                print "New: " + self.input_handler
+                
+                if self.input_handler=="Engine":
+                        self.current_sprite = self.engine_sprite
+                        self.load_2DUI(self.current_sprite)
+                elif self.input_handler=="Console":
+                        self.current_sprite = self.console_sprite
+                        self.load_2DUI(self.current_sprite)
+                elif self.game_sprite != None:
+                        self.current_sprite = self.game_sprite
+                        self.load_2DUI(self.current_sprite)
+                        
+                        
+                        
+                
+                        
 	def testing(self):
                 """
 		self.console_bck = Sprite(self.x_topt(0),self.y_topt(140),\
@@ -136,12 +208,5 @@ class UI(Task):
 		self._2Dlist.append(self.console_bck)
                 """
   		txt = Sprite(0,0,2,2,"test.bmp")
-		self._2Dlist.append(txt)
-		txt2 = Sprite(-3,-3,2,2,"test2.bmp")
-		self._2Dlist.append(txt2)
-		txt3 = Sprite(-2,0,1,1,"test3.bmp")
-		self._2Dlist.append(txt3)
-		txt4 = Sprite(1,-2.5,1,1,"test4.bmp")
-		self._2Dlist.append(txt4)
-		txt5 = Sprite(3,-2.5,1,1,"test5.bmp")
-		self._2Dlist.append(txt5)
+		self.load_2DUI(txt)
+		

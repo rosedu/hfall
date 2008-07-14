@@ -23,7 +23,14 @@ class Bitmap:
 			data - pixel table (array)
   			size - pixel table size
 			bytesize - pixel table size in bytes
+		Private constants:
+                        _DEFAULT_RED  - used for transparency 
+                        _DEFAULT_GREEN- used for transparency
+                        _DEFAULT_BLUE - duh
   	"""
+  	_DEFAULT_RED = 255
+  	_DEFAULT_GREEN = 0
+  	_DEFAULT_BLUE = 255
   	
   	def __init__(self,file_path,format=BMP_RGB,default_alpha=255):
 	  	bmp_file = open(file_path,"r")
@@ -61,7 +68,13 @@ class Bitmap:
 				self.data[index+1] = pixel[1]
 				self.data[index] = pixel[2]
 				self.data[index+3] = default_alpha
-                                #print "%d %d %d %d" % (pixel[0],pixel[1],pixel[2],default_alpha)
+				if pixel[0]==self._DEFAULT_BLUE and \
+                                   pixel[2]==self._DEFAULT_RED:
+                                        self.data[index+3] = 0
+                                """print "%d %d %d %d" % (self.data[index], \
+                                        self.data[index+1], self.data[index+2],\
+                                        self.data[index+3])
+"""
 				index+=4
 		if format==BMP_RGBA:
 			tmp_string = bmp_file_contents[54:]
