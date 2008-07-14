@@ -51,7 +51,7 @@ class drawer(hfall.base.Task):
 	ptexture_ids = (GLuint * TEX_NO)(*texture_ids)
 	glGenTextures(TEX_NO,ptexture_ids)
 
-  	bitmap = hfall.Bitmap.Bitmap("tex.bmp")
+  	bitmap = hfall.Bitmap.Bitmap("tex1.bmp")
         data_list = bitmap.data.tolist()
 	pdata = (GLubyte * len(data_list))(*data_list)
 	    
