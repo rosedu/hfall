@@ -61,6 +61,7 @@ class Bitmap:
 				self.data[index+1] = pixel[1]
 				self.data[index] = pixel[2]
 				self.data[index+3] = default_alpha
+                                #print "%d %d %d %d" % (pixel[0],pixel[1],pixel[2],default_alpha)
 				index+=4
 		if format==BMP_RGBA:
 			tmp_string = bmp_file_contents[54:]

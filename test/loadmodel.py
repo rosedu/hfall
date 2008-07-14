@@ -3,6 +3,7 @@ import pyglet
 from pyglet.gl import *
 sys.path.insert(0, "../trunk")
 import ctypes
+import array
 import hfall.base
 import hfall.OGLbase
 # import hfall.UI
@@ -11,6 +12,7 @@ import hfall.Vertex
 import hfall.Mesh
 import hfall.Model
 import hfall.ModelLoader
+import hfall.Bitmap
 # from hfall.Console import Console
 from hfall.base import kernel as hfk
 
@@ -44,10 +46,26 @@ class drawer(hfall.base.Task):
         self.model = Loader.getModel()
         #print self.model.meshes[0].vertices
         #print self.model.meshes[0].faces
+        TEX_NO = 16
+	texture_ids = array.array('L',range(TEX_NO))
+	ptexture_ids = (GLuint * TEX_NO)(*texture_ids)
+	glGenTextures(TEX_NO,ptexture_ids)
+
+  	bitmap = hfall.Bitmap.Bitmap("test.bmp")
+        data_list = bitmap.data.tolist()
+	pdata = (GLubyte * len(data_list))(*data_list)
+	    
+	glBindTexture(GL_TEXTURE_2D,ptexture_ids[0])
+  	glTexImage2D(GL_TEXTURE_2D,0,4,bitmap.width,\
+		    bitmap.height,0,GL_RGBA,GL_UNSIGNED_BYTE,pdata)
+ 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR)
+ 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR)
+ 	          
         for i in range(0,len(self.model.meshes)):
             self.model.meshes[i].vertices = (GLfloat * len(self.model.meshes[i].vertices))(*self.model.meshes[i].vertices)
             self.model.meshes[i].faces = (GLuint * len(self.model.meshes[i].faces))(*self.model.meshes[i].faces)
             self.model.meshes[i].texels = (GLfloat * len(self.model.meshes[i].texels))(*self.model.meshes[i].texels)
+            self.model.meshes[i].texture = ptexture_ids[i]
             print self.model.meshes[i].materials
 
         # self.model = hfall.Model.Model(self.mesh, None)
