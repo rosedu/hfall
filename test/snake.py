@@ -4,6 +4,7 @@ sys.path.insert(0, "../trunk")
 import hfall.base
 import hfall.OGLbase
 import hfall.UI
+from hfall.Sprite import Sprite
 import hfall.Render
 from hfall.UI import UI
 from hfall.Console import Console
@@ -16,14 +17,14 @@ class drawer(hfall.base.Task):
     """
     def __init__(self):
         self._maxframe=100
-        self._model=hfall.UI.Model2D(-1,-1, 2,2, color=(0.0,0.5,1.0));
-        self._model2=hfall.UI.Model2D(1.3,-1,2,2, color=(1,1,0.4));
+        #self._model=Sprite(-1,-1, 2, 2, None,color=(0.0,0.5,1.0));
+        #self._model2=Sprite(1.3,-1,2, 2, None,color=(1,1,0.4));
         pass
 
     def start(self, kernel):
         kernel.log.msg("Drawer started");
-        render.add2D(self._model)
-        render.add2D(self._model2)
+        #render.add2D(self._model)
+        #render.add2D(self._model2)
 
     def stop(self, kernel):
         pass

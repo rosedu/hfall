@@ -48,6 +48,8 @@ class Render(base.Task):
 	self.transx = posx;
 	self.transy = posy;
         self.transz = posz;
+	self.width = width
+	self.height = height
 
         "To be deleted later on, examples"
         self._angle = 0;
@@ -56,9 +58,9 @@ class Render(base.Task):
             # TODO: add other possible config via another parameter
             config = Config(sample_buffers = 1, samples = 4, depth_size = 16,\
                           double_buffer = True, fullscreen = False)
-            self.w = window.Window(resizable = True, fullscreen = True, config=config)
+            self.w = window.Window(resizable = True, fullscreen = False, config=config)
         except window.NoSuchConfigException:
-            self.w = window.Window(resizable = True, fullscreen = True)
+            self.w = window.Window(resizable = True, fullscreen = False)
         self.ogl = OGLbase.OGL(self.w, width, height, near, far, clearcolor)
                 
     def start(self, kernel):
@@ -92,14 +94,6 @@ class Render(base.Task):
             self.w.dispatch_events()
 
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-  
-  	    #ALIEN CODE - might damage program
-  	    #glMatrixMode(GL_PROJECTION)
-  	    #widthRatio = self.w.width / self.w.height
-  	    #gluOrtho2D(-widthRatio,widthRatio,-1,1)
-	
-	    #END
-
             glLoadIdentity()
             
             # TODO: camera manipulation
