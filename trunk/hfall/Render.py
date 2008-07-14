@@ -121,7 +121,7 @@ class Render(base.Task):
             self.fps=clock.get_fps()
             print self.fps
             "To be deleted later on, examples"
-            self._angle += 0.5
+            self._angle += 5
             # if self._xpos > 3 :
             #    self._xpos = -3
             # self._xpos += 0.05

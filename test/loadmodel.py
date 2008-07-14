@@ -40,9 +40,10 @@ class drawer(hfall.base.Task):
         # pfaces = (GLuint * len(faces))(*faces)
         # self._faces = pfaces
         # self.mesh.append(hfall.Mesh.Mesh(self._faces, self._vertexes, None, None, None, GL_TRIANGLES))
-
+        print sys.argv[1]
+        print sys.argv[2]
         Loader = hfall.ModelLoader.ModelLoader()
-        Loader.loadModel("test.3ds")
+        Loader.loadModel(sys.argv[1])
         self.model = Loader.getModel()
         
         #print self.model.meshes[0].vertices
@@ -52,7 +53,7 @@ class drawer(hfall.base.Task):
 	ptexture_ids = (GLuint * TEX_NO)(*texture_ids)
 	glGenTextures(TEX_NO,ptexture_ids)
 
-  	bitmap = hfall.Bitmap.Bitmap("creature.bmp")
+  	bitmap = hfall.Bitmap.Bitmap(sys.argv[2])
         data_list = bitmap.data.tolist()
 	pdata = (GLubyte * len(data_list))(*data_list)
 	    
