@@ -61,6 +61,7 @@ class OGL:
         glShadeModel(GL_SMOOTH)
         glClearDepth(1.0)
         glEnable(GL_DEPTH_TEST)
+  	glEnable(GL_TEXTURE_2D)
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_COLOR_ARRAY)
         glDepthFunc(GL_LEQUAL)
@@ -145,41 +146,56 @@ class OGL:
         """
         glLoadIdentity()
         glTranslatef(0.0,0.0,-6.0);
-        glBegin(GL_QUADS)
-        if len(model.color) == 3:
-            glColor3f(model.color[0], model.color[1], model.color[2])
-        else:
-            glColor4f(model.color[0], model.color[1], model.color[2], \
-                      model.color[3])
-        glVertex2f(model.x, model.y)
-        glVertex2f(model.xx, model.y)
-        glVertex2f(model.xx, model.yy)
-        glVertex2f(model.x, model.yy)
-        glEnd()      
+  	if model.is_textured==True:
+		glBindTexture(GL_TEXTURE_2D,model.texture_ids[0])
+  		glTexImage2D(GL_TEXTURE_2D,0,4,model.pixelwidth,\
+		    model.pixelheight,0,GL_RGBA,GL_UNSIGNED_BYTE,model.data)
+ 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR)
+ 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR)
+        	glBegin(GL_QUADS)
+  		glTexCoord2f(0.0,0.0)
+        	glVertex2f(model.x, model.y)
+  		glTexCoord2f(1.0,0.0)
+        	glVertex2f(model.xx, model.y)
+  		glTexCoord2f(1.0,1.0)
+        	glVertex2f(model.xx, model.yy)
+  		glTexCoord2f(0.0,1.0)
+        	glVertex2f(model.x, model.yy)
+  		glEnd()
+  	else:
+        	if len(model.color) == 3:
+            		glColor3f(model.color[0], model.color[1], model.color[2])
+        	else:
+            		glColor4f(model.color[0], model.color[1], model.color[2], \
+              	        	model.color[3])
+		glBegin(GL_QUADS)
+		glVertex2f(model.x, model.y)
+  		glVertex2f(model.xx,model.y)
+  		glVertex2f(model.xx, model.yy)
+  		glVertex2f(model.x, model.yy)
+        	glEnd()      
 
     def RenderMesh(self, mesh):
         glPushMatrix()
         #glLoadIdentity()
         colors = ((len(mesh.vertices) // 2) + 1)* [1, 1, 1, 0, 1, 0]
         mesh.colors = (GLfloat * len(colors))(*colors) 
-        if False:#(mesh.materials == []):
+        # if (mesh.materials == []):
             # selects the color that will be used if
             # no material was given
-            glColorPointer(3, GL_FLOAT, 0, mesh.colors)
-        # print mesh.materials[0].material.texture_map.name
-        
+        glColorPointer(3, GL_FLOAT, 0, mesh.colors)
+        """
         else:
-            im = open("tex.bmp")
-##	    try:
-##		# get image meta-data (dimensions) and data
-##		# ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBA", 0, -1)
-##            except SystemError:
-##		# has no alpha channel, synthesize one, see the
-##		# texture module for more realistic handling
-##		ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBX", 0, -1)
+            im = open(mesh.materials)
+	    try:
+		# get image meta-data (dimensions) and data
+		ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBA", 0, -1)
+            except SystemError:
+		# has no alpha channel, synthesize one, see the
+		# texture module for more realistic handling
+		ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBX", 0, -1)
             # generate a texture ID
-            ID = 0
-            glGenTextures(1, ID)
+            ID = glGenTextures(1)
             # make it current
             glBindTexture(GL_TEXTURE_2D, ID)
             glPixelStorei(GL_UNPACK_ALIGNMENT,1)
@@ -193,12 +209,39 @@ class OGL:
             # re-select our texture, could use other generated textures
             # if we had generated them earlier...
             glBindTexture(GL_TEXTURE_2D, ID)
-            glTexCoordPointer(2, GL_FLOAT, 0, mesh.texels) 
-            
-        #"""
+
+            glBegin(GL_QUADS);
+            glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0,  1.0);
+            glTexCoord2f(1.0, 0.0); glVertex3f( 1.0, -1.0,  1.0);
+            glTexCoord2f(1.0, 1.0); glVertex3f( 1.0,  1.0,  1.0);
+            glTexCoord2f(0.0, 1.0); glVertex3f(-1.0,  1.0,  1.0);
+            glTexCoord2f(1.0, 0.0); glVertex3f(-1.0, -1.0, -1.0);
+            glTexCoord2f(1.0, 1.0); glVertex3f(-1.0,  1.0, -1.0);
+            glTexCoord2f(0.0, 1.0); glVertex3f( 1.0,  1.0, -1.0);
+            glTexCoord2f(0.0, 0.0); glVertex3f( 1.0, -1.0, -1.0);
+
+            glTexCoord2f(0.0, 1.0); glVertex3f(-1.0,  1.0, -1.0);
+            glTexCoord2f(0.0, 0.0); glVertex3f(-1.0,  1.0,  1.0);
+            glTexCoord2f(1.0, 0.0); glVertex3f( 1.0,  1.0,  1.0);
+            glTexCoord2f(1.0, 1.0); glVertex3f( 1.0,  1.0, -1.0);
+
+            glTexCoord2f(1.0, 1.0); glVertex3f(-1.0, -1.0, -1.0);
+            glTexCoord2f(0.0, 1.0); glVertex3f( 1.0, -1.0, -1.0);
+            glTexCoord2f(0.0, 0.0); glVertex3f( 1.0, -1.0,  1.0);
+            glTexCoord2f(1.0, 0.0); glVertex3f(-1.0, -1.0,  1.0);
+
+            glTexCoord2f(1.0, 0.0); glVertex3f( 1.0, -1.0, -1.0);
+            glTexCoord2f(1.0, 1.0); glVertex3f( 1.0,  1.0, -1.0);
+            glTexCoord2f(0.0, 1.0); glVertex3f( 1.0,  1.0,  1.0);
+            glTexCoord2f(0.0, 0.0); glVertex3f( 1.0, -1.0,  1.0);
+
+            glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, -1.0);
+            glTexCoord2f(1.0, 0.0); glVertex3f(-1.0, -1.0,  1.0);
+            glTexCoord2f(1.0, 1.0); glVertex3f(-1.0,  1.0,  1.0);
+            glTexCoord2f(0.0, 1.0); glVertex3f(-1.0,  1.0, -1.0);
+            glEnd()
+        """
         
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glEnableClientState(GL_COLOR_ARRAY)
         # We send the actual vertices to OpenGL so that it may render them
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices)
         # We draw that actual faces that form the model

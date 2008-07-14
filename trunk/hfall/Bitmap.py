@@ -25,7 +25,7 @@ class Bitmap:
 			bytesize - pixel table size in bytes
   	"""
   	
-  	def __init__(self,file_path,format,default_alpha=255):
+  	def __init__(self,file_path,format=BMP_RGB,default_alpha=255):
 	  	bmp_file = open(file_path,"r")
 		if (bmp_file==None):
 	  		return None 
