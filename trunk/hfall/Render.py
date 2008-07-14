@@ -58,9 +58,9 @@ class Render(base.Task):
             # TODO: add other possible config via another parameter
             config = Config(sample_buffers = 1, samples = 4, depth_size = 16,\
                           double_buffer = True)
-            self.w = window.Window(resizable = True, fullscreen = False, config=config)
+            self.w = window.Window(resizable = True, fullscreen = True, config=config)
         except window.NoSuchConfigException:
-            self.w = window.Window(resizable = True, fullscreen = False)
+            self.w = window.Window(resizable = True, fullscreen = True)
         self.ogl = OGLbase.OGL(self.w, width, height, near, far, clearcolor)
                 
     def start(self, kernel):
@@ -101,8 +101,8 @@ class Render(base.Task):
             point_to_translate = Mathbase.Vector3D(self.transx,\
                                 self.transy, self.transz)
             self.ogl.translate( point_to_translate)
-            # direction_to_rotate = Mathbase.Vector3D(0, 1 ,0)
-            # self.ogl.rotate(self._angle, direction_to_rotate) 
+            direction_to_rotate = Mathbase.Vector3D(0, 1 ,0)
+            self.ogl.rotate(self._angle, direction_to_rotate) 
             # TODO: 3D model drawing
             for model in self._3dlist:
                 self.ogl.Render3D(model)

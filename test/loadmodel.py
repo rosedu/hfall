@@ -51,7 +51,7 @@ class drawer(hfall.base.Task):
 	ptexture_ids = (GLuint * TEX_NO)(*texture_ids)
 	glGenTextures(TEX_NO,ptexture_ids)
 
-  	bitmap = hfall.Bitmap.Bitmap("test.bmp")
+  	bitmap = hfall.Bitmap.Bitmap("tex.bmp")
         data_list = bitmap.data.tolist()
 	pdata = (GLubyte * len(data_list))(*data_list)
 	    
@@ -89,7 +89,7 @@ class drawer(hfall.base.Task):
     def name(self):
         return "drawer"
 
-render = hfall.Render.Render(800, 600, posx = 0, posy = 0, posz = -70)
+render = hfall.Render.Render(800, 600, posx = 0, posy = 0, posz = -50)
 hfk.insert(drawer())
 hfk.insert(render)
 # hfk.insert(Console(render))
