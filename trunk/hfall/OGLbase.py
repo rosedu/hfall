@@ -162,22 +162,24 @@ class OGL:
         #glLoadIdentity()
         colors = ((len(mesh.vertices) // 2) + 1)* [1, 1, 1, 0, 1, 0]
         mesh.colors = (GLfloat * len(colors))(*colors) 
-        # if (mesh.materials == []):
+        if False:#(mesh.materials == []):
             # selects the color that will be used if
             # no material was given
-        glColorPointer(3, GL_FLOAT, 0, mesh.colors)
-        """
+            glColorPointer(3, GL_FLOAT, 0, mesh.colors)
+        # print mesh.materials[0].material.texture_map.name
+        
         else:
-            im = open(mesh.materials[0].material.texture_map.name)
-	    try:
-		# get image meta-data (dimensions) and data
-		ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBA", 0, -1)
-            except SystemError:
-		# has no alpha channel, synthesize one, see the
-		# texture module for more realistic handling
-		ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBX", 0, -1)
+            im = open("tex.bmp")
+##	    try:
+##		# get image meta-data (dimensions) and data
+##		# ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBA", 0, -1)
+##            except SystemError:
+##		# has no alpha channel, synthesize one, see the
+##		# texture module for more realistic handling
+##		ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBX", 0, -1)
             # generate a texture ID
-            ID = glGenTextures(1)
+            ID = 0
+            glGenTextures(1, ID)
             # make it current
             glBindTexture(GL_TEXTURE_2D, ID)
             glPixelStorei(GL_UNPACK_ALIGNMENT,1)
@@ -193,7 +195,7 @@ class OGL:
             glBindTexture(GL_TEXTURE_2D, ID)
             glTexCoordPointer(2, GL_FLOAT, 0, mesh.texels) 
             
-        """
+        #"""
         
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_COLOR_ARRAY)
