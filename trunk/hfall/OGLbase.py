@@ -180,13 +180,13 @@ class OGL:
     def RenderMesh(self, mesh):
         glPushMatrix()
         #glLoadIdentity()
-        # glEnableClientState(GL_VERTEX_ARRAY)
-        # glEnableClientState(GL_COLOR_ARRAY)
-        # glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-        colors = ((len(mesh.vertices) // 2) + 1)* [1, 1, 1, 0, 1, 0]
+        glEnableClientState(GL_VERTEX_ARRAY)
+        glEnableClientState(GL_COLOR_ARRAY)
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+        colors = ((len(mesh.vertices) // 2) + 1)* [1, 1, 1, 1, 1, 1]
         mesh.colors = (GLfloat * len(colors))(*colors)
         glColorPointer(3, GL_FLOAT, 0, mesh.colors)
-        """
+        
         if (mesh.materials == []):
             # selects the color that will be used if
             # no material was given
@@ -194,14 +194,11 @@ class OGL:
 
         
         else:
-            # glEnable(GL_TEXTURE_2D)
-            # glBindTexture(GL_TEXTURE_2D, mesh.texture)
-            # glTexCoordPointer(2, GL_FLOAT, 0, mesh.texels)
+            glEnable(GL_TEXTURE_2D)
+            glBindTexture(GL_TEXTURE_2D, mesh.texture)
+            glTexCoordPointer(2, GL_FLOAT, 0, mesh.texels)
 
-        """
 
-        print len(mesh.vertices)
-        print len(mesh.faces)
         # We send the actual vertices to OpenGL so that it may render them
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices)
         # We draw that actual faces that form the model
