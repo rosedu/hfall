@@ -47,6 +47,8 @@ class drawer(hfall.base.Task):
         for i in range(0,len(self.model.meshes)):
             self.model.meshes[i].vertices = (GLfloat * len(self.model.meshes[i].vertices))(*self.model.meshes[i].vertices)
             self.model.meshes[i].faces = (GLuint * len(self.model.meshes[i].faces))(*self.model.meshes[i].faces)
+            self.model.meshes[i].texels = (GLfloat * len(self.model.meshes[i].texels))(*self.model.meshes[i].texels)
+            print self.model.meshes[i].materials
 
         # self.model = hfall.Model.Model(self.mesh, None)
         render.add3D(self.model)

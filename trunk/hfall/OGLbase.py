@@ -168,7 +168,7 @@ class OGL:
         glColorPointer(3, GL_FLOAT, 0, mesh.colors)
         """
         else:
-            im = open(mesh.materials)
+            im = open(mesh.materials[0].material.texture_map.name)
 	    try:
 		# get image meta-data (dimensions) and data
 		ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBA", 0, -1)
@@ -191,39 +191,12 @@ class OGL:
             # re-select our texture, could use other generated textures
             # if we had generated them earlier...
             glBindTexture(GL_TEXTURE_2D, ID)
-
-            glBegin(GL_QUADS);
-            glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0,  1.0);
-            glTexCoord2f(1.0, 0.0); glVertex3f( 1.0, -1.0,  1.0);
-            glTexCoord2f(1.0, 1.0); glVertex3f( 1.0,  1.0,  1.0);
-            glTexCoord2f(0.0, 1.0); glVertex3f(-1.0,  1.0,  1.0);
-            glTexCoord2f(1.0, 0.0); glVertex3f(-1.0, -1.0, -1.0);
-            glTexCoord2f(1.0, 1.0); glVertex3f(-1.0,  1.0, -1.0);
-            glTexCoord2f(0.0, 1.0); glVertex3f( 1.0,  1.0, -1.0);
-            glTexCoord2f(0.0, 0.0); glVertex3f( 1.0, -1.0, -1.0);
-
-            glTexCoord2f(0.0, 1.0); glVertex3f(-1.0,  1.0, -1.0);
-            glTexCoord2f(0.0, 0.0); glVertex3f(-1.0,  1.0,  1.0);
-            glTexCoord2f(1.0, 0.0); glVertex3f( 1.0,  1.0,  1.0);
-            glTexCoord2f(1.0, 1.0); glVertex3f( 1.0,  1.0, -1.0);
-
-            glTexCoord2f(1.0, 1.0); glVertex3f(-1.0, -1.0, -1.0);
-            glTexCoord2f(0.0, 1.0); glVertex3f( 1.0, -1.0, -1.0);
-            glTexCoord2f(0.0, 0.0); glVertex3f( 1.0, -1.0,  1.0);
-            glTexCoord2f(1.0, 0.0); glVertex3f(-1.0, -1.0,  1.0);
-
-            glTexCoord2f(1.0, 0.0); glVertex3f( 1.0, -1.0, -1.0);
-            glTexCoord2f(1.0, 1.0); glVertex3f( 1.0,  1.0, -1.0);
-            glTexCoord2f(0.0, 1.0); glVertex3f( 1.0,  1.0,  1.0);
-            glTexCoord2f(0.0, 0.0); glVertex3f( 1.0, -1.0,  1.0);
-
-            glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, -1.0);
-            glTexCoord2f(1.0, 0.0); glVertex3f(-1.0, -1.0,  1.0);
-            glTexCoord2f(1.0, 1.0); glVertex3f(-1.0,  1.0,  1.0);
-            glTexCoord2f(0.0, 1.0); glVertex3f(-1.0,  1.0, -1.0);
-            glEnd()
+            glTexCoordPointer(2, GL_FLOAT, 0, mesh.texels) 
+            
         """
         
+        glEnableClientState(GL_VERTEX_ARRAY)
+        glEnableClientState(GL_COLOR_ARRAY)
         # We send the actual vertices to OpenGL so that it may render them
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices)
         # We draw that actual faces that form the model
