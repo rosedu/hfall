@@ -5,13 +5,13 @@ sys.path.insert(0, "../trunk")
 import ctypes
 import hfall.base
 import hfall.OGLbase
-import hfall.UI
+# import hfall.UI
 import hfall.Render
 import hfall.Vertex
 import hfall.Mesh
 import hfall.Model
 import hfall.ModelLoader
-from hfall.Console import Console
+# from hfall.Console import Console
 from hfall.base import kernel as hfk
 
 class drawer(hfall.base.Task):
@@ -69,7 +69,7 @@ class drawer(hfall.base.Task):
     def name(self):
         return "drawer"
 
-render = hfall.Render.Render(800, 600, posx = 0, posy = 0, posz = -1000)
+render = hfall.Render.Render(800, 600, posx = 0, posy = 0, posz = -1700)
 hfk.insert(drawer())
 hfk.insert(render)
 # hfk.insert(Console(render))
