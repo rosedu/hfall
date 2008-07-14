@@ -40,8 +40,8 @@ class drawer(hfall.base.Task):
         # pfaces = (GLuint * len(faces))(*faces)
         # self._faces = pfaces
         # self.mesh.append(hfall.Mesh.Mesh(self._faces, self._vertexes, None, None, None, GL_TRIANGLES))
-        print sys.argv[1]
-        print sys.argv[2]
+        print "Model:", sys.argv[1]
+        print "Texture:", sys.argv[2]
         Loader = hfall.ModelLoader.ModelLoader()
         Loader.loadModel(sys.argv[1])
         self.model = Loader.getModel()
@@ -91,7 +91,7 @@ class drawer(hfall.base.Task):
     def name(self):
         return "drawer"
 
-render = hfall.Render.Render(800, 600, posx = 0, posy = -1.5, posz = -5)
+render = hfall.Render.Render(800, 600, posx = 0, posy = -1.5, posz = -50)
 hfk.insert(drawer())
 hfk.insert(render)
 # hfk.insert(Console(render))
