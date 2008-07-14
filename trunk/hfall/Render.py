@@ -148,13 +148,6 @@ class Render(base.Task):
         in a way that lets all model with the same texture to be grouped.
         
         """
-        for mesh in model.meshes:
-            if ((mesh.materials == [] or mesh.materials == None)\
-               and mesh.colors == None):
-                # if we have no texture or color specified we use the
-                # default white & white
-                colors = ((len(mesh.vertices) // 2) + 1)* [1, 1, 1, 0, 1, 0]
-                mesh.colors = (GLfloat * len(colors))(*colors) 
         self._3dlist.append(model)
 
     def addtext(self,text):

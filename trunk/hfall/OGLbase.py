@@ -180,12 +180,13 @@ class OGL:
     def RenderMesh(self, mesh):
         glPushMatrix()
         #glLoadIdentity()
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glEnableClientState(GL_COLOR_ARRAY)
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-        colors = ((len(mesh.vertices) // 2) + 1)* [1, 1, 1, 1, 1, 1]
+        # glEnableClientState(GL_VERTEX_ARRAY)
+        # glEnableClientState(GL_COLOR_ARRAY)
+        # glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+        colors = ((len(mesh.vertices) // 2) + 1)* [1, 1, 1, 0, 1, 0]
         mesh.colors = (GLfloat * len(colors))(*colors)
         glColorPointer(3, GL_FLOAT, 0, mesh.colors)
+        """
         if (mesh.materials == []):
             # selects the color that will be used if
             # no material was given
@@ -193,40 +194,18 @@ class OGL:
 
         
         else:
-            """
-            im = open(mesh.materials)
-	    try:
-		# get image meta-data (dimensions) and data
-		ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBA", 0, -1)
-            except SystemError:
-		# has no alpha channel, synthesize one, see the
-		# texture module for more realistic handling
-		ix, iy, image = im.size[0], im.size[1], im.tostring("raw", "RGBX", 0, -1)
-            # generate a texture ID
-            ID = glGenTextures(1)
-            # make it current
-            glBindTexture(GL_TEXTURE_2D, ID)
-            glPixelStorei(GL_UNPACK_ALIGNMENT,1)
-            # copy the texture into the current texture ID
-            glTexImage2D(GL_TEXTURE_2D, 0, 3, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, image)
-		
-            glEnable(GL_TEXTURE_2D)
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
-            # re-select our texture, could use other generated textures
-            # if we had generated them earlier...
-            glBindTexture(GL_TEXTURE_2D, ID)"""
-            glEnable(GL_TEXTURE_2D)
-            glBindTexture(GL_TEXTURE_2D, mesh.texture)
-            glTexCoordPointer(2, GL_FLOAT, 0, mesh.texels)
+            # glEnable(GL_TEXTURE_2D)
+            # glBindTexture(GL_TEXTURE_2D, mesh.texture)
+            # glTexCoordPointer(2, GL_FLOAT, 0, mesh.texels)
 
-        #"""
+        """
 
+        print len(mesh.vertices)
+        print len(mesh.faces)
         # We send the actual vertices to OpenGL so that it may render them
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices)
         # We draw that actual faces that form the model
-        glDrawElements(mesh.mode, len(mesh.faces), GL_UNSIGNED_INT, mesh.faces)
+        glDrawElements(GL_TRIANGLES, len(mesh.faces), GL_UNSIGNED_INT, mesh.faces)
         # We extract the perspective matrix that we used
         # so that the new mesh is built on its own matrix
         glPopMatrix()

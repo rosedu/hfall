@@ -44,6 +44,7 @@ class drawer(hfall.base.Task):
         Loader = hfall.ModelLoader.ModelLoader()
         Loader.loadModel("test.3ds")
         self.model = Loader.getModel()
+        """
         #print self.model.meshes[0].vertices
         #print self.model.meshes[0].faces
         TEX_NO = 16
@@ -51,7 +52,7 @@ class drawer(hfall.base.Task):
 	ptexture_ids = (GLuint * TEX_NO)(*texture_ids)
 	glGenTextures(TEX_NO,ptexture_ids)
 
-  	bitmap = hfall.Bitmap.Bitmap("tex1.bmp")
+  	bitmap = hfall.Bitmap.Bitmap("test.bmp")
         data_list = bitmap.data.tolist()
 	pdata = (GLubyte * len(data_list))(*data_list)
 	    
@@ -60,13 +61,13 @@ class drawer(hfall.base.Task):
 		    bitmap.height,0,GL_RGBA,GL_UNSIGNED_BYTE,pdata)
  	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR)
  	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR)
- 	          
+ 	""" 
         for i in range(0,len(self.model.meshes)):
             self.model.meshes[i].vertices = (GLfloat * len(self.model.meshes[i].vertices))(*self.model.meshes[i].vertices)
             self.model.meshes[i].faces = (GLuint * len(self.model.meshes[i].faces))(*self.model.meshes[i].faces)
-            self.model.meshes[i].texels = (GLfloat * len(self.model.meshes[i].texels))(*self.model.meshes[i].texels)
-            self.model.meshes[i].texture = ptexture_ids[i]
-            print self.model.meshes[i].materials
+            # self.model.meshes[i].texels = (GLfloat * len(self.model.meshes[i].texels))(*self.model.meshes[i].texels)
+            # self.model.meshes[i].texture = ptexture_ids[i]
+            # print self.model.meshes[i].materials
 
         # self.model = hfall.Model.Model(self.mesh, None)
         render.add3D(self.model)
@@ -89,7 +90,7 @@ class drawer(hfall.base.Task):
     def name(self):
         return "drawer"
 
-render = hfall.Render.Render(800, 600, posx = 0, posy = 0, posz = -50)
+render = hfall.Render.Render(800, 600, posx = 0, posy = 0, posz = -10)
 hfk.insert(drawer())
 hfk.insert(render)
 # hfk.insert(Console(render))
