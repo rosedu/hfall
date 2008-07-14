@@ -9,6 +9,7 @@ __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
 from base import Task
 from pyglet import window
+from pyglet.window import *
 from Console import Console
 from Sprite import Sprite
 from pyglet import font 
@@ -42,6 +43,7 @@ def engine_get(symbol,modifiers):
 		global_render.ogl.translate(Mathbase.Vector3D(0,-1,-1))
         elif symbol==window.key.QUOTELEFT:
                 global_UI.switch_focus()
+"""
         elif symbol==window.key.UP:
                 global_render._angle+=1
         elif symbol==window.key.DOWN:
@@ -50,6 +52,7 @@ def engine_get(symbol,modifiers):
                 global_render.transz+=1
         elif symbol==window.key.S:
                 global_render.transz-=1
+"""
                 
 		
 def console_get(symbol,modifiers):
@@ -62,6 +65,16 @@ def console_get(symbol,modifiers):
 def game_get(symbol,modifiers):
         pass
 
+def check_keyboard(keyboard):
+        if keyboard[key.W]:
+                global_render.transz+=1
+        elif keyboard[key.S]:
+                global_render.transz-=1
+        elif keyboard[key.UP]:
+                global_render._angle+=1
+        elif keyboard[key.DOWN]:
+                global_render._angle-=1
+                
 class UI(Task):
   	""" 
 	  Contains UI elements including console interaction
@@ -84,6 +97,7 @@ class UI(Task):
 	engine_sprite = None
 	game_sprite = None
 	current_sprite = None
+	keyboard = None
 
 	def x_topt(self,x):
 		return x*self._width_pt/self.surface.width - self._width_pt/2	
@@ -118,6 +132,9 @@ class UI(Task):
   		self.current_sprite = self.engine_sprite
   		self.switch_focus("Engine")
 
+                self.keyboard = key.KeyStateHandler()
+                global_render.w.push_handlers(self.keyboard)
+                
   		self.load_full_2DUI()
   		
 	def load_full_2DUI(self):
@@ -158,6 +175,7 @@ class UI(Task):
 	  	pass
 
 	def run(self,kernel):
+                check_keyboard(self.keyboard)
 	  	pass
 	
 	def name(self):
