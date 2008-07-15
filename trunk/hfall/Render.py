@@ -28,7 +28,12 @@ class Render(base.Task):
     """
     
     def __init__(self, width, height, near=0.1, far=100.0,\
-                 clearcolor=(0.0, 0.0, 0.0, 0.0), posx = 0, posy = 0, posz = 0):
+                 clearcolor=(0.0, 0.0, 0.0, 0.0),\
+                 posx = 0, posy = 0, posz = 0,\
+                 raw_LightAmbient = [1.0, 1.0, 1.0, 1.0],\
+               	 raw_LightDiffuse = [1.0, 1.0, 1.0, 1.0],\
+                 raw_LightPosition = [0.0, -1.5, -50.0, 1.0]
+                 ):
         """
         Render task initialization. It starts pyglet and OpenGL.
             width - the width of the game window
@@ -50,12 +55,12 @@ class Render(base.Task):
         self.transz = posz;
 	self.width = width
 	self.height = height
-	raw_LightAmbient = [0.5, 0.5, 0.5, 1.0]
-	LightAmbient = (GLfloat * 4)(*raw_LightAmbient)
-	raw_LightDiffuse = [1.0, 1.0, 1.0, 1.0]
-	LightDiffuse = (GLfloat * 4)(*raw_LightDiffuse)
-        raw_LightPosition = [0.0, 0.0, 20.0, 10.0]
-	LightAmbient = (GLfloat * 4)(*raw_LightAmbiet)
+	self.LighAmbient = [];
+        self.LighDiffuse = [];
+      	self.LighPosition = [];
+	self.LightAmbient = (GLfloat * 4)(*raw_LightAmbient)
+	self.LightDiffuse = (GLfloat * 4)(*raw_LightDiffuse)
+	self.LightPosition = (GLfloat * 4)(*raw_LightPosition)
         "To be deleted later on, examples"
         self._angle = 0;
         try:
@@ -100,6 +105,13 @@ class Render(base.Task):
 
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
             glLoadIdentity()
+            glEnable(GL_LIGHTING)
+            glDisable(GL_LIGHT0)
+            glLightfv(GL_LIGHT1, GL_AMBIENT, self.LightAmbient)
+            glLightfv(GL_LIGHT1, GL_DIFFUSE, self.LightDiffuse)
+            glLightfv(GL_LIGHT1, GL_POSITION, self.LightPosition)
+            glEnable(GL_LIGHT1)
+
             
             # TODO: camera manipulation
             # For dodecadron testing
