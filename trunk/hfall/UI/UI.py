@@ -120,7 +120,8 @@ class UI(Task):
 	#Colors
 	C_WHITE = (1,1,1,1)
   	C_YELLOW = (1,1,0,1)
-  	C_GRAY = (0.4,0.4,0.4,1)
+  	C_GRAY = (0.8,0.8,0.8,1)
+  	C_RED = (1,0,0,0)
 
 	def __init__(self,render):
 	  	#Gain access to render
@@ -143,7 +144,6 @@ class UI(Task):
 
 		#Control goes to engine
 		self.f_header = font.load("Helvetica",18)
-		self.c_header = (1,1,1,1)
 
   		self.console_text = font.Text(self.f_header,"Console Mode",\
 		    global_render.w.width-20,20,halign=font.Text.RIGHT,\
@@ -157,7 +157,7 @@ class UI(Task):
 
 		self.add_fps()
 		self.loaded_UI = True
-		self.console = Console()
+		self.console = Console(0,200,self.C_RED,self.C_GRAY,self.C_YELLOW)
 
                 self.keyboard = key.KeyStateHandler()
                 global_render.w.push_handlers(self.keyboard)
@@ -260,22 +260,15 @@ class UI(Task):
                         self.load_2Dtext(self.current_text)
                         
 	def add_fps(self):
-  		#self.fps = font.Text(self.f_header,global_render.fps,\
-		#    25,60,halign=font.Text.LEFT,\
-		#    valign = font.Text.BOTTOM,color = self.C_YELLOW)
-		#self.load_2Dtext(self.fps)
-		pass
+  		self.fps = font.Text(self.f_header,global_render.fps,\
+		    25,60,halign=font.Text.LEFT,\
+		    valign = font.Text.BOTTOM,color = self.C_YELLOW)
+		self.load_2Dtext(self.fps)
 
 	def refresh_fps(self):
 	  	self.fps.text = "fps : %d" % (global_render.fps)
 
 	def testing(self):
-                """
-		self.console_bck = Sprite(self.x_topt(0),self.y_topt(140),\
-		    self.px_topt(global_render.width), \
-  		    self.px_topt(140),None,(0.3,0.3,0.7))
-		self._2Dlist.append(self.console_bck)
-                """
   		self.helv = font.load('Helvetica',22)
 		self.text = font.Text(self.helv,"Hammerfall Graphics Engine",\
 		    20,20,halign = font.Text.LEFT,\

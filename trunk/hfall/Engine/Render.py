@@ -65,6 +65,7 @@ class Render(base.Task):
 	self.LightDiffuse = (GLfloat * 4)(*raw_LightDiffuse)
 	self.LightPosition = (GLfloat * 4)(*raw_LightPosition)
   	self.angle = Mathbase.Vector3D(0,0,0)
+  	self.fps = "0"
 
         try:
             # Try to create a window with antialising
@@ -109,13 +110,13 @@ class Render(base.Task):
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
   	    self.ogl.activate_perspective(self.w.width,self.w.height)
   	    self.ogl.activate_model()
+  	    
             glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
             glLightfv(GL_LIGHT1, GL_AMBIENT, self.LightAmbient)
             glLightfv(GL_LIGHT1, GL_DIFFUSE, self.LightDiffuse)
             glLightfv(GL_LIGHT1, GL_POSITION, self.LightPosition)
             glEnable(GL_LIGHT1)
-       
             # TODO: camera manipulation
             # For dodecadron testing
             point_to_translate = Mathbase.Vector3D(self.transx,\
@@ -130,17 +131,20 @@ class Render(base.Task):
             # TODO: special effects here
             # TODO: save openGL state here
   	    glDisable(GL_LIGHTING)
+  	    glDisable(GL_BLEND)
+  	    self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
+  	    self.ogl.activate_model()
             for model in self._2dlist:
                 self.ogl.Render2D(model)
   	    #Alien code here - text rendering
-  	    self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
-  	    self.ogl.activate_model()
+  	    #self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
+  	    #self.ogl.activate_model()
   	    for text in self._textlist:
 	        text.draw()
             
             self.w.flip()
             self.fps=clock.get_fps()
-            print self.fps
+            #print self.fps
             "To be deleted later on, examples"
             #self._angle += 0.5
             # if self._xpos > 3 :

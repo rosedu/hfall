@@ -67,7 +67,7 @@ class OGL:
   	#glBlendFunc(GL_SRC_ALPHA, GL_ONE)
   	#glEnable(GL_BLEND)
   	#glAlphaFunc(GL_GREATER,0.1)
-  	glEnable(GL_ALPHA_TEST)
+  	#glEnable(GL_ALPHA_TEST)
   	glEnable(GL_TEXTURE_2D)
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_COLOR_ARRAY)
@@ -168,8 +168,8 @@ class OGL:
                     use alpha blending.
 
         """
-        glLoadIdentity()
-        glTranslatef(0.0,0.0,-6.0);
+	#self.activate_model()
+        #glTranslatef(0.0,0.0,-6.0);
   	if model.is_textured==True:
 		glBindTexture(GL_TEXTURE_2D,model.texture_ids[0])
   		glTexImage2D(GL_TEXTURE_2D,0,4,model.pixelwidth,\
@@ -192,6 +192,7 @@ class OGL:
         	else:
             		glColor4f(model.color[0], model.color[1], model.color[2], \
               	        	model.color[3])
+		print "%d %d %d %d" % (model.color[0],model.color[1],model.color[2],model.color[3])
 		glBegin(GL_QUADS)
 		glVertex2f(model.x, model.y)
   		glVertex2f(model.xx,model.y)

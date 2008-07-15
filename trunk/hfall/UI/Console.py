@@ -23,19 +23,21 @@ class Console():
     """
     #Public variables
     enabled = False 
+    bottom_left_y = 0
+    bottom_left_x = 0
 		
-    def __init__(self,c_back,c_line,c_text):
+    def __init__(self,width,height,c_back,c_line,c_text):
         """
         About constructor.
         
         """
-	self.enabled = False
-	self.background = Sprite(0,UI.global_render.w.height-100,\
-	   UI.global_render.w.width,100,None,c_back) 
+	self.enabled = True
+	
+	self.bottom_left_y = UI.global_render.w.height - height
+	self.bottom_left_x = 0 
+	self.background = Sprite(self.bottom_left_x,self.bottom_left_y,\
+	   UI.global_render.w.width,height,None,c_back) 
 	UI.global_UI.load_2DUI(self.background)
-
-	#init background
-        pass
 
     def enable(self):
         self.enabled = True 
