@@ -20,6 +20,7 @@ from pyglet import font
 from pyglet import image
 from pyglet.gl import *
 import Mathbase
+from Console import Console
 
 """
 Collection of Event Overrides
@@ -109,14 +110,17 @@ class UI(Task):
 	keyboard = None
 	mouse_enabled = True
 	loaded_UI = False
+	console = None
 
 	#Fonts & UI Elements
 	f_header = None
-	c_header = None
 	f_small = None
-	c_small = None
 	f_large = None
-	c_large = None
+
+	#Colors
+	C_WHITE = (1,1,1,1)
+  	C_YELLOW = (1,1,0,1)
+  	C_GRAY = (0.4,0.4,0.4,1)
 
 	def __init__(self,render):
 	  	#Gain access to render
@@ -138,18 +142,22 @@ class UI(Task):
 		self.surface.w.on_mouse_drag = on_mouse_drag
 
 		#Control goes to engine
-		self.f_header = font.load("Helvetica",14)
+		self.f_header = font.load("Helvetica",18)
 		self.c_header = (1,1,1,1)
+
   		self.console_text = font.Text(self.f_header,"Console Mode",\
 		    global_render.w.width-20,20,halign=font.Text.RIGHT,\
-		    valign = font.Text.BOTTOM,color = self.c_header)
+		    valign = font.Text.BOTTOM,color = self.C_WHITE)
   		self.engine_text = font.Text(self.f_header,"Engine Mode",\
 		    global_render.w.width-20,20,halign=font.Text.RIGHT,\
-		    valign = font.Text.BOTTOM,color = self.c_header)
+		    valign = font.Text.BOTTOM,color = self.C_WHITE)
   		self.current_text = self.engine_text
 		self.load_2Dtext(self.current_text)
   		self.switch_focus("Engine")
+
+		self.add_fps()
 		self.loaded_UI = True
+		self.console = Console()
 
                 self.keyboard = key.KeyStateHandler()
                 global_render.w.push_handlers(self.keyboard)
@@ -212,6 +220,7 @@ class UI(Task):
 
 	def run(self,kernel):
                 check_keyboard(self.keyboard)
+		self.refresh_fps()
 	  	pass
 	
 	def name(self):
@@ -250,10 +259,15 @@ class UI(Task):
                         self.current_text = self.game_text
                         self.load_2Dtext(self.current_text)
                         
-                        
-                        
-                
-                        
+	def add_fps(self):
+  		self.fps = font.Text(self.f_header,global_render.fps,\
+		    25,60,halign=font.Text.LEFT,\
+		    valign = font.Text.BOTTOM,color = self.C_YELLOW)
+		self.load_2Dtext(self.fps)
+
+	def refresh_fps(self):
+	  	self.fps.text = "fps : %d" % (global_render.fps)
+
 	def testing(self):
                 """
 		self.console_bck = Sprite(self.x_topt(0),self.y_topt(140),\

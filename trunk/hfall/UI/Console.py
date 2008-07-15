@@ -20,6 +20,8 @@ class Console():
     the game.
 
     """
+    #Public variables
+    enabled = False 
 		
     def __init__(self):
         """

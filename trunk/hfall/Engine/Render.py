@@ -65,6 +65,7 @@ class Render(base.Task):
 	self.LightDiffuse = (GLfloat * 4)(*raw_LightDiffuse)
 	self.LightPosition = (GLfloat * 4)(*raw_LightPosition)
   	self.angle = Mathbase.Vector3D(0,0,0)
+  	self.fps = "0"
 
         try:
             # Try to create a window with antialising
@@ -141,7 +142,7 @@ class Render(base.Task):
             
             self.w.flip()
             self.fps=clock.get_fps()
-            print self.fps
+            #print self.fps
             "To be deleted later on, examples"
             #self._angle += 0.5
             # if self._xpos > 3 :
