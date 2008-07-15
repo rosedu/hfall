@@ -7,11 +7,15 @@ panels and status windows.
 __version__ = '0.2'
 __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
+
+import sys
+sys.path.insert(0, "../")
+sys.path.insert(0, "../Engine/")
 from base import Task
 from pyglet import window
 from pyglet.window import *
-from Console import Console
-from Sprite import Sprite
+import Console
+import Sprite
 from pyglet import font 
 from pyglet import image
 from pyglet.gl import *
@@ -137,8 +141,8 @@ class UI(Task):
 		self.surface.w.on_mouse_drag = on_mouse_drag
 
 		#Control goes to engine
-  		self.console_sprite = Sprite(3.3,-3.3,1,0.5,self.path_console_gr)
-  		self.engine_sprite = Sprite(3.3,-3.3,1,0.5,self.path_engine_gr)
+  		self.console_sprite = Sprite.Sprite(3.3,-3.3,1,0.5,self.path_console_gr)
+  		self.engine_sprite = Sprite.Sprite(3.3,-3.3,1,0.5,self.path_engine_gr)
   		self.load_2DUI(self.engine_sprite)
   		self.current_sprite = self.engine_sprite
   		self.switch_focus("Engine")

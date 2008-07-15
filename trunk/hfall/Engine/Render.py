@@ -8,12 +8,14 @@ could take place via OpenGL or any other rendering API.
 __version__ = '0.3'
 __authors__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)' ,\
               'Andrei Buhaiu (andreibuhaiu@gmail.com)'
+
+import sys
+sys.path.insert(0, "../")
 import math
 import pyglet
 from pyglet.gl import *
 from pyglet import window
 from pyglet import clock
-import Vertex
 import Mathbase
 import OGLbase
 import base

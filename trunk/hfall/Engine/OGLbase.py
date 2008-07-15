@@ -9,13 +9,15 @@ __version__ = '0.2'
 __author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)' ,\
               'Andrei Buhaiu (andreibuhaiu@gmail.com)'
 
+import sys
+sys.path.insert(0, "../")
+sys.path.insert(0, "../UI/")
 import pyglet
 from pyglet.gl import *
 from pyglet import window
 import ctypes
 import array
 import Mathbase
-import Vertex
 import base
 import Bitmap
 from base import kernel as hfk

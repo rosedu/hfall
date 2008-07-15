@@ -7,6 +7,9 @@ this class.
 __version__ = '0.1'
 __author__ = 'Alex Eftimie (alexeftimie@gmail.com)'
 
+import sys
+sys.path.insert(0, "../")
+sys.path.insert(0, "../Engine/")
 import base
 import Render
 import UI

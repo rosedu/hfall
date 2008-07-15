@@ -1,5 +1,4 @@
 from MaxParser import MaxParser
-from Vertex import Vertex
 from Mesh import Mesh
 from Model import Model
 from MeshMaterialGroup import MeshMaterialGroup

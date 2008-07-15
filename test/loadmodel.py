@@ -1,21 +1,23 @@
 import sys
 import pyglet
 from pyglet.gl import *
-sys.path.insert(0, "../trunk")
+sys.path.insert(0, "../trunk/hfall/")
+sys.path.insert(0, "../trunk/hfall/UI")
+sys.path.insert(0, "../trunk/hfall/Engine")
+sys.path.insert(0, "../trunk/hfall/Parser")
 import ctypes
 import array
-import hfall.base
-import hfall.OGLbase
-from hfall.UI import * 
-import hfall.Render
-import hfall.Vertex
-import hfall.Mesh
-import hfall.Model
-import hfall.ModelLoader
-import hfall.Bitmap
-from hfall.base import kernel as hfk
+import base
+import OGLbase
+from UI import * 
+import Render
+import Mesh
+import Model
+import ModelLoader
+import Bitmap
+from base import kernel as hfk
 
-class drawer(hfall.base.Task):
+class drawer(base.Task):
     """
     Desenez cateva chenare si apoi ies
     
@@ -41,7 +43,7 @@ class drawer(hfall.base.Task):
         # self.mesh.append(hfall.Mesh.Mesh(self._faces, self._vertexes, None, None, None, GL_TRIANGLES))
         print "Model:", sys.argv[1]
         print "Texture:", sys.argv[2]
-        Loader = hfall.ModelLoader.ModelLoader()
+        Loader = ModelLoader.ModelLoader()
         Loader.loadModel(sys.argv[1])
         self.model = Loader.getModel()
         
@@ -52,7 +54,7 @@ class drawer(hfall.base.Task):
 	ptexture_ids = (GLuint * TEX_NO)(*texture_ids)
 	glGenTextures(TEX_NO,ptexture_ids)
 
-  	bitmap = hfall.Bitmap.Bitmap(sys.argv[2])
+  	bitmap = Bitmap.Bitmap(sys.argv[2])
         data_list = bitmap.data.tolist()
 	pdata = (GLubyte * len(data_list))(*data_list)
 	    
@@ -90,7 +92,7 @@ class drawer(hfall.base.Task):
     def name(self):
         return "drawer"
 
-render = hfall.Render.Render(800, 600, posx = 0, posy = -1.5, posz = -100,\
+render = Render.Render(800, 600, posx = 0, posy = -1.5, posz = -100,\
                              raw_LightPosition = [0.0, 1.0, 0.0, 0.0])
 hfk.insert(drawer())
 hfk.insert(render)
