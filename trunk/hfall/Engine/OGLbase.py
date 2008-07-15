@@ -9,15 +9,13 @@ __version__ = '0.2'
 __author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)' ,\
               'Andrei Buhaiu (andreibuhaiu@gmail.com)'
 
-import sys
-sys.path.insert(0, "../")
-sys.path.insert(0, "../UI/")
 import pyglet
 from pyglet.gl import *
 from pyglet import window
 import ctypes
 import array
 import Mathbase
+import Vertex
 import base
 import Bitmap
 from base import kernel as hfk
@@ -73,6 +71,22 @@ class OGL:
         glEnableClientState(GL_COLOR_ARRAY)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
         hfk.log.msg('Open GL started')
+
+    # Perspective switches - used for correct 2D/3D rendering
+    def activate_perspective(self,width,height):
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        gluPerspective(60.0, 1.0*width/height, 0.1, 1000.0)
+
+    def activate_ortho(self,left,right,bottom,top,\
+	near=-1, far=1):
+        glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	glOrtho(left,right,bottom,top,near,far)
+	       
+    def activate_model(self):
+  	glMatrixMode(GL_MODELVIEW)
+  	glLoadIdentity()
 
     # here we should define different functions to change OpenGL state
     # machine status. We should built functions to incrementally change

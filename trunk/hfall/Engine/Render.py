@@ -8,14 +8,12 @@ could take place via OpenGL or any other rendering API.
 __version__ = '0.3'
 __authors__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)' ,\
               'Andrei Buhaiu (andreibuhaiu@gmail.com)'
-
-import sys
-sys.path.insert(0, "../")
 import math
 import pyglet
 from pyglet.gl import *
 from pyglet import window
 from pyglet import clock
+import Vertex
 import Mathbase
 import OGLbase
 import base
@@ -106,11 +104,8 @@ class Render(base.Task):
             self.w.dispatch_events()
 
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-            glMatrixMode(GL_PROJECTION)
-            glLoadIdentity()
-            gluPerspective(60.0, self.w.width / float(self.w.height), .1, 1000.0)
-            glMatrixMode(GL_MODELVIEW)
-            glLoadIdentity()
+  	    self.ogl.activate_perspective(self.w.width,self.w.height)
+  	    self.ogl.activate_model()
             glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
             glLightfv(GL_LIGHT1, GL_AMBIENT, self.LightAmbient)
@@ -135,11 +130,8 @@ class Render(base.Task):
             for model in self._2dlist:
                 self.ogl.Render2D(model)
   	    #Alien code here - text rendering
-  	    glMatrixMode(GL_PROJECTION)
-  	    glLoadIdentity()
-  	    gluOrtho2D(0,self.w.width,0,self.w.height)
-  	    glMatrixMode(GL_MODELVIEW)
-  	    glLoadIdentity()
+  	    self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
+  	    self.ogl.activate_model()
   	    for text in self._textlist:
 	        text.draw()
             
