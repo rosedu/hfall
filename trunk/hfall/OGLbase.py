@@ -20,9 +20,6 @@ import base
 import Bitmap
 from base import kernel as hfk
 
-colors = ((5 // 2) + 1)* [1, 1, 1, 0, 1, 0]
-pcolors = (GLfloat * len(colors))(*colors)
-
 class OGL:
     """
     This is the class that encapsulates all OpenGL API calls. All acces
@@ -62,7 +59,7 @@ class OGL:
                      clearcolor[3])
         glShadeModel(GL_SMOOTH)
         glClearDepth(1.0)
-        #glEnable(GL_DEPTH_TEST)
+        glEnable(GL_DEPTH_TEST)
   	
   	#glDepthFunc(GL_LEQUAL)
   	#glBlendFunc(GL_SRC_ALPHA, GL_ONE)
@@ -207,7 +204,7 @@ class OGL:
         # We send the actual vertices to OpenGL so that it may render them
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices)
         # We draw that actual faces that form the model
-        glDrawElements(GL_TRIANGLES, len(mesh.faces), GL_UNSIGNED_INT, mesh.faces)
+        glDrawElements(mesh.mode, len(mesh.faces), GL_UNSIGNED_INT, mesh.faces)
         # We extract the perspective matrix that we used
         # so that the new mesh is built on its own matrix
         glPopMatrix()
