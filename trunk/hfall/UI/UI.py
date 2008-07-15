@@ -260,10 +260,11 @@ class UI(Task):
                         self.load_2Dtext(self.current_text)
                         
 	def add_fps(self):
-  		self.fps = font.Text(self.f_header,global_render.fps,\
-		    25,60,halign=font.Text.LEFT,\
-		    valign = font.Text.BOTTOM,color = self.C_YELLOW)
-		self.load_2Dtext(self.fps)
+  		#self.fps = font.Text(self.f_header,global_render.fps,\
+		#    25,60,halign=font.Text.LEFT,\
+		#    valign = font.Text.BOTTOM,color = self.C_YELLOW)
+		#self.load_2Dtext(self.fps)
+		pass
 
 	def refresh_fps(self):
 	  	self.fps.text = "fps : %d" % (global_render.fps)

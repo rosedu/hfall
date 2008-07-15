@@ -74,5 +74,5 @@ render = Render.Render(800, 600, posx = 0, posy = -1.5, posz = -100,\
                              raw_LightPosition = [0.0, 1.0, 0.0, 0.0])
 hfk.insert(drawer())
 hfk.insert(render)
-hfk.insert(UI(render))
+#hfk.insert(UI(render))
 hfk.run()
