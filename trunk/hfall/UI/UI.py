@@ -9,8 +9,8 @@ __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
 
 import sys
-sys.path.insert(0, "../")
-sys.path.insert(0, "../Engine/")
+sys.path.insert(0, "..")
+sys.path.insert(0, "../Engine")
 from base import Task
 from pyglet import window
 from pyglet.window import *

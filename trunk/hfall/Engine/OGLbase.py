@@ -10,12 +10,14 @@ __author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)' ,\
               'Andrei Buhaiu (andreibuhaiu@gmail.com)'
 
 import pyglet
+import sys
+sys.path.insert(0, "..")
+sys.path.insert(0, "../UI")
 from pyglet.gl import *
 from pyglet import window
 import ctypes
 import array
 import Mathbase
-import Vertex
 import base
 import Bitmap
 from base import kernel as hfk

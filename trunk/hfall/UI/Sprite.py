@@ -6,7 +6,7 @@ __version__ = "0.1"
 __author__ = "Sergiu Costea (sergiu.costea@gmail.com)"
 
 import sys
-sys.path.insert(0, "../")
+sys.path.insert(0, "..")
 from pyglet.gl import *
 from ctypes import *
 from Bitmap import *
