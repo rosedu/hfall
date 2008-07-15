@@ -50,7 +50,12 @@ class Render(base.Task):
         self.transz = posz;
 	self.width = width
 	self.height = height
-
+	raw_LightAmbient = [0.5, 0.5, 0.5, 1.0]
+	LightAmbient = (GLfloat * 4)(*raw_LightAmbient)
+	raw_LightDiffuse = [1.0, 1.0, 1.0, 1.0]
+	LightDiffuse = (GLfloat * 4)(*raw_LightDiffuse)
+        raw_LightPosition = [0.0, 0.0, 20.0, 10.0]
+	LightAmbient = (GLfloat * 4)(*raw_LightAmbiet)
         "To be deleted later on, examples"
         self._angle = 0;
         try:
