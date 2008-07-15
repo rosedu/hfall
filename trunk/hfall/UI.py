@@ -46,34 +46,23 @@ def on_key_press(symbol,modifiers):
 def engine_get(symbol,modifiers):
 	if symbol==window.key.ESCAPE:
 		global_render.w.has_exit = True
-	elif symbol==window.key.U:
-		global_UI.unload_full_2DUI()
-	elif symbol==window.key.L:
-		global_UI.load_full_2DUI()
+	elif symbol==window.key.TAB:
+		if global_UI.loaded_UI:
+			global_UI.unload_full_2DUI()
+		else:
+			global_UI.load_full_2DUI()
 	elif symbol==window.key.A:
 		global_render.ogl.translate(Mathbase.Vector3D(0,-1,-1))
         elif symbol==window.key.QUOTELEFT:
                 global_UI.switch_focus()
   	elif symbol==window.key.M:
   		global_UI.mouse_enabled = not global_UI.mouse_enabled
-"""
-        elif symbol==window.key.UP:
-                global_render._angle+=1
-        elif symbol==window.key.DOWN:
-                global_render._angle-=1
-        elif symbol==window.key.W:
-                global_render.transz+=1
-        elif symbol==window.key.S:
-                global_render.transz-=1
-"""
-                
 		
 def console_get(symbol,modifiers):
         if symbol==window.key.QUOTELEFT:
                 global_UI.switch_focus()
         elif symbol==window.key.ESCAPE:
                 global_UI.switch_focus()
-
 
 def game_get(symbol,modifiers):
         pass
@@ -117,6 +106,7 @@ class UI(Task):
 	current_sprite = None
 	keyboard = None
 	mouse_enabled = True
+	loaded_UI = False
 
 	def x_topt(self,x):
 		return x*self._width_pt/self.surface.width - self._width_pt/2	
@@ -152,6 +142,7 @@ class UI(Task):
   		self.load_2DUI(self.engine_sprite)
   		self.current_sprite = self.engine_sprite
   		self.switch_focus("Engine")
+		self.loaded_UI = True
 
                 self.keyboard = key.KeyStateHandler()
                 global_render.w.push_handlers(self.keyboard)
@@ -164,6 +155,7 @@ class UI(Task):
 	  	for graphic in self._2Dlist:
 			self.surface.add2D(graphic)
 		self._frozen = False
+		self.loaded_UI = True
 	
 	def unload_full_2DUI(self):
                 if self._frozen == True:
@@ -171,6 +163,7 @@ class UI(Task):
 	  	for graphic in self._2Dlist:
 			self.surface.rem2D(graphic)
 		self._frozen = True
+		self.loaded_UI = False
 	
 	def load_2DUI(self,x):
                 if self._frozen == False:
