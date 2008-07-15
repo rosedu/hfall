@@ -61,8 +61,8 @@ class Render(base.Task):
 	self.LightAmbient = (GLfloat * 4)(*raw_LightAmbient)
 	self.LightDiffuse = (GLfloat * 4)(*raw_LightDiffuse)
 	self.LightPosition = (GLfloat * 4)(*raw_LightPosition)
-        "To be deleted later on, examples"
-        self._angle = 0;
+  	self.angle = Mathbase.Vector3D(0,0,0)
+
         try:
             # Try to create a window with antialising
             # TODO: add other possible config via another parameter
@@ -118,8 +118,9 @@ class Render(base.Task):
             point_to_translate = Mathbase.Vector3D(self.transx,\
                                 self.transy, self.transz)
             self.ogl.translate( point_to_translate)
-            direction_to_rotate = Mathbase.Vector3D(0, 1 ,0)
-            self.ogl.rotate(self._angle, direction_to_rotate) 
+            self.ogl.rotate(self.angle.x, Mathbase.Vector3D(1,0,0)) 
+            self.ogl.rotate(self.angle.y, Mathbase.Vector3D(0,1,0)) 
+            self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1)) 
             # TODO: 3D model drawing
             for model in self._3dlist:
                 self.ogl.Render3D(model)
@@ -139,8 +140,13 @@ class Render(base.Task):
             # if self._xpos > 3 :
             #    self._xpos = -3
             # self._xpos += 0.05
-            print "angle=",self._angle
             
+    def rotate(self,angle,x,y,z):
+         dir_to_rotate = Mathbase.Vector3D(x,y,z)
+  	 dir_to_rotate.Norm3D()
+	 dir_to_rotate.__multiply_scalar__(angle)
+	 self.angle.__add__(dir_to_rotate)
+
     def name(self):
         """
         Returns the name of the task for an integration with the kernel

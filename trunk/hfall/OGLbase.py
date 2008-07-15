@@ -102,7 +102,7 @@ class OGL:
         Does a basic rotation based on a given angle and direction
         """
         # Used if we only want to rotate the model
-        # glMatrixMode(GL_MODELVIEW)
+        glMatrixMode(GL_MODELVIEW)
         glRotatef(angle, direction.x, direction.y, direction.z)
     
     def render(self, mode, vertexes):

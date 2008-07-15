@@ -23,8 +23,19 @@ Collection of Event Overrides
 global_render = None
 global_UI = None
 
+def on_mouse_drag(x,y,dx,dy,buttons,modifiers):
+  	if global_UI.mouse_enabled==True:
+		factor = 1
+		global_render.rotate(factor,0,0,dx)
+  		pass
+
+
+def on_mouse_motion(x,y,dx,dy):
+  	if global_UI.mouse_enabled==True:
+  		factor = 1
+		global_render.rotate(factor,-dy,dx,0)
+  	
 def on_key_press(symbol,modifiers):
-	print("Key was pressed!")
 	if global_UI.input_handler == "Engine":
                 engine_get(symbol,modifiers)
         elif global_UI.input_handler == "Console":
@@ -43,6 +54,8 @@ def engine_get(symbol,modifiers):
 		global_render.ogl.translate(Mathbase.Vector3D(0,-1,-1))
         elif symbol==window.key.QUOTELEFT:
                 global_UI.switch_focus()
+  	elif symbol==window.key.M:
+  		global_UI.mouse_enabled = not global_UI.mouse_enabled
 """
         elif symbol==window.key.UP:
                 global_render._angle+=1
@@ -66,14 +79,19 @@ def game_get(symbol,modifiers):
         pass
 
 def check_keyboard(keyboard):
-        if keyboard[key.W]:
-                global_render.transz+=1
-        elif keyboard[key.S]:
-                global_render.transz-=1
-        elif keyboard[key.UP]:
-                global_render._angle+=1
-        elif keyboard[key.DOWN]:
-                global_render._angle-=1
+  	if global_UI.input_handler=="Engine":
+        	if keyboard[key.W]:
+                	global_render.transz+=1
+        	elif keyboard[key.S]:
+                	global_render.transz-=1
+        	elif keyboard[key.A]:
+                	global_render.transx+=1
+        	elif keyboard[key.D]:
+                	global_render.transx-=1
+   		elif keyboard[key.Q]:
+   			global_render.transy+=1
+   		elif keyboard[key.E]:
+   			global_render.transy-=1
                 
 class UI(Task):
   	""" 
@@ -98,6 +116,7 @@ class UI(Task):
 	game_sprite = None
 	current_sprite = None
 	keyboard = None
+	mouse_enabled = True
 
 	def x_topt(self,x):
 		return x*self._width_pt/self.surface.width - self._width_pt/2	
@@ -122,8 +141,10 @@ class UI(Task):
 		#Load some rectangles/text
 		self.testing()	
 
-		#Load key events
+		#Load events
   		self.surface.w.on_key_press = on_key_press
+		self.surface.w.on_mouse_motion = on_mouse_motion
+		self.surface.w.on_mouse_drag = on_mouse_drag
 
 		#Control goes to engine
   		self.console_sprite = Sprite(3.3,-3.3,1,0.5,self.path_console_gr)
