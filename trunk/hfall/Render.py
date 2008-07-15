@@ -140,7 +140,6 @@ class Render(base.Task):
   	    glLoadIdentity()
   	    for text in self._textlist:
 	        text.draw()
-  		print text
             
             self.w.flip()
             self.fps=clock.get_fps()
