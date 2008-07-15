@@ -90,8 +90,8 @@ class drawer(hfall.base.Task):
     def name(self):
         return "drawer"
 
-render = hfall.Render.Render(800, 600, posx = 0, posy = -1.5, posz = -50,\
-                             raw_LightPosition = [0.0, 0.0, -10.0, 1.0])
+render = hfall.Render.Render(800, 600, posx = 0, posy = -1.5, posz = -100,\
+                             raw_LightPosition = [0.0, 1.0, 0.0, 0.0])
 hfk.insert(drawer())
 hfk.insert(render)
 hfk.insert(UI(render))
