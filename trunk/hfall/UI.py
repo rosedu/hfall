@@ -239,6 +239,12 @@ class UI(Task):
   		    self.px_topt(140),None,(0.3,0.3,0.7))
 		self._2Dlist.append(self.console_bck)
                 """
-  		txt = Sprite(0,0,2,2,"test.bmp")
-		self.load_2DUI(txt)
+  		#txt = Sprite(0,0,2,2,"test.bmp")
+		#self.load_2DUI(txt)
+  		self.helv = font.load('Helvetica',global_render.w.width/15.0)
+		self.text = font.Text(self.helv,"Hello console!",global_render.w.width/2,\
+		    global_render.w.height/2,halign = font.Text.CENTER,\
+		    valign = font.Text.CENTER,color = (1,1,1,0.5))
+		global_render.addtext(self.text)
+  		pass
 		

@@ -104,6 +104,10 @@ class Render(base.Task):
             self.w.dispatch_events()
 
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+            glMatrixMode(GL_PROJECTION)
+            glLoadIdentity()
+            gluPerspective(60.0, self.w.width / float(self.w.height), .1, 1000.0)
+            glMatrixMode(GL_MODELVIEW)
             glLoadIdentity()
             glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
@@ -129,8 +133,14 @@ class Render(base.Task):
             for model in self._2dlist:
                 self.ogl.Render2D(model)
   	    #Alien code here - text rendering
+  	    glMatrixMode(GL_PROJECTION)
+  	    glLoadIdentity()
+  	    gluOrtho2D(0,self.w.width,0,self.w.height)
+  	    glMatrixMode(GL_MODELVIEW)
+  	    glLoadIdentity()
   	    for text in self._textlist:
 	        text.draw()
+  		print text
             
             self.w.flip()
             self.fps=clock.get_fps()

@@ -53,7 +53,7 @@ class OGL:
                 height = 1
             gluPerspective(60.0, width / float(height), .1, 1000.0)
             glMatrixMode(GL_MODELVIEW)
-        
+
         # finalizing the initialization
         glClearColor(clearcolor[0], clearcolor[1], clearcolor[2], \
                      clearcolor[3])
