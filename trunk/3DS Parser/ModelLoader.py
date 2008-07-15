@@ -3,7 +3,6 @@ from Material import Material
 from Mesh import Mesh
 from Model import Model
 from Texture import Texture
-from MeshMaterialGroup import MeshMaterialGroup
 from ModelManager import ModelManager
 from MaterialManager import MaterialManager
 from TextureManager import TextureManager

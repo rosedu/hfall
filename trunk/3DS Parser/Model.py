@@ -26,3 +26,7 @@ class Model:
         self.meshes = mes
         self.matrix4 = matrix
         self.name = name
+
+    def render(self, rnd):
+        for mesh in self.meshes:
+            mesh.render(rnd)

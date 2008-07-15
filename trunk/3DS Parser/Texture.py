@@ -15,8 +15,9 @@ class Texture:
         return True
 
     def loadFromRam(self):
-        #self.id = glGenTextures(1)[0]
-        self.id = 0
+        self.id = []
+	self.id = (GLuint)(*self.id)
+	glGenTextures(1, self.id)
         glBindTexture(GL_TEXTURE_2D, self.id)
         glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT) 
 	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT)

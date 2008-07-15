@@ -7,8 +7,12 @@ used to draw our models to screen.
 __version__ = '0.001'
 __author__ = 'Andrei Buhaiu(andreibuhaiu@gmail.com)'
 
+import sys
+sys.path.insert(0, "..")
+sys.path.insert(0, "../Engine")
 import pyglet
 from pyglet.gl import *
+from OGLbase import OGL as RenderDevice
 
 class Mesh:
 
@@ -44,3 +48,13 @@ class Mesh:
         self.matrix4 = matrix
         self.colors = color
         self.mode = draw_mode
+
+    def render(self, renderDevice):
+        renderDevice.pushClientAttrib()
+        renderDevice.vertexPointer(self.vertices)
+        renderDevice.TexCoordPointer(self.texels)
+        for faces in self.triangles:
+            renderDevice.setTexture(faces.material)
+            renderDevice.DrawElements(faces.faces)
+        renderDevice.popClientAttrib()
+        

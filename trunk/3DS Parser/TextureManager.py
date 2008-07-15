@@ -12,8 +12,8 @@ class TextureManager:
         if not texture.inRAM:
             texture.loadImage()
         if not texture.inVRAM:
-            #texture.loadFromRam()
-            pass
+            texture.loadFromRam()
+            #pass
         return texture
 
     def loadFromFile(self, name):
