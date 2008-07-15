@@ -28,7 +28,7 @@ global_render = None
 global_UI = None
 
 def on_mouse_drag(x,y,dx,dy,buttons,modifiers):
-  	factor=1
+  	factor=3
   	if global_UI.mouse_enabled==True and buttons==window.mouse.RIGHT:
 		global_render.rotate(factor,0,0,dx)
   		pass
@@ -87,7 +87,7 @@ def check_keyboard(keyboard):
    			global_render.transy+=1
    		elif keyboard[key.E]:
    			global_render.transy-=1
-                
+	
 class UI(Task):
   	""" 
 	  Contains UI elements including console interaction
@@ -98,30 +98,25 @@ class UI(Task):
 		 - surface (Render)
   		 - console (Console)
   	"""
-	_width_pt = 0
-	_height_pt = 0
 	_2Dlist = []
+	_textlist = []
 	_frozen = False
 	input_handler = ""
-	path_console_gr = "console.bmp"
-	path_engine_gr = "engine.bmp"
-	path_game_gr = ""
-	console_sprite = None
-	engine_sprite = None
-	game_sprite = None
-	current_sprite = None
+	console_text = None
+	engine_text = None
+	game_text = None
+	current_text = None
 	keyboard = None
 	mouse_enabled = True
 	loaded_UI = False
 
-	def x_topt(self,x):
-		return x*self._width_pt/self.surface.width - self._width_pt/2	
-
-	def y_topt(self,y):
-  		return -1.0*y*self._height_pt/self.surface.height + 1.0*self._height_pt/2
-
-	def px_topt(self,px):
-  		return 1.0*px/86
+	#Fonts & UI Elements
+	f_header = None
+	c_header = None
+	f_small = None
+	c_small = None
+	f_large = None
+	c_large = None
 
 	def __init__(self,render):
 	  	#Gain access to render
@@ -143,10 +138,16 @@ class UI(Task):
 		self.surface.w.on_mouse_drag = on_mouse_drag
 
 		#Control goes to engine
-  		self.console_sprite = Sprite.Sprite(3.3,-3.3,1,0.5,self.path_console_gr)
-  		self.engine_sprite = Sprite.Sprite(3.3,-3.3,1,0.5,self.path_engine_gr)
-  		self.load_2DUI(self.engine_sprite)
-  		self.current_sprite = self.engine_sprite
+		self.f_header = font.load("Helvetica",14)
+		self.c_header = (1,1,1,1)
+  		self.console_text = font.Text(self.f_header,"Console Mode",\
+		    global_render.w.width-20,20,halign=font.Text.RIGHT,\
+		    valign = font.Text.BOTTOM,color = self.c_header)
+  		self.engine_text = font.Text(self.f_header,"Engine Mode",\
+		    global_render.w.width-20,20,halign=font.Text.RIGHT,\
+		    valign = font.Text.BOTTOM,color = self.c_header)
+  		self.current_text = self.engine_text
+		self.load_2Dtext(self.current_text)
   		self.switch_focus("Engine")
 		self.loaded_UI = True
 
@@ -155,11 +156,14 @@ class UI(Task):
                 
   		self.load_full_2DUI()
   		
+  		
 	def load_full_2DUI(self):
                 if self._frozen == False:
                         return
 	  	for graphic in self._2Dlist:
 			self.surface.add2D(graphic)
+		for text in self._textlist:
+			self.surface.addtext(text)
 		self._frozen = False
 		self.loaded_UI = True
 	
@@ -168,6 +172,8 @@ class UI(Task):
                         return
 	  	for graphic in self._2Dlist:
 			self.surface.rem2D(graphic)
+		for text in self._textlist:
+			self.surface.remtext(text)
 		self._frozen = True
 		self.loaded_UI = False
 	
@@ -180,7 +186,17 @@ class UI(Task):
                 if self._frozen == False:
                         self.surface.rem2D(x)
   		self._2Dlist.remove(x)
-                
+             
+	def load_2Dtext(self,x):
+                if self._frozen == False:
+                        self.surface.addtext(x)
+  		self._textlist.append(x)
+
+  	def unload_2Dtext(self,x):
+                if self._frozen == False:
+                        self.surface.remtext(x)
+  		self._textlist.remove(x)
+	
 
 	def start(self,kernel):
 	  	pass
@@ -202,7 +218,7 @@ class UI(Task):
 	  	return "UI Process"
 
 	def switch_focus(self,target=""):
-                self.unload_2DUI(self.current_sprite)
+                self.unload_2Dtext(self.current_text)
                 print "Old: "+ self.input_handler
                 if target=="Engine":
                         self.input_handler = "Engine"
@@ -225,14 +241,14 @@ class UI(Task):
                 print "New: " + self.input_handler
                 
                 if self.input_handler=="Engine":
-                        self.current_sprite = self.engine_sprite
-                        self.load_2DUI(self.current_sprite)
+                        self.current_text = self.engine_text
+                        self.load_2Dtext(self.current_text)
                 elif self.input_handler=="Console":
-                        self.current_sprite = self.console_sprite
-                        self.load_2DUI(self.current_sprite)
-                elif self.game_sprite != None:
-                        self.current_sprite = self.game_sprite
-                        self.load_2DUI(self.current_sprite)
+                        self.current_text= self.console_text
+                        self.load_2Dtext(self.current_text)
+                elif self.game_text!= None:
+                        self.current_text = self.game_text
+                        self.load_2Dtext(self.current_text)
                         
                         
                         
@@ -245,8 +261,6 @@ class UI(Task):
   		    self.px_topt(140),None,(0.3,0.3,0.7))
 		self._2Dlist.append(self.console_bck)
                 """
-  		#txt = Sprite(0,0,2,2,"test.bmp")
-		#self.load_2DUI(txt)
   		self.helv = font.load('Helvetica',22)
 		self.text = font.Text(self.helv,"Hammerfall Graphics Engine",\
 		    20,20,halign = font.Text.LEFT,\
