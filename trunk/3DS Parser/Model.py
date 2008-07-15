@@ -17,7 +17,7 @@ class Model:
     """
 
     
-    def __init__(self, mes, matrix):
+    def __init__(self, mes, matrix, name):
         """
         meshes  - the actual meshes that form the model and that
                   are given to be render to OpenGL
@@ -25,3 +25,4 @@ class Model:
         """
         self.meshes = mes
         self.matrix4 = matrix
+        self.name = name

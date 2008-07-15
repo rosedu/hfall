@@ -1,45 +1,73 @@
 from MaxParser import MaxParser
-from Vertex import Vertex
+from Material import Material
 from Mesh import Mesh
 from Model import Model
+from Texture import Texture
 from MeshMaterialGroup import MeshMaterialGroup
+from ModelManager import ModelManager
+from MaterialManager import MaterialManager
+from TextureManager import TextureManager
 
 class ModelLoader:
 
-    def __init__(self):
+    def __init__(self, modelMng, matMng, texMng):
         self.parser = MaxParser()
+        self.modelMng = modelMng
+        self.materialMng = matMng
+        self.textureMng = texMng
 
     def loadModel(self, filename):
         if not self.parser.parseFile(filename):
             return False
-        self.model = Model([], 16*[0])
+        self.modelName = filename
+        self.saveMaterials()
+        self.saveModel()
+        return True
+
+    def saveModel(self):
+        self.model = Model([], [1, 0, 0, 0] +
+                               [0, 1, 0, 0] +
+                               [0, 0, 1, 0] +
+                               [0, 0, 0, 1], self.modelName)
         for m in self.parser.object.meshes:
             if m.type != 1:
                 continue
-            mesh = Mesh([], [], [], [], 16*[0])
+            mesh = Mesh([], None, None, 16*[0])
             
+            # get system coordinates
             for i in range(0, 3):
                 for j in range(0, 4):
                     mesh.matrix4[i*3+j] = m.data.matrix[i+j*3]
-            if m.data.coordinates:
-                for i in range(1, len(m.data.vertices)):
-                    m.data.vertices[0] += m.data.vertices[i]
-                    m.data.coordinates[0] += m.data.coordinates[i]
-                    # vertex = Vertex(m.data.vertices[i], m.data.coordinates[i])
-                mesh.vertices = m.data.vertices[0]
-                mesh.texels = m.data.coordinates[0]
-
-            # mesh.faces = m.data.faces.faces
+            # get vertices & texCoordinates
+            for i in range(0, m.data.nrOfVertices):
+                mesh.vertices += m.data.vertices[i]
+                if m.data.coordinates:
+                    if not mesh.texels:
+                        mesh.texels = []
+                    mesh.texels += m.data.coordinates[i]
+            # get faces
             if m.data.faces:
-                for face in range(1, len(m.data.faces.faces)):
-                    m.data.faces.faces[0] += m.data.faces.faces[face]
-                mesh.faces = m.data.faces.faces[0]
-            
+                mesh.triangles = []
                 for group in m.data.faces.materialGroups:
-                    mat = MeshMaterialGroup(group.materialName, group.faces)
-                    mesh.materials.append(mat)
-                self.model.meshes.append(mesh)
-        return True
-    
+                    triangles = Mesh.Triangles([], self.materialMng.get(group.materialName))
+                    for i in group.faces:
+                        triangles.faces += m.data.faces.faces[i]
+                    mesh.triangles.append(triangles)
+            self.model.meshes.append(mesh)
+        self.modelMng.add(self.model)
+
+    def saveMaterials(self):
+        for m in self.parser.object.materials:
+            self.saveTextures(m)
+            material = Material(m.name)
+            if m.textureMap1:
+                material.texture = self.textureMng.get(m.textureMap1.name)
+            self.materialMng.add(material)
+
+    def saveTextures(self, material):
+        for tex in material.textures:
+            texture = Texture(tex.name)
+            self.textureMng.add(texture)
+        
     def getModel(self):
         return self.model
