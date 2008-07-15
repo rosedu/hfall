@@ -63,11 +63,12 @@ class Mesh:
         self.texels = ptexels
 
     def render(self, renderDevice):
-        renderDevice.pushClientAttrib()
+        renderDevice.pushMatrix()
+        renderDevice.colorPointer(self.colors)
         renderDevice.vertexPointer(self.vertices)
         renderDevice.TexCoordPointer(self.texels)
         for faces in self.triangles:
             renderDevice.setTexture(faces.material)
             renderDevice.DrawElements(faces.faces, self.mode)
-        renderDevice.popClientAttrib()
+        renderDevice.popMatrix()
         

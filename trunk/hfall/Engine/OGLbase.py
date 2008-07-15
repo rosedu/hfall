@@ -230,20 +230,18 @@ class OGL:
         # so that the new mesh is built on its own matrix
         glPopMatrix()
 
-    def pushClientAttrib(self):
+    def pushMatrix(self):
         glPushMatrix()
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glEnableClientState(GL_COLOR_ARRAY)
 
         glEnableClientState(GL_TEXTURE_COORD_ARRAY)
         pass
 
-    
+    def colorPointer(self, color):
+        glEnableClientState(GL_COLOR_ARRAY)
+        glColorPointer(3, GL_FLOAT, 0, color)
 
     def vertexPointer(self, vertices):
-        colors = (len(vertices))* [1, 1, 1]
-        pcolors = (GLfloat *len(colors))(*colors)
-        glColorPointer(3, GL_FLOAT, 0, pcolors)
+        glEnableClientState(GL_COLOR_ARRAY)
         glVertexPointer(3, GL_FLOAT, 0, vertices)
 
     def TexCoordPointer(self, texels):
@@ -254,11 +252,7 @@ class OGL:
         glBindTexture(GL_TEXTURE_2D, material.texture.id)
         
     def DrawElements(self, faces, mode):
-        # glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
         glDrawElements(mode, len(faces), GL_UNSIGNED_INT, faces)
-        # glPopClientAttrib()
 
-    def popClientAttrib(self):
-        #glPopClientAttrib()
+    def popMatrix(self):
         glPopMatrix()
-        pass
