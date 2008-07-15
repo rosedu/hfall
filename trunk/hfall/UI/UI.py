@@ -4,8 +4,8 @@ panels and status windows.
 
 """
 
-__version__ = '0.2'
-__author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
+__version__ = '0.3'
+__author__ = 'Sergiu Costea (sergiu.costea@gmail.com)'
 
 
 import sys
@@ -28,16 +28,18 @@ global_render = None
 global_UI = None
 
 def on_mouse_drag(x,y,dx,dy,buttons,modifiers):
-  	if global_UI.mouse_enabled==True:
-		factor = 1
+  	factor=1
+  	if global_UI.mouse_enabled==True and buttons==window.mouse.RIGHT:
 		global_render.rotate(factor,0,0,dx)
   		pass
+	if global_UI.mouse_enabled==True and buttons==window.mouse.LEFT:
+	  	global_render.rotate(factor,-dy,dx,0)
 
 
 def on_mouse_motion(x,y,dx,dy):
-  	if global_UI.mouse_enabled==True:
-  		factor = 1
-		global_render.rotate(factor,-dy,dx,0)
+  	factor=1
+  	#if global_UI.mouse_enabled==True:
+	#	global_render.rotate(factor,-dy,dx,0)
   	
 def on_key_press(symbol,modifiers):
 	if global_UI.input_handler == "Engine":
@@ -245,10 +247,10 @@ class UI(Task):
                 """
   		#txt = Sprite(0,0,2,2,"test.bmp")
 		#self.load_2DUI(txt)
-  		self.helv = font.load('Helvetica',global_render.w.width/15.0)
-		self.text = font.Text(self.helv,"Hello console!",global_render.w.width/2,\
-		    global_render.w.height/2,halign = font.Text.CENTER,\
-		    valign = font.Text.CENTER,color = (1,1,1,0.5))
+  		self.helv = font.load('Helvetica',22)
+		self.text = font.Text(self.helv,"Hammerfall Graphics Engine",\
+		    20,20,halign = font.Text.LEFT,\
+		    valign = font.Text.BOTTOM,color = (1,1,1,1))
 		global_render.addtext(self.text)
   		pass
 		

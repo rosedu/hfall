@@ -130,6 +130,7 @@ class Render(base.Task):
                 self.ogl.Render3D(model)
             # TODO: special effects here
             # TODO: save openGL state here
+  	    glDisable(GL_LIGHTING)
             for model in self._2dlist:
                 self.ogl.Render2D(model)
   	    #Alien code here - text rendering
