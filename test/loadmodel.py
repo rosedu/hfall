@@ -1,7 +1,7 @@
 import sys
 import pyglet
 from pyglet.gl import *
-sys.path.insert(0, "../trunk/hfall/")
+sys.path.insert(0, "../trunk/hfall")
 sys.path.insert(0, "../trunk/hfall/UI")
 sys.path.insert(0, "../trunk/hfall/Engine")
 sys.path.insert(0, "../trunk/hfall/Parser")
