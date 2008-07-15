@@ -33,6 +33,7 @@ class Bitmap:
   	_DEFAULT_BLUE = 255
   	
   	def __init__(self,file_path,format=BMP_RGB,default_alpha=255):
+                print "-",file_path,"-"
 	  	bmp_file = open(file_path,"r")
 		if (bmp_file==None):
 	  		return None 

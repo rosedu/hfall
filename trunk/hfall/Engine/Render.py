@@ -65,7 +65,6 @@ class Render(base.Task):
 	self.LightDiffuse = (GLfloat * 4)(*raw_LightDiffuse)
 	self.LightPosition = (GLfloat * 4)(*raw_LightPosition)
   	self.angle = Mathbase.Vector3D(0,0,0)
-  	self.fps = "0"
 
         try:
             # Try to create a window with antialising
@@ -116,8 +115,7 @@ class Render(base.Task):
             glLightfv(GL_LIGHT1, GL_DIFFUSE, self.LightDiffuse)
             glLightfv(GL_LIGHT1, GL_POSITION, self.LightPosition)
             glEnable(GL_LIGHT1)
-
-            
+       
             # TODO: camera manipulation
             # For dodecadron testing
             point_to_translate = Mathbase.Vector3D(self.transx,\
@@ -128,7 +126,7 @@ class Render(base.Task):
             self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1)) 
             # TODO: 3D model drawing
             for model in self._3dlist:
-                self.ogl.Render3D(model)
+                model.render(self.ogl)
             # TODO: special effects here
             # TODO: save openGL state here
   	    glDisable(GL_LIGHTING)
@@ -142,7 +140,7 @@ class Render(base.Task):
             
             self.w.flip()
             self.fps=clock.get_fps()
-            #print self.fps
+            print self.fps
             "To be deleted later on, examples"
             #self._angle += 0.5
             # if self._xpos > 3 :

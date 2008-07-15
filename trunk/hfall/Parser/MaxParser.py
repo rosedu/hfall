@@ -112,6 +112,7 @@ class MaxParser:
     def readMaterialChunk(self, bytes):
         header = Chunks.ChunkHeader()
         material = Chunks.MaterialChunk()
+        material.textures = []
         while bytes > 0:
             self.readChunkHeader(header)
             for case in switch(header.chunk_id):
@@ -183,64 +184,78 @@ class MaxParser:
                     print "   Texture Map 1"
                     os.write(1, "    Percentage: ")
                     material.textureMap1 = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.textureMap1)
                     break
                 if case(_3DS.TEXTURE_MAP_2):
                     print "   Texture Map 2"
                     os.write(1, "    Percentage: ")
                     material.textureMap2 = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.textureMap2)
                     break
                 if case(_3DS.BUMP_MAP):
                     print "   Bump Map"
                     os.write(1, "    Percentage: ")
                     material.bumpMap = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.bumpMap)
                     break
                 if case(_3DS.SPECULAR_MAP):
                     print "   Specular Map"
                     os.write(1, "    Percentage: ")
                     material.specularMap = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.specularMap)
                     break
                 if case(_3DS.REFLECTION_MAP):
                     print "   Reflection Map"
                     os.write(1, "    Percentage: ")
                     material.reflectionMap = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.reflectionMap)
                     break
                 if case(_3DS.OPACITY_MAP):
                     print "   Opacity Map"
                     os.write(1, "    Percentage: ")
                     material.opacityMap = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.opacityMap)
                     break
                 if case(_3DS.SHININESS_MAP):
                     print "   Shininess Map"
                     os.write(1, "    Percentage: ")
                     material.shininessMap = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.shininessMap)
                     break
                 if case(_3DS.TEXTURE_1_MASK):
                     print "   Texture 1 mask"
                     material.textureMask1 = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.textureMask1)
                     break
                 if case(_3DS.TEXTURE_2_MASK):
                     print "   Texture 2 mask"
                     material.textureMask2 = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.textureMask2)
                     break
                 if case(_3DS.OPACITY_MASK):
                     print "   Opacity mask"
                     material.opacityMask = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.opacityMask)
                     break
                 if case(_3DS.BUMP_MASK):
                     print "   Bump mask"
                     material.bumpMask = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.bumpMask)
                     break
                 if case(_3DS.SHININESS_MASK):
                     print "   Shininess mask"
                     material.shininessMask = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.shininessMask)
                     break
                 if case(_3DS.SPECULAR_MASK):
                     print "   Specular mask"
                     material.specularMask = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.specularMask)
                     break
                 if case(_3DS.REFLECTION_MASK):
                     print "   Reflection mask"
                     material.reflectionMask = self.readTextureChunk(header.chunk_length - 6)
+                    material.textures.append(material.reflectionMask)
                     break
                 if case():
                     print "   Skip unknown %X subchunk" %(header.chunk_id)
@@ -455,9 +470,10 @@ class MaxParser:
         name = ""
         while True:
             c = self.file.readChar()
-            name = name + c
             if c == '\0':
                 break
+            else:
+                name = name + c
         return name
 
     def readColor(self):

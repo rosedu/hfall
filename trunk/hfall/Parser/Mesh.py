@@ -7,10 +7,21 @@ used to draw our models to screen.
 __version__ = '0.001'
 __author__ = 'Andrei Buhaiu(andreibuhaiu@gmail.com)'
 
+import sys
+sys.path.insert(0, "..")
+sys.path.insert(0, "../Engine")
 import pyglet
 from pyglet.gl import *
+from OGLbase import OGL as RenderDevice
 
 class Mesh:
+
+    class Triangles:
+    
+        def __init__(self, faces, material):
+            self.faces = faces
+            self.material = material
+        
     """
     This is our Model class. It includes the faces, vertices, materials,
     persepctive matrix, colors and draw mode of each mesh.
@@ -18,8 +29,7 @@ class Mesh:
     """
 
     
-    def __init__(self, fac, vert, texels, mats, matrix, color = None, \
-                 draw_mode = GL_TRIANGLES, tex = None):
+    def __init__(self, vert, texels, tri, matrix, color = None, draw_mode = GL_TRIANGLES):
         
         """
         faces       - the faces formed with the vertices
@@ -31,12 +41,20 @@ class Mesh:
                       GL_QUADS, and so forth
 
         """
-        
-        self.faces = fac
+
         self.vertices = vert
         self.texels = texels
-        self.materials = mats
+        self.triangles = tri
         self.matrix4 = matrix
         self.colors = color
         self.mode = draw_mode
-        self.texture = tex
+
+    def render(self, renderDevice):
+        renderDevice.pushClientAttrib()
+        renderDevice.vertexPointer(self.vertices)
+        for faces in self.triangles:
+            renderDevice.setTexture(faces.material)
+            renderDevice.DrawElements(faces.faces, self.mode)
+        renderDevice.TexCoordPointer(self.texels)
+        renderDevice.popClientAttrib()
+        

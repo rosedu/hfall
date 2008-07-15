@@ -63,10 +63,10 @@ class OGL:
         glClearDepth(1.0)
         glEnable(GL_DEPTH_TEST)
   	
-  	#glDepthFunc(GL_LEQUAL)
-  	#glBlendFunc(GL_SRC_ALPHA, GL_ONE)
-  	#glEnable(GL_BLEND)
-  	#glAlphaFunc(GL_GREATER,0.1)
+  	glDepthFunc(GL_LEQUAL)
+  	glBlendFunc(GL_SRC_ALPHA, GL_ONE)
+  	glEnable(GL_BLEND)
+  	glAlphaFunc(GL_GREATER,0.1)
   	glEnable(GL_ALPHA_TEST)
   	glEnable(GL_TEXTURE_2D)
         glEnableClientState(GL_VERTEX_ARRAY)
@@ -228,21 +228,35 @@ class OGL:
         # We extract the perspective matrix that we used
         # so that the new mesh is built on its own matrix
         glPopMatrix()
-        
-    def Render3D(self, model):
-        """
-        This function is used to render any 3D graphic.
-            x - the x position of the 2D rendered element
-            y - the y position of the 2D rendered element
-            w - the width of the 2D rendered element
-            h - the height of the 2D rendered element
-            color - the color of the rendered element. It is possible to
-                    use alpha blending.
 
-        """
-        #glLoadIdentity()
-        # glMultMatrixf(model.matrix4)
-        # We render each mesh in the model
-        for mesh in model.meshes:
-            self.RenderMesh(mesh)
+    def pushClientAttrib(self):
+        #glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
+        glPushMatrix()
+        pass
+
+    def vertexPointer(self, vertices):
+        glEnableClientState(GL_VERTEX_ARRAY)
+        pvertices = (GLfloat * len(vertices))(*vertices)
+        glVertexPointer(3, GL_FLOAT, 0, pvertices)
+
+    def TexCoordPointer(self, texels):
+        glEnableClientState(GL_COLOR_ARRAY)
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+        colors = (len(texels))* [1, 1, 1]
+        pcolors = (GLfloat *len(colors))(*colors)
+        ptexels = (GLfloat *len(texels))(*texels)
+        glColorPointer(3, GL_FLOAT, 0, pcolors)
+        glTexCoordPointer(2, GL_FLOAT, 0, ptexels)
+
+    def setTexture(self, material):
+        glEnable(GL_TEXTURE_2D)
+        glBindTexture(GL_TEXTURE_2D, material.texture.id)
         
+    def DrawElements(self, faces, mode):
+        pfaces = (GLuint * len(faces))(*faces)
+        glDrawElements(mode, len(pfaces), GL_UNSIGNED_INT, pfaces)
+
+    def popClientAttrib(self):
+        #glPopClientAttrib()
+        glPopMatrix()
+        pass
