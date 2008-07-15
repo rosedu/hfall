@@ -52,9 +52,9 @@ class Mesh:
     def render(self, renderDevice):
         renderDevice.pushClientAttrib()
         renderDevice.vertexPointer(self.vertices)
+        renderDevice.TexCoordPointer(self.texels)
         for faces in self.triangles:
             renderDevice.setTexture(faces.material)
             renderDevice.DrawElements(faces.faces, self.mode)
-        renderDevice.TexCoordPointer(self.texels)
         renderDevice.popClientAttrib()
         
