@@ -11,6 +11,7 @@ import sys
 sys.path.insert(0, "..")
 sys.path.insert(0, "../Engine")
 import pyglet
+import ctypes
 from pyglet.gl import *
 from OGLbase import OGL as RenderDevice
 
@@ -48,6 +49,18 @@ class Mesh:
         self.matrix4 = matrix
         self.colors = color
         self.mode = draw_mode
+
+    def init(self):
+        colors = (len(self.vertices))* [1, 1, 1]
+        pcolors = (GLfloat *len(colors))(*colors)
+        pvertices = (GLfloat * len(self.vertices))(*self.vertices)
+        ptexels = (GLfloat *len(self.texels))(*self.texels)
+        for i in range(0, len(self.triangles)):
+            pfaces = (GLuint * len(self.triangles[i].faces))(*self.triangles[i].faces)
+            self.triangles[i].faces = pfaces
+        self.vertices = pvertices
+        self.colors = pcolors
+        self.texels = ptexels
 
     def render(self, renderDevice):
         renderDevice.pushClientAttrib()

@@ -52,6 +52,7 @@ class ModelLoader:
                     for i in group.faces:
                         triangles.faces += m.data.faces.faces[i]
                     mesh.triangles.append(triangles)
+            mesh.init()
             self.model.meshes.append(mesh)
         self.modelMng.add(self.model)
 

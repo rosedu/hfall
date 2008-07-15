@@ -230,33 +230,32 @@ class OGL:
         glPopMatrix()
 
     def pushClientAttrib(self):
-        #glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
         glPushMatrix()
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_COLOR_ARRAY)
+
         glEnableClientState(GL_TEXTURE_COORD_ARRAY)
         pass
+
+    
 
     def vertexPointer(self, vertices):
         colors = (len(vertices))* [1, 1, 1]
         pcolors = (GLfloat *len(colors))(*colors)
         glColorPointer(3, GL_FLOAT, 0, pcolors)
-        pvertices = (GLfloat * len(vertices))(*vertices)
-        glVertexPointer(3, GL_FLOAT, 0, pvertices)
+        glVertexPointer(3, GL_FLOAT, 0, vertices)
 
     def TexCoordPointer(self, texels):
-        ptexels = (GLfloat *len(texels))(*texels)
-        glTexCoordPointer(2, GL_FLOAT, 0, ptexels)
+        glTexCoordPointer(2, GL_FLOAT, 0, texels)
 
     def setTexture(self, material):
         glEnable(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, material.texture.id)
         
     def DrawElements(self, faces, mode):
-        glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
-        pfaces = (GLuint * len(faces))(*faces)
-        glDrawElements(mode, len(pfaces), GL_UNSIGNED_INT, pfaces)
-        glPopClientAttrib()
+        # glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
+        glDrawElements(mode, len(faces), GL_UNSIGNED_INT, faces)
+        # glPopClientAttrib()
 
     def popClientAttrib(self):
         #glPopClientAttrib()
