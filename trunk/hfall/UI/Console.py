@@ -4,8 +4,8 @@ this class.
 
 """
 
-__version__ = '0.1'
-__author__ = 'Alex Eftimie (alexeftimie@gmail.com)'
+__version__ = '0.2'
+__author__ = 'Sergiu Costea (sergiu.costea@gmail.com)'
 
 import sys
 sys.path.insert(0, "..")
@@ -14,6 +14,8 @@ from pyglet import font
 import base
 import Render
 import UI
+import OGLbase
+from pyglet.gl import *
 from Sprite import Sprite
 from pyglet.window import key
 
@@ -35,6 +37,7 @@ class Console():
     shift_pairs = {} 
     registered_functions = {} 
     input_line = ""
+    command = ""
     prompt = ">>>"
 
     #Constants
@@ -128,6 +131,7 @@ class Console():
         	self.input_text.text = self.input_line
 	elif action == self.CON_PUSH:
 	        self.push_line(self.input_line)
+	        self.command = self.input_line
 		self.input_line = self.prompt 
 		self.input_text.text = self.input_line
 
@@ -148,8 +152,8 @@ class Console():
 		return
 
 	if symbol == key.ENTER and len(self.input_line)>len(self.prompt):
-		self.parse_command()
   		self.refresh_lines(self.CON_PUSH)
+		self.parse_command()
   		return
 
         if len(self.input_line)==self.MAX_CHARS:
@@ -171,11 +175,30 @@ class Console():
 
 
     def parse_command(self):
-      	command = self.input_line
+      	command = self.command[3:]
+	command = command.strip()
 	token_list = []
-	
-  	pass
-	
+	while True:
+	      parts = command.partition(" ")
+	      aux = parts[0].strip()
+	      if aux!="":
+	      	  token_list.append(aux)
+	      aux = parts[1].strip()
+	      if aux!="":
+	      	  token_list.append(aux)
+	      command = parts[2].strip()
+	      if command=="":
+	      	  break
+	if token_list[0]=="exec":
+	      token_list.remove("exec")
+	      run_command = ""
+	      for token in token_list:
+	      	  run_command = run_command + " " + token
+	      run_command = run_command.strip()
+	      self.push_line("Executing engine call: " + run_command)
+	      exec(run_command)
+		
+
     def register_command(self,func,func_str):
       	registered_functions[func_str] = func
 
@@ -231,6 +254,13 @@ class Console():
 	valid[key.BACKSPACE] = ''
 	valid[key.ENTER] = ''
 	valid[key.DELETE] = ''
+	valid[key.EQUAL] = '='
+	valid[key.PLUS] = '+'
+	valid[key.UNDERSCORE] = '_'
+	valid[key.MINUS] = '-'
+	valid[key.NUM_MULTIPLY] = '*'
+	valid[key.APOSTROPHE] = '\''
+	valid[key.DOUBLEQUOTE] = '"'
 	self.valid_chars = valid
 
 	shift = {}
@@ -240,5 +270,9 @@ class Console():
 	shift[key.COMMA] = key.LESS
 	shift[key.BRACKETLEFT] = key.BRACELEFT
 	shift[key.BRACKETRIGHT] = key.BRACERIGHT
+	shift[key.EQUAL] = key.PLUS
+	shift[key.MINUS] = key.UNDERSCORE
+	shift[key._8] = key.NUM_MULTIPLY
+	shift[key.APOSTROPHE] = key.DOUBLEQUOTE
 	self.shift_chars = shift
 
