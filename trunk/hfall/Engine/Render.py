@@ -16,11 +16,13 @@ sys.path.insert(0, "../UI")
 from pyglet.gl import *
 from pyglet import window
 from pyglet import clock
+from pyglet import font
 
 import Mathbase
 import OGLbase
 import base
 from base import kernel as hfk
+
 # import UI
 
 class Render(base.Task):
@@ -131,17 +133,23 @@ class Render(base.Task):
             # TODO: special effects here
             # TODO: save openGL state here
   	    glDisable(GL_LIGHTING)
-  	    glDisable(GL_BLEND)
+  	    glDisable(GL_DEPTH_TEST)
+
   	    self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
   	    self.ogl.activate_model()
+	    #just to make it work
+  	    some_font = font.load('Helvetica',10)
+	    some_text = font.Text(some_font,".",0,0)
+	    some_text.draw()
+
             for model in self._2dlist:
                 self.ogl.Render2D(model)
-  	    #Alien code here - text rendering
-  	    #self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
-  	    #self.ogl.activate_model()
+
   	    for text in self._textlist:
 	        text.draw()
             
+  	    glEnable(GL_DEPTH_TEST)
+
             self.w.flip()
             self.fps=clock.get_fps()
             #print self.fps

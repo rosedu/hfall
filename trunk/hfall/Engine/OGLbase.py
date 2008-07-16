@@ -54,7 +54,7 @@ class OGL:
             if height == 0:
                 height = 1
             gluPerspective(60.0, width / float(height), .1, 1000.0)
-            glMatrixMode(GL_MODELVIEW)
+            #glMatrixMode(GL_MODELVIEW)
 
         # finalizing the initialization
         glClearColor(clearcolor[0], clearcolor[1], clearcolor[2], \
@@ -168,7 +168,7 @@ class OGL:
                     use alpha blending.
 
         """
-	#self.activate_model()
+	self.activate_model()
         #glTranslatef(0.0,0.0,-6.0);
   	if model.is_textured==True:
 		glBindTexture(GL_TEXTURE_2D,model.texture_ids[0])
@@ -187,13 +187,12 @@ class OGL:
         	glVertex2f(model.x, model.yy)
   		glEnd()
   	else:
+		glBegin(GL_QUADS)
         	if len(model.color) == 3:
             		glColor3f(model.color[0], model.color[1], model.color[2])
         	else:
             		glColor4f(model.color[0], model.color[1], model.color[2], \
               	        	model.color[3])
-		print "%d %d %d %d" % (model.color[0],model.color[1],model.color[2],model.color[3])
-		glBegin(GL_QUADS)
 		glVertex2f(model.x, model.y)
   		glVertex2f(model.xx,model.y)
   		glVertex2f(model.xx, model.yy)

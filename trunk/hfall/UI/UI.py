@@ -120,8 +120,9 @@ class UI(Task):
 	#Colors
 	C_WHITE = (1,1,1,1)
   	C_YELLOW = (1,1,0,1)
-  	C_GRAY = (0.8,0.8,0.8,1)
-  	C_RED = (1,0,0,0)
+  	C_GRAY = (0.5,0.5,0.5,1)
+  	C_LIGHTGRAY = (0.8,0.8,0.8,1)
+  	C_RED = (1,0,0,1)
 
 	def __init__(self,render):
 	  	#Gain access to render
@@ -157,7 +158,7 @@ class UI(Task):
 
 		self.add_fps()
 		self.loaded_UI = True
-		self.console = Console(0,200,self.C_RED,self.C_GRAY,self.C_YELLOW)
+		self.console = Console(0,200,self.C_GRAY,self.C_LIGHTGRAY,self.C_YELLOW)
 
                 self.keyboard = key.KeyStateHandler()
                 global_render.w.push_handlers(self.keyboard)
