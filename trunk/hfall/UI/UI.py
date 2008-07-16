@@ -64,12 +64,18 @@ def engine_get(symbol,modifiers):
                 global_UI.switch_focus()
   	elif symbol==window.key.M:
   		global_UI.mouse_enabled = not global_UI.mouse_enabled
+	elif symbol==window.key.F2:
+	  	global_UI.console.toggle_visible()
 		
 def console_get(symbol,modifiers):
         if symbol==window.key.QUOTELEFT:
                 global_UI.switch_focus()
         elif symbol==window.key.ESCAPE:
                 global_UI.switch_focus()
+	elif symbol==window.key.F2:
+	       	global_UI.console.toggle_visible()
+	elif symbol in global_UI.console.valid_chars:
+	        global_UI.console.read(symbol,modifiers)
 
 def game_get(symbol,modifiers):
         pass
@@ -88,7 +94,6 @@ def check_keyboard(keyboard):
    			global_render.transy+=1
    		elif keyboard[key.E]:
    			global_render.transy-=1
-	
 class UI(Task):
   	""" 
 	  Contains UI elements including console interaction
@@ -158,7 +163,7 @@ class UI(Task):
 
 		self.add_fps()
 		self.loaded_UI = True
-		self.console = Console(0,200,self.C_GRAY,self.C_LIGHTGRAY,self.C_YELLOW)
+		self.console = Console(0,200,self.C_GRAY,self.C_LIGHTGRAY,self.C_YELLOW,self.C_RED)
 
                 self.keyboard = key.KeyStateHandler()
                 global_render.w.push_handlers(self.keyboard)
