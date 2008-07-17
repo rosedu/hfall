@@ -24,4 +24,4 @@ class Image:
                 bitmap = Bitmap(self.file)
                 self.width = bitmap.width
                 self.height = bitmap.height
-                self.data = bitmap.data.tolist()
+                self.data = bitmap.data
