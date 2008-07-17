@@ -18,6 +18,7 @@ import MaterialManager
 import ModelManager
 import TextureManager
 import Bitmap
+import Light
 from base import kernel as hfk
 
 class drawer(base.Task):
@@ -47,6 +48,11 @@ class drawer(base.Task):
         Loader = ModelLoader.ModelLoader(self.modelmng, self.materialmng,\
                                          self.texturemng)
         Loader.loadModel(sys.argv[1])
+        light1 = Light.Light( GL_LIGHT1, \
+                    rLightAmbient = [1.0, 1.0, 1.0, 1.0],\
+                    rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
+                    rLightPosition = [0.0, -1.5, -50.0, 1.0])
+        light1.LEnable()
         self.model = Loader.getModel()
 
         # self.model = hfall.Model.Model(self.mesh, None)
@@ -70,8 +76,7 @@ class drawer(base.Task):
     def name(self):
         return "drawer"
 
-render = Render.Render(800, 600, posx = 0, posy = -1.5, posz = -100,\
-                             raw_LightPosition = [0.0, 1.0, 0.0, 0.0])
+render = Render.Render(800, 600, posx = 0, posy = -1.5, posz = -100)
 hfk.insert(drawer())
 hfk.insert(render)
 hfk.insert(UI(render))

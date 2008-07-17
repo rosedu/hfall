@@ -20,10 +20,10 @@ from pyglet import font
 
 import Mathbase
 import OGLbase
+import Light
 import base
 from base import kernel as hfk
 
-# import UI
 
 class Render(base.Task):
     """
@@ -34,11 +34,7 @@ class Render(base.Task):
     
     def __init__(self, width, height, near=0.1, far=100.0,\
                  clearcolor=(0.0, 0.0, 0.0, 0.0),\
-                 posx = 0, posy = 0, posz = 0,\
-                 raw_LightAmbient = [1.0, 1.0, 1.0, 1.0],\
-               	 raw_LightDiffuse = [1.0, 1.0, 1.0, 1.0],\
-                 raw_LightPosition = [0.0, -1.5, -50.0, 1.0]
-                 ):
+                 posx = 0, posy = 0, posz = 0):
         """
         Render task initialization. It starts pyglet and OpenGL.
             width - the width of the game window
@@ -60,15 +56,8 @@ class Render(base.Task):
         self.transz = posz;
 	self.width = width
 	self.height = height
-	self.LighAmbient = [];
-        self.LighDiffuse = [];
-      	self.LighPosition = [];
-	self.LightAmbient = (GLfloat * 4)(*raw_LightAmbient)
-	self.LightDiffuse = (GLfloat * 4)(*raw_LightDiffuse)
-	self.LightPosition = (GLfloat * 4)(*raw_LightPosition)
   	self.angle = Mathbase.Vector3D(0,0,0)
   	self.fps = "0"
-
         try:
             # Try to create a window with antialising
             # TODO: add other possible config via another parameter
@@ -115,10 +104,7 @@ class Render(base.Task):
   	    
             glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
-            glLightfv(GL_LIGHT1, GL_AMBIENT, self.LightAmbient)
-            glLightfv(GL_LIGHT1, GL_DIFFUSE, self.LightDiffuse)
-            glLightfv(GL_LIGHT1, GL_POSITION, self.LightPosition)
-            glEnable(GL_LIGHT1)
+            
             # TODO: camera manipulation
             # For dodecadron testing
             point_to_translate = Mathbase.Vector3D(self.transx,\
