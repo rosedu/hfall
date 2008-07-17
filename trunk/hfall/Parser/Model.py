@@ -28,5 +28,7 @@ class Model:
         self.name = name
 
     def render(self, rnd):
+        # glPushMatrix();
+        
         for mesh in self.meshes:
             mesh.render(rnd)

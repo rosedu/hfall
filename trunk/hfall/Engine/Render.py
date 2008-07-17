@@ -21,6 +21,7 @@ from pyglet import font
 import Mathbase
 import OGLbase
 import Light
+import Fog
 import base
 from base import kernel as hfk
 
@@ -102,9 +103,26 @@ class Render(base.Task):
   	    self.ogl.activate_perspective(self.w.width,self.w.height)
   	    self.ogl.activate_model()
   	    
-            glEnable(GL_LIGHTING)
+            # glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
             
+            # Fog.Fog()
+            # Fog.FEnable()
+            """
+            # glClearColor(0.5,0.5,0.5,1.0)	
+            rFogMode = [ GL_EXP, GL_EXP2, GL_LINEAR ]
+            rFogColor= [0.5, 0.5, 0.5, 1.0]
+            FogFilter = 0
+            FogMode = (GLuint * 3)(*rFogMode)
+            FogColor = (GLfloat * 4)(*rFogColor)
+            glFogi(GL_FOG_MODE, FogMode[FogFilter])
+            glFogfv(GL_FOG_COLOR, FogColor)
+            glFogf(GL_FOG_DENSITY, 0.1)
+            glHint(GL_FOG_HINT, GL_NICEST)
+            glFogf(GL_FOG_START, -50.0)
+            glFogf(GL_FOG_END, -100.0)
+            glEnable(GL_FOG)
+            """
             # TODO: camera manipulation
             # For dodecadron testing
             point_to_translate = Mathbase.Vector3D(self.transx,\

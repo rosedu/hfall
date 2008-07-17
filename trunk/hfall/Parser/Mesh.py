@@ -55,15 +55,17 @@ class Mesh:
         pcolors = (GLfloat *len(colors))(*colors)
         pvertices = (GLfloat * len(self.vertices))(*self.vertices)
         ptexels = (GLfloat *len(self.texels))(*self.texels)
+        pmatrix4 = (GLfloat *len(self.matrix4))(*self.matrix4)
         for i in range(0, len(self.triangles)):
             pfaces = (GLuint * len(self.triangles[i].faces))(*self.triangles[i].faces)
             self.triangles[i].faces = pfaces
         self.vertices = pvertices
         self.colors = pcolors
         self.texels = ptexels
+        self.matrix4 = pmatrix4
 
     def render(self, renderDevice):
-        renderDevice.pushMatrix()
+        renderDevice.pushMatrix(self.matrix4)
         renderDevice.colorPointer(self.colors)
         renderDevice.vertexPointer(self.vertices)
         renderDevice.TexCoordPointer(self.texels)

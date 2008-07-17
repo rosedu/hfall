@@ -199,39 +199,33 @@ class OGL:
   		glVertex2f(model.x, model.yy)
         	glEnd()      
 
-    def RenderMesh(self, mesh):
+    def pushMatrix(self, matrix):
         glPushMatrix()
-        #glLoadIdentity()
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glEnableClientState(GL_COLOR_ARRAY)
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-        colors = ((len(mesh.vertices) // 2) + 1)* [1, 1, 1, 1, 1, 1]
-        mesh.colors = (GLfloat * len(colors))(*colors)
-        glColorPointer(3, GL_FLOAT, 0, mesh.colors)
+        # glLoadIdentity()
         
-        if (mesh.materials == []):
-            # selects the color that will be used if
-            # no material was given
-            pass
+        mat = (GLfloat * 16)()
+        glGetFloatv(GL_MODELVIEW_MATRIX, mat)
+        rmat = []
+        for i in range(len(mat)):
+            rmat.append(mat[i])
+        print "MATRIX:"
+        print rmat
 
+        rmat = []
+        for i in range(len(matrix)):
+            rmat.append(matrix[i])
+        print "MATRIX_X:"
+        print rmat
+
+        glMultMatrixf(matrix)
         
-        else:
-            glEnable(GL_TEXTURE_2D)
-            glBindTexture(GL_TEXTURE_2D, mesh.texture)
-            glTexCoordPointer(2, GL_FLOAT, 0, mesh.texels)
-
-
-        # We send the actual vertices to OpenGL so that it may render them
-        glVertexPointer(3, GL_FLOAT, 0, mesh.vertices)
-        # We draw that actual faces that form the model
-        glDrawElements(mesh.mode, len(mesh.faces), GL_UNSIGNED_INT, mesh.faces)
-        # We extract the perspective matrix that we used
-        # so that the new mesh is built on its own matrix
-        glPopMatrix()
-
-    def pushMatrix(self):
-        glPushMatrix()
-
+        mat = (GLfloat * 16)()
+        glGetFloatv(GL_MODELVIEW_MATRIX, mat)
+        rmat = []
+        for i in range(len(mat)):
+            rmat.append(mat[i])
+        print "MATRIX_AFTER:"
+        print rmat
         glEnableClientState(GL_TEXTURE_COORD_ARRAY)
         pass
 
