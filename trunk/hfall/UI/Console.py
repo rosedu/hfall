@@ -19,6 +19,15 @@ from pyglet.gl import *
 from Sprite import Sprite
 from pyglet.window import key
 
+
+def ext_push_line(line):
+    UI.global_UI.console.push_line(line)
+
+def ext_get_var(p):
+    text = UI.global_UI.console.get_var(int(p))
+    if text!=None:
+    	ext_push_line(text)
+
 class Console():
     """
     The Console class. It represents one of the most important tasks in
@@ -30,9 +39,12 @@ class Console():
     enabled = False 
     bottom_left_y = 0
     bottom_left_x = 0
-    size = 13
+    size = 10 
     lines = []
+    extended_lines = []
+    extended = False
     texts = []
+    mem_var = []
     valid_chars = {} 
     shift_pairs = {} 
     registered_functions = {} 
@@ -42,7 +54,7 @@ class Console():
 
     #Constants
     MAX_CHARS = 80 
-    MAX_LINES = 10
+    MAX_LINES = 0 	#changed from init
     CON_STAY = 0
     CON_PUSH = 1
 		
@@ -58,6 +70,7 @@ class Console():
 	self.c_text = c_text
 	self.c_comm = c_comm
 
+	self.MAX_LINES = height/(self.size+4)
 	self.init_valid_chars()
 	
 	#Create background
@@ -72,6 +85,10 @@ class Console():
 
 	self.init_lines()
   	self.hide()
+
+  	#Register functions
+  	self.register_function(ext_push_line,"cprint")
+	self.register_function(ext_get_var,"mem")
 
     def enable(self):
         self.enabled = True 
@@ -108,6 +125,16 @@ class Console():
 		UI.global_UI.load_2Dtext(line)	
 	self.enable()
 
+    def get_var(self,p):
+      	if p>=len(self.mem_var) or p<0:
+		self.push_line("Error - no value at index")
+		return str("None")
+	else:
+	  	return str(self.mem_var[p])
+
+    def register_function(self,func,func_str):
+        self.registered_functions[func_str] = func
+
     def init_lines(self):
         self.input_line = self.prompt
 	self.input_text = font.Text(self.con_font,self.input_line,self.bottom_left_x+4,\
@@ -120,11 +147,18 @@ class Console():
   		self.lines.append(font.Text(self.con_font,"",self.bottom_left_x+4,\
 	      		self.bottom_left_y + (self.size+3)*(iter+1),halign=font.Text.LEFT,\
 	  		valign = font.Text.BOTTOM, color = self.c_text))		
-
 	for line in self.lines:
 	   	UI.global_UI.load_2Dtext(line)
-  		
-	
+    	self.extended_lines = []
+        for iter in range(self.MAX_LINES):
+  		self.extended_lines.append(font.Text(self.con_font,"",\
+		      self.bottom_left_x+UI.global_render.w.width/2+4,\
+	    	      self.bottom_left_y + (self.size+3)*(iter+1), halign=font.Text.LEFT,\
+		      valign = font.Text.BOTTOM, color = self.c_text))		
+
+    def extend_lines(self):
+	for line in self.extended_lines:
+	   	UI.global_UI.load_2Dtext(line)
         
     def refresh_lines(self,action):
         if action == self.CON_STAY:
@@ -136,6 +170,9 @@ class Console():
 		self.input_text.text = self.input_line
 
     def push_line(self,txt):
+	for iter in range(self.MAX_LINES-1,0,-1):
+		self.extended_lines[iter].text = self.extended_lines[iter-1].text
+	self.extended_lines[0].text = self.lines[-1].text
         for iter in range(self.MAX_LINES-1,0,-1):
 	  	self.lines[iter].text = self.lines[iter-1].text
 	self.lines[0].text = txt
@@ -178,6 +215,7 @@ class Console():
       	command = self.command[3:]
 	command = command.strip()
 	token_list = []
+	mem = self.mem_var
 	while True:
 	      parts = command.partition(" ")
 	      aux = parts[0].strip()
@@ -197,10 +235,60 @@ class Console():
 	      run_command = run_command.strip()
 	      self.push_line("Executing engine call: " + run_command)
 	      exec(run_command)
-		
+	elif token_list[0]=="help":
+	      self.push_line("Available commands:")
+	      self.push_line("exec <python command> - execute code right in the engine")
+	      self.push_line("help - display this help")
+	      self.push_line("extend - double the barrels, double the fun")
+	      self.push_line("[reg] <python function> <params> - call registered function")
+	elif token_list[0]=="extend":
+	      self.extended = True
+	      self.extend_lines()
+	elif token_list[0]=="add":
+	      if len(token_list)==1:
+	      	  self.push_line("Error - no arguments given")
+	      	  return
+	      if len(token_list)>3:
+	      	  self.push_line("Error - too many arguments (tuples must not contain spaces)")
+	          return
+	      if len(token_list)==2:
+	      	  self.mem_var.append(token_list[1])
+	      elif token_list[1]=="-s":
+	      	  self.mem_var.append(token_list[2])
+	      elif token_list[1]=="-f":
+	      	  self.mem_var.append(float(token_list[2]))
+	      elif token_list[1]=="-t":
+	          self.mem_var.append(tuple(token_list[2]))
+	      elif token_list[1]=="-o":
+	      	  exec("self.mem_var.append("+token_list[2]+")")
+	      self.push_line("Variable added at position "+str(len(self.mem_var)-1))
+	elif token_list[0]=="reg":
+	      token_list.remove("reg")
+	      if len(token_list)==0:
+	      	   self.push_line("Error - no arguments given")
+	      	   return
+	      if token_list[0] in self.registered_functions:
+	           for token in token_list:
+	      		if token[0]=="$":
+	      			token=float(token)
+	      	   func = token_list[0]
+	           token_list.remove(token_list[0])
+	      	   self.registered_functions[func](*token_list)
+	      	   self.push_line("Execution completed")
+              else:
+		   self.push_line("Error - function is not registered")
+	elif token_list[0] in self.registered_functions:
+	      for token in token_list:
+	    	  if token[0]=="$":
+	    		token = float(token)
+	      func = token_list[0]
+	      token_list.remove(token_list[0])
+	      self.registered_functions[func](*token_list)
+	      self.push_line("Execution completed")
+	else:
+              self.push_line("Error - function is not registered")
+	      
 
-    def register_command(self,func,func_str):
-      	registered_functions[func_str] = func
 
     def init_valid_chars(self):
       	valid = {} 
@@ -261,6 +349,7 @@ class Console():
 	valid[key.NUM_MULTIPLY] = '*'
 	valid[key.APOSTROPHE] = '\''
 	valid[key.DOUBLEQUOTE] = '"'
+	valid[key.DOLLAR] = '$'
 	self.valid_chars = valid
 
 	shift = {}
@@ -274,5 +363,6 @@ class Console():
 	shift[key.MINUS] = key.UNDERSCORE
 	shift[key._8] = key.NUM_MULTIPLY
 	shift[key.APOSTROPHE] = key.DOUBLEQUOTE
+	shift[key._4] = key.DOLLAR
 	self.shift_chars = shift
 
