@@ -12,10 +12,8 @@ sys.path.insert(0, "..")
 sys.path.insert(0, "../Engine")
 from pyglet import font
 import base
-import Render
 import UI
-import OGLbase
-import AddModel
+from AddModel import *
 from pyglet.gl import *
 from Sprite import Sprite
 from pyglet.window import key
@@ -309,6 +307,8 @@ class Console():
 	valid[key.APOSTROPHE] = '\''
 	valid[key.DOUBLEQUOTE] = '"'
 	valid[key.DOLLAR] = '$'
+	valid[key.SLASH] = '/'
+	valid[key.QUESTION] = '?'
 	self.valid_chars = valid
 
 	shift = {}
@@ -323,5 +323,6 @@ class Console():
 	shift[key._8] = key.NUM_MULTIPLY
 	shift[key.APOSTROPHE] = key.DOUBLEQUOTE
 	shift[key._4] = key.DOLLAR
+	shift[key.SLASH] = key.QUESTION
 	self.shift_chars = shift
 
