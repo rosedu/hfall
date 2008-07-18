@@ -11,6 +11,7 @@ import base
 import OGLbase
 from UI import * 
 import Render
+import AddModel
 import Mesh
 import Model
 import ModelLoader
@@ -31,46 +32,24 @@ class drawer(base.Task):
         self._vertexes = []
         self._faces = []
         # self.mesh = []
-        self.materialmng = None
-        self.modelmng = None
-        self.texturemng = None
-        self.model = None
-        self.Loader = None
+        # self.materialmng = None
+        # self.modelmng = None
+        # self.texturemng = None
+        # self.model = None
+        # self.Loader = None
         pass
 
     def start(self, kernel):
         kernel.log.msg("Drawer started");
 
-        print "Model:", sys.argv[1]
-        self.materialmng = MaterialManager.MaterialManager()
-        self.modelmng = ModelManager.ModelManager()
-        self.texturemng = TextureManager.TextureManager()
-        Loader = ModelLoader.ModelLoader(self.modelmng, self.materialmng,\
-                                         self.texturemng)
-        Loader.loadModel(sys.argv[1])
-        self.model = Loader.getModel()
-        
+        AddModel.init(render)
+        AddModel.add_model(sys.argv[1])
         light1 = Light.Light( GL_LIGHT1, \
                     rLightAmbient = [1.0, 1.0, 1.0, 1.0],\
                     rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
                     rLightPosition = [0.0, -1.5, -50.0, 1.0])
         light1.LEnable()
         
-        """
-        light2 = Light.Light( GL_LIGHT2, \
-                    rLightAmbient = [1.0, 1.0, 1.0, 1.0],\
-                    rLightDiffuse = [0.0, 1.0, 0.0, 1.0],\
-                    rLightPosition = [0.0, -1.5, 50.0, 1.0])
-        light2.LEnable()
-        """
-        rmatrix = [1, 0, 0, 0,\
-                   0, 1, 0, 0,\
-                   0, 0, 1, 0,\
-                   0, 0, 0, 1]
-        self.model.meshes[0].matrix4 = (GLfloat *len(rmatrix))(*rmatrix)
-        # self.model = hfall.Model.Model(self.mesh, None)
-        render.add3D(self.model)
-
     def stop(self, kernel):
         pass
 

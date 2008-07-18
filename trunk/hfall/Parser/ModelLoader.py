@@ -1,7 +1,7 @@
 from MaxParser import MaxParser
 from Material import Material
 from Mesh import Mesh
-from Model import Model
+import Model
 from Texture import Texture
 from ModelManager import ModelManager
 from MaterialManager import MaterialManager
@@ -24,7 +24,7 @@ class ModelLoader:
         return True
 
     def saveModel(self):
-        self.model = Model([], [1, 0, 0, 0] +
+        self.model = Model.Model([], [1, 0, 0, 0] +
                                [0, 1, 0, 0] +
                                [0, 0, 1, 0] +
                                [0, 0, 0, 1], self.modelName)

@@ -32,3 +32,5 @@ class Model:
         
         for mesh in self.meshes:
             mesh.render(rnd)
+
+        
