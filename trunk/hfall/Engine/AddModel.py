@@ -39,5 +39,4 @@ def scale_model(model, scaling):
                     0, scaling[1], 0, 0,\
                     0, 0, scaling[2], 0,\
                     0, 0, 0, 1]
-    glMultMatrix
     matrixmultiply()
