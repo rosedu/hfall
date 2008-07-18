@@ -58,6 +58,7 @@ class Render(base.Task):
 	self.width = width
 	self.height = height
   	self.angle = Mathbase.Vector3D(0,0,0)
+  	self.enableaxis = True
   	self.fps = "0"
         try:
             # Try to create a window with antialising
@@ -137,6 +138,30 @@ class Render(base.Task):
             # TODO: special effects here
             # TODO: save openGL state here
   	    glDisable(GL_LIGHTING)
+
+            #drawing axis:
+  	    if self.enableaxis == True:
+                glBegin(GL_LINES)
+                glColor3f(1.0, 0.0, 0.0)
+                glVertex3i(0, 0, 0)
+                glVertex3i(10, 0, 0)
+                glColor3f(0.0, 1.0, 1.0)
+                glVertex3i(0, 0, 0)
+                glVertex3i(-10, 0, 0)
+                glColor3f(0.0, 1.0, 0.0)
+                glVertex3i(0, 0, 0)
+                glVertex3i(0, 10, 0)
+                glColor3f(1.0, 0.0, 1.0)
+                glVertex3i(0, 0, 0)
+                glVertex3i(0, -10, 0)
+                glColor3f(0.0, 0.0, 1.0)
+                glVertex3i(0, 0, 0)
+                glVertex3i(0, 0, 10)
+                glColor3f(1.0, 1.0, 0.0)
+                glVertex3i(0, 0, 0)
+                glVertex3i(0, 0, -10)
+                glEnd()
+  	    
   	    glDisable(GL_DEPTH_TEST)
 
   	    self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
