@@ -1,13 +1,14 @@
 import sys
 sys.path.insert(0, "../Engine")
+sys.path.insert(0, "..")
 import ModelLoader
 import MaterialManager
 import ModelManager
 import TextureManager
 import Render
 import pyglet
-import numpy
-import array
+import math
+import MathBase
 from pyglet.gl import *
 
 
@@ -39,4 +40,23 @@ def scale_model(model, scaling):
                     0, scaling[1], 0, 0,\
                     0, 0, scaling[2], 0,\
                     0, 0, 0, 1]
-    matrixmultiply()
+    model.matrix4 = MathBase.matrixmult(model.matrix4, scale_matrix)
+    
+def rotatex_model(model, theta):
+    rot_matrix = [1, 0, 0, 0,\
+                    0, math.cos(theta), - math.sin(theta), 0,\
+                    0, math.sin(theta), math.cos(theta), 0,\
+                    0, 0, 0, 1]
+    model.matrix4 = MathBase.matrixmult(model.matrix4, rot_matrix)
+def rotatey_model(model, theta):
+    rot_matrix = [math.cos(theta), 0, math.sin(theta), 0,\
+                    0, 1, 0, 0,\
+                    - math.sin(theta), 0, math.cos(theta), 0,\
+                    0, 0, 0, 1]
+    model.matrix4 = MathBase.matrixmult(model.matrix4, rot_matrix)
+def rotatez_model(model, theta):
+    rot_matrix = [math.cos(theta), - math.sin(theta), 0, 0,\
+                    math.sin(theta), math.cos(theta), 0, 0,\
+                    0, 0, 1, 0,\
+                    0, 0, 0, 1]
+    model.matrix4 = MathBase.matrixmult(model.matrix4, rot_matrix)
