@@ -139,9 +139,9 @@ class Render(base.Task):
             # TODO: save openGL state here
   	    glDisable(GL_LIGHTING)
 
-            glDisable(GL_TEXTURE_2D)
             #drawing axis:
   	    if self.enableaxis == True:
+                glDisable(GL_TEXTURE_2D)
                 glBegin(GL_LINES)
                 glColor3f(1.0, 0.0, 0.0)
                 glVertex3i(0, 0, 0)
@@ -162,10 +162,16 @@ class Render(base.Task):
                 glVertex3i(0, 0, 0)
                 glVertex3i(0, 0, -100)
                 glEnd()
-                
+                glEnable(GL_TEXTURE_2D)
+  	    
   	    glDisable(GL_DEPTH_TEST)
+
   	    self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
   	    self.ogl.activate_model()
+	    #just to make it work
+  	    some_font = font.load('Helvetica',10)
+	    some_text = font.Text(some_font,".",0,0)
+	    some_text.draw()
 
             for model in self._2dlist:
                 self.ogl.Render2D(model)
@@ -174,9 +180,6 @@ class Render(base.Task):
 	        text.draw()
             
   	    glEnable(GL_DEPTH_TEST)
-  	    glEnable(GL_TEXTURE_2D)
-  	    
-  	    self.ogl.activate_perspective(self.w.width,self.w.height)
 
             self.w.flip()
             self.fps=clock.get_fps()
@@ -235,7 +238,7 @@ class Render(base.Task):
         This function is used to remove a 3D object from the drawing list.
         
         """
-	self._3dlist.remove(x)
+	self._3dlist.pop(x)
         pass
 
     def rem2D(self,x):

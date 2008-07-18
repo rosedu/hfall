@@ -6,7 +6,10 @@ import ModelManager
 import TextureManager
 import Render
 import pyglet
+import numpy
+import array
 from pyglet.gl import *
+
 
 global Loader
 global modelmng
@@ -26,8 +29,15 @@ def add_model(model_name, position):
     model.matrix4[12:] = position
     model.matrix4 = (GLfloat * 16)(* model.matrix4)
     g_render.add3D(model)
+
+def rem_model(model_nr):
+    g_render.rem3D(model_nr)
+
     
 def scale_model(model, scaling):
-    model.matrix4[0] = scaling[0]
-    model.matrix4[5] = scaling[1]
-    model.matrix4[10] = scaling[2]
+    scale_matrix = [scaling[0], 0, 0, 0,\
+                    0, scaling[1], 0, 0,\
+                    0, 0, scaling[2], 0,\
+                    0, 0, 0, 1]
+    glMultMatrix
+    matrixmultiply()
