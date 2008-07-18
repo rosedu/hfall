@@ -50,6 +50,10 @@ def on_key_press(symbol,modifiers):
         else:
                 game_get(symbol,modifiers)
 
+def on_mouse_press(x, y, button, modifiers):
+        if button == mouse.LEFT and modifiers & key.LCTRL:
+                print "Combo pressed!"
+                
 def engine_get(symbol,modifiers):
 	if symbol==window.key.ESCAPE:
 		global_render.w.has_exit = True
@@ -149,6 +153,7 @@ class UI(Task):
   		self.surface.w.on_key_press = on_key_press
 		self.surface.w.on_mouse_motion = on_mouse_motion
 		self.surface.w.on_mouse_drag = on_mouse_drag
+		self.surface.w.on_mouse_press = on_mouse_press
 
 		#Control goes to engine
 		self.f_header = font.load("Helvetica",18)
