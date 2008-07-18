@@ -15,7 +15,7 @@ import base
 import Render
 import UI
 import OGLbase
-import addModel
+import AddModel
 from pyglet.gl import *
 from Sprite import Sprite
 from pyglet.window import key
