@@ -11,6 +11,9 @@ from pyglet import image
 
 BMP_RGBA = 1
 BMP_RGB = 2
+_DEFAULT_RED = 255
+_DEFAULT_GREEN = 0
+_DEFAULT_BLUE = 255 	
 
 class Bitmap:
   	"""
@@ -29,9 +32,6 @@ class Bitmap:
                         _DEFAULT_GREEN- used for transparency
                         _DEFAULT_BLUE - duh
   	"""
-  	_DEFAULT_RED = 255
-  	_DEFAULT_GREEN = 0
-  	_DEFAULT_BLUE = 255
   	
   	def __init__(self,file_path,format=BMP_RGB,default_alpha=255):
                 pic = image.load(file_path)
@@ -58,7 +58,7 @@ class Bitmap:
                                         index += 4
                         for i in range(length/4-1):
                                 pixel = l[i*4:4*i+4]
-                                if pixel[0] == 255 and pixel[1] == 0 and pixel[2] == 255:
+                                if pixel[0] == _DEFAULT_RED and pixel[1] == _DEFAULT_GREEN and pixel[2] == _DEFAULT_BLUE:
                                         l[4*i+4] = 0
                 elif rawimage.format == 'BGRA':
                         for i in range(length):
@@ -67,8 +67,20 @@ class Bitmap:
                                         index += 4
                                 else:
                                         l.insert(index, unpack('B', datastr[i])[0])
+                elif rawimage.format == 'RGB':
+                        for i in range(length):
+                                l.append(unpack('B', datastr[i])[0])
+                                if i % 3 == 2:
+                                        l.append(default_alpha)
+                        for i in range(length/4-1):
+                                pixel = l[i*4:4*i+4]
+                                if pixel[0] == _DEFAULT_RED and pixel[1] == _DEFAULT_GREEN and pixel[2] == _DEFAULT_BLUE:
+                                        l[4*i+4] = 0
+                elif rawimage.format == 'RGBA':
+                        for i in range(length):
+                                l.append(unpack('B', datastr[i])[0])
                 else:
-                        print "Unknown format"
+                        print "Unknown  or unsuported format ", rawimage.format
                         # TODO: log this message
                 length = len(l)
                 w = self.width * 4
