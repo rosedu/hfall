@@ -43,7 +43,14 @@ class drawer(base.Task):
         kernel.log.msg("Drawer started");
 
         AddModel.init(render)
-        AddModel.add_model(sys.argv[1])
+        AddModel.add_model(sys.argv[1], rmatrix = [1, 0, 0, 0,\
+                                                   0, 1, 0, 0,\
+                                                   0, 0, 1, 0,\
+                                                  30, 0, 0, 1])
+        AddModel.add_model(sys.argv[2], rmatrix = [1, 0, 0, 0,\
+               0, 1, 0, 0,\
+               0, 0, 1, 0,\
+               -30, 0, 0, 1])
         light1 = Light.Light( GL_LIGHT1, \
                     rLightAmbient = [1.0, 1.0, 1.0, 1.0],\
                     rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\

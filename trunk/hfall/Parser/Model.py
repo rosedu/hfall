@@ -8,6 +8,8 @@ __version__ = '0.001'
 __author__ = 'Andrei Buhaiu(andreibuhaiu@gmail.com)'
 
 import Mesh
+import pyglet
+from pyglet.gl import *
 
 class Model:
     """
@@ -28,9 +30,9 @@ class Model:
         self.name = name
 
     def render(self, rnd):
-        # glPushMatrix();
-        
+        glPushMatrix();
+        glMultMatrixf(self.matrix4)
         for mesh in self.meshes:
             mesh.render(rnd)
-
+        glPopMatrix()
         
