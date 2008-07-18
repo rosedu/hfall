@@ -176,6 +176,9 @@ class Console():
   		self.refresh_lines(self.CON_PUSH)
 		self.parse_command()
   		return
+  	if symbol == key.UP:
+                self.input_line = self.command
+                self.refresh_lines(self.CON_STAY)
 
         if len(self.input_line)==self.MAX_CHARS:
 		return
@@ -309,6 +312,7 @@ class Console():
 	valid[key.DOLLAR] = '$'
 	valid[key.SLASH] = '/'
 	valid[key.QUESTION] = '?'
+	valid[key.UP] = ''
 	self.valid_chars = valid
 
 	shift = {}
