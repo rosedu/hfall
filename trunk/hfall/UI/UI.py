@@ -66,6 +66,8 @@ def engine_get(symbol,modifiers):
   		global_UI.mouse_enabled = not global_UI.mouse_enabled
 	elif symbol==window.key.F2:
 	  	global_UI.console.toggle_visible()
+        elif symbol==window.key.X:
+                global_render.enableaxis = not global_render.enableaxis
 		
 def console_get(symbol,modifiers):
         if symbol==window.key.QUOTELEFT:

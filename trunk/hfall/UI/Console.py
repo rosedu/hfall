@@ -227,7 +227,7 @@ class Console():
 	      self.push_line("exec <python command> - execute code right in the engine")
 	      self.push_line("help - display this help")
 	      self.push_line("extend - double the barrels, double the fun")
-	      self.push_line("[reg] <python function> <params> - call registered function")
+	      self.push_line("axes - enable axes")
 	elif token_list[0]=="extend":
 	      self.extended = True
 	      self.extend_lines()
@@ -249,6 +249,8 @@ class Console():
 	      elif token_list[1]=="-o":
 	      	  exec("self.mem_var.append("+token_list[2]+")")
 	      self.push_line("Variable added at position "+str(len(self.mem_var)-1))
+	elif token_list[0]=="axes":
+              UI.global_render.enableaxis = not UI.global_render.enableaxis
 	      
     def init_valid_chars(self):
       	valid = {} 
