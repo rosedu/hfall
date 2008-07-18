@@ -52,8 +52,22 @@ def on_key_press(symbol,modifiers):
 
 def on_mouse_press(x, y, button, modifiers):
         if button == mouse.LEFT and modifiers & key.LCTRL:
-                print "Combo pressed!"
-                
+                mat_proj = (GLdouble * 16)()
+                mat_model = (GLdouble * 16)()
+                mat_view = (GLint* 4)()
+                glGetDoublev(GL_PROJECTION_MATRIX,mat_proj)
+                glGetDoublev(GL_MODELVIEW_MATRIX,mat_model)
+                glGetIntegerv(GL_VIEWPORT,mat_view)
+                world_x = (GLdouble * 1)()
+                world_y = (GLdouble * 1)()
+                world_z = (GLdouble * 1)()
+                if gluUnProject(x,y,10,mat_model,mat_proj,mat_view,\
+                     world_x,world_y,world_z) == GLU_FALSE:
+                        print "Error in UI.on_mouse_press - projection results" + \
+                              "are not valid"
+                print 
+                global_UI.refresh_world_coords(world_x[0],world_y[0],world_z[0])
+        
 def engine_get(symbol,modifiers):
 	if symbol==window.key.ESCAPE:
 		global_render.w.has_exit = True
@@ -146,8 +160,7 @@ class UI(Task):
 		self._height_pt = 7 
 		self._width_pt = 9.2 
 
-		#Load some rectangles/text
-		self.testing()	
+		
 
 		#Load events
   		self.surface.w.on_key_press = on_key_press
@@ -157,7 +170,12 @@ class UI(Task):
 
 		#Control goes to engine
 		self.f_header = font.load("Helvetica",18)
+		self.f_small = font.load("Helvetica",12)
+		self.f_large = font.load("Helvetica",22)
 
+                #Load some rectangles/text
+		self.testing()
+		
   		self.console_text = font.Text(self.f_header,"Console Mode",\
 		    global_render.w.width-20,20,halign=font.Text.RIGHT,\
 		    valign = font.Text.BOTTOM,color = self.C_WHITE)
@@ -169,6 +187,7 @@ class UI(Task):
   		self.switch_focus("Engine")
 
 		self.add_fps()
+		self.add_world_coords()
 		self.loaded_UI = True
 		self.console = Console(0,200,self.C_GRAY,self.C_LIGHTGRAY,self.C_YELLOW,self.C_RED)
 
@@ -278,12 +297,20 @@ class UI(Task):
 		    valign = font.Text.BOTTOM,color = self.C_YELLOW)
 		self.load_2Dtext(self.fps)
 
+        def add_world_coords(self):
+                self.world_coords = font.Text(self.f_small,"",\
+                        25,90,halign=font.Text.LEFT,\
+                        valign = font.Text.BOTTOM,color = self.C_YELLOW)
+                self.load_2Dtext(self.world_coords)
+
+        def refresh_world_coords(self,x,y,z):
+                self.world_coords.text = "COORDS=("+str(x)+","+str(y)+","+str(z)+")"
+                
 	def refresh_fps(self):
 	  	self.fps.text = "fps : %d" % (global_render.fps)
 
 	def testing(self):
-  		self.helv = font.load('Helvetica',22)
-		self.text = font.Text(self.helv,"Hammerfall Graphics Engine",\
+		self.text = font.Text(self.f_large,"Hammerfall Graphics Engine",\
 		    20,20,halign = font.Text.LEFT,\
 		    valign = font.Text.BOTTOM,color = (1,1,1,1))
 		global_render.addtext(self.text)
