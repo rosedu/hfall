@@ -19,9 +19,9 @@ def init(render):
     g_render = render
     Loader = ModelLoader.ModelLoader(modelmng, materialmng,\
                                          texturemng)
-def add_model(model_name,rmatrix):
+def add_model(model_name, position):
     Loader.loadModel(model_name)
     model = Loader.getModel()
-
-    model.matrix4 = (GLfloat *len(rmatrix))(*rmatrix)
+    model.matrix4[12:] = position
+    model.matrix4 = (GLfloat * 16)(* model.matrix4)
     g_render.add3D(model)
