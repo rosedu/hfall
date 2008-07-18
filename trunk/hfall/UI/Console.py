@@ -15,19 +15,12 @@ import base
 import Render
 import UI
 import OGLbase
+import addModel
 from pyglet.gl import *
 from Sprite import Sprite
 from pyglet.window import key
 
-
-def ext_push_line(line):
-    UI.global_UI.console.push_line(line)
-
-def ext_get_var(p):
-    text = UI.global_UI.console.get_var(int(p))
-    if text!=None:
-    	ext_push_line(text)
-
+  
 class Console():
     """
     The Console class. It represents one of the most important tasks in
@@ -86,10 +79,6 @@ class Console():
 	self.init_lines()
   	self.hide()
 
-  	#Register functions
-  	self.register_function(ext_push_line,"cprint")
-	self.register_function(ext_get_var,"mem")
-
     def enable(self):
         self.enabled = True 
 
@@ -125,15 +114,12 @@ class Console():
 		UI.global_UI.load_2Dtext(line)	
 	self.enable()
 
-    def get_var(self,p):
+    def get_mem(self,p):
       	if p>=len(self.mem_var) or p<0:
 		self.push_line("Error - no value at index")
 		return str("None")
 	else:
 	  	return str(self.mem_var[p])
-
-    def register_function(self,func,func_str):
-        self.registered_functions[func_str] = func
 
     def init_lines(self):
         self.input_line = self.prompt
@@ -262,34 +248,7 @@ class Console():
 	      elif token_list[1]=="-o":
 	      	  exec("self.mem_var.append("+token_list[2]+")")
 	      self.push_line("Variable added at position "+str(len(self.mem_var)-1))
-	elif token_list[0]=="reg":
-	      token_list.remove("reg")
-	      if len(token_list)==0:
-	      	   self.push_line("Error - no arguments given")
-	      	   return
-	      if token_list[0] in self.registered_functions:
-	           for token in token_list:
-	      		if token[0]=="$":
-	      			token=float(token)
-	      	   func = token_list[0]
-	           token_list.remove(token_list[0])
-	      	   self.registered_functions[func](*token_list)
-	      	   self.push_line("Execution completed")
-              else:
-		   self.push_line("Error - function is not registered")
-	elif token_list[0] in self.registered_functions:
-	      for token in token_list:
-	    	  if token[0]=="$":
-	    		token = float(token)
-	      func = token_list[0]
-	      token_list.remove(token_list[0])
-	      self.registered_functions[func](*token_list)
-	      self.push_line("Execution completed")
-	else:
-              self.push_line("Error - function is not registered")
 	      
-
-
     def init_valid_chars(self):
       	valid = {} 
 	valid[key.A] = 'a'
