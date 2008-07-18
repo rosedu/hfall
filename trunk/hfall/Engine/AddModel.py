@@ -9,9 +9,10 @@ import pyglet
 from pyglet.gl import *
 
 global Loader
-
+global modelmng
 def init(render):
     materialmng = MaterialManager.MaterialManager()
+    global modelmng
     modelmng = ModelManager.ModelManager()
     texturemng = TextureManager.TextureManager()
     global Loader
@@ -25,3 +26,8 @@ def add_model(model_name, position):
     model.matrix4[12:] = position
     model.matrix4 = (GLfloat * 16)(* model.matrix4)
     g_render.add3D(model)
+    
+def scale_model(model, scaling):
+    model.matrix4[0] = scaling[0]
+    model.matrix4[5] = scaling[1]
+    model.matrix4[10] = scaling[2]

@@ -13,11 +13,13 @@ sys.path.insert(0, "../Engine")
 from pyglet import font
 import base
 import UI
+import AddModel
 from AddModel import *
 from pyglet.gl import *
 from Sprite import Sprite
 from pyglet.window import key
 
+# global modelmng
   
 class Console():
     """
