@@ -2,6 +2,9 @@
 Mathematic auxiliary functions
 """
 
+import pyglet
+from pyglet.gl import *
+
 def matrixmult(m1, m2):
 	m = (GLfloat * 16)(*(16 * []))
 
