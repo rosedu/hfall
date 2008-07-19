@@ -77,12 +77,14 @@ class OGL:
     # Perspective switches - used for correct 2D/3D rendering
     def activate_perspective(self,width,height):
         glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
         glLoadIdentity()
         gluPerspective(60.0, 1.0*width/height, 0.1, 1000.0)
 
     def activate_ortho(self,left,right,bottom,top,\
 	near=-1, far=1):
         glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
 	glLoadIdentity()
 	glOrtho(left,right,bottom,top,near,far)
 	       

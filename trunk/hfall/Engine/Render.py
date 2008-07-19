@@ -69,7 +69,8 @@ class Render(base.Task):
         except window.NoSuchConfigException:
             self.w = window.Window(resizable = True, fullscreen = True)
         self.ogl = OGLbase.OGL(self.w, width, height, near, far, clearcolor)
-                
+        self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
+        self.ogl.activate_perspective(self.w.width,self.w.height)
     def start(self, kernel):
         """Starting the rendering module"""
         kernel.log.msg('Rendering module started')
@@ -101,7 +102,8 @@ class Render(base.Task):
             self.w.dispatch_events()
 
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-  	    self.ogl.activate_perspective(self.w.width,self.w.height)
+            glEnable(GL_DEPTH_TEST)
+  	    
   	    self.ogl.activate_model()
   	    
             # glEnable(GL_LIGHTING)
@@ -131,17 +133,19 @@ class Render(base.Task):
             self.ogl.translate( point_to_translate)
             self.ogl.rotate(self.angle.x, Mathbase.Vector3D(1,0,0)) 
             self.ogl.rotate(self.angle.y, Mathbase.Vector3D(0,1,0)) 
-            self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1)) 
+            self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1))
+            
+            glEnable(GL_TEXTURE_2D)
             # TODO: 3D model drawing
             for model in self._3dlist:
                 model.render(self.ogl)
             # TODO: special effects here
             # TODO: save openGL state here
+            glDisable(GL_TEXTURE_2D)
   	    glDisable(GL_LIGHTING)
 
             #drawing axis:
   	    if self.enableaxis == True:
-                glDisable(GL_TEXTURE_2D)
                 glBegin(GL_LINES)
                 glColor3f(1.0, 0.0, 0.0)
                 glVertex3i(0, 0, 0)
@@ -162,25 +166,27 @@ class Render(base.Task):
                 glVertex3i(0, 0, 0)
                 glVertex3i(0, 0, -100)
                 glEnd()
-                glEnable(GL_TEXTURE_2D)
+                
   	    
   	    glDisable(GL_DEPTH_TEST)
-
-  	    self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
+            glMatrixMode(GL_PROJECTION)
+            self.perspective_matrix = (GLdouble * 16)()
+            glGetDoublev(GL_PROJECTION_MATRIX,self.perspective_matrix)
+            glPopMatrix()
+  	    
   	    self.ogl.activate_model()
 	    #just to make it work
-  	    some_font = font.load('Helvetica',10)
-	    some_text = font.Text(some_font,".",0,0)
-	    some_text.draw()
 
             for model in self._2dlist:
                 self.ogl.Render2D(model)
 
   	    for text in self._textlist:
 	        text.draw()
-            
-  	    glEnable(GL_DEPTH_TEST)
 
+	    glMatrixMode(GL_PROJECTION)
+	    glPushMatrix()
+	    glLoadMatrixd(self.perspective_matrix)
+            
             self.w.flip()
             self.fps=clock.get_fps()
             #print self.fps
