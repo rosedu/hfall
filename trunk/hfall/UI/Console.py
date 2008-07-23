@@ -120,7 +120,7 @@ class Console():
         	    pass
         	else:
         	    self.command_index += 1
-        	self.input_line.text(self.command_history[self.command_index])
+        	self.input_line.set_text(self.command_history[self.command_index])
         else:
         	self.command_index = len(self.command_history)
         
