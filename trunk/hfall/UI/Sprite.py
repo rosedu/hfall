@@ -63,3 +63,9 @@ class Sprite:
 
 	  		self.pixelheight = bitmap.height
 			self.pixelwidth = bitmap.width
+			
+	def refresh(self, x, y, width, height):
+		self.x = x
+		self.y = y
+		self.xx = width + x
+		self.yy = height + y

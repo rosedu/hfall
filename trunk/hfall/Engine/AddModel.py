@@ -30,6 +30,8 @@ def add_model(model_name, position):
     model.matrix4[12:] = position
     model.matrix4 = (GLfloat * 16)(* model.matrix4)
     g_render.add3D(model)
+    #this line should be removed, only for testing purposes
+    return model
 
 def rem_model(model_nr):
     g_render.rem3D(model_nr)

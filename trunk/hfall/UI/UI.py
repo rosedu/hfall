@@ -1,5 +1,5 @@
 """
-Hammerfall user interface module. Usefull for rendering menus, buttons,
+Hammerfall user interface module. Useful for rendering menus, buttons,
 panels and status windows.
 
 """
@@ -94,7 +94,7 @@ def console_get(symbol,modifiers):
                 global_UI.switch_focus()
 	elif symbol==window.key.F2:
 	       	global_UI.console.toggle_visible()
-	elif symbol in global_UI.console.valid_chars:
+	else:
 	        global_UI.console.read(symbol,modifiers)
 
 def game_get(symbol,modifiers):
@@ -315,4 +315,294 @@ class UI(Task):
 		    valign = font.Text.BOTTOM,color = (1,1,1,1))
 		global_render.addtext(self.text)
   		pass
-		
+
+class LightWidget:
+    """
+    Base class for all OpenGL debugging LightWidgets
+    """
+
+    def __init__(self, x, y, width, height, font_name='Helvetica', size=10,\
+                  bck_color = (0.9,0.9,0.9,1.0), text_color = (0.0,0.0,0.0,1.0)):
+        """
+        Initialize all the default widget properties like position,
+        size, background and foreground color, and other generic
+        properties
+        """
+        #Ortho coords
+        self._x, self._y = x,y
+        
+        #Ortho dimensions
+        self._width, self._height = width, height
+        
+        #Font loader
+        self._size = size
+        self._font = font.load(font_name,size)
+        
+        #Other properties
+        self._line_color = bck_color
+        self._text_color = text_color
+        self._loaded = False
+        
+        self._line = Sprite.Sprite(self._x, self._y, self._width,\
+                            self._height, None, self._line_color)
+        self._text = font.Text(self._font, "", self._x, self._y,\
+                                halign = font.Text.LEFT, \
+                                valign = font.Text.BOTTOM, \
+                                color = self._text_color)
+    
+    def load(self,text_loader,sprite_loader):
+        """ 
+        Load all the widget components into the UI (Receiver)
+        """
+        if self._loaded == False:
+            text_loader(self._text)
+            sprite_loader(self._line)
+            self._loaded = True
+        
+    def unload(self,text_unloader,sprite_unloader):
+        """
+        Unload all the widget components from the UI (Receiver)
+        """
+        if self._loaded == True:
+            text_unloader(self._text)
+            sprite_unloader(self._line)
+            self._loaded = False
+            
+    def position(self, x, y):
+        """
+        Change the widget position in an orthographic projection
+        """
+        self._x = x
+        self._y = y
+        self._line.refresh(self._x, self._y, self._width,\
+                            self._height)
+        
+    def size(self, width, height):
+        """
+        Change the widget size in an orthographic projection
+        """
+        self._width = width
+        self._height = height
+        self._line.refresh(self._x, self._y, self._width,\
+                           self._height)
+        		
+class LightInputBox(LightWidget):
+    #System independent OpenGL driven lightweight InputBox
+    #Uses pyglet
+    
+    def __init__(self, *params):
+        LightWidget.__init__(self, *params)
+        self.init_valid_chars()
+	self.max_line_length = 80
+	self.base_text = ""
+        
+    def init_valid_chars(self):
+        self._charset = CharSet()
+        self._submit_key = key.ENTER
+        self._delete_key = key.BACKSPACE
+        self._left_key = key.LEFT
+    
+    def text(self,new_text):
+        self._text.text = self.base_text + new_text
+        return self._text.text
+        
+    def default(self,def_text):
+        self._text.text = def_text + self._text.text
+	self.base_text = def_text
+    
+    def input(self, symbol, modifiers):
+      	if symbol == key.DELETE:
+		self._text.text = self.base_text 
+        if symbol == self._delete_key:
+       		if modifiers & key.MOD_CTRL:
+       			self.delete(5)
+       		else:
+		  	self.delete(1)
+	if symbol == self._submit_key and len(self._text.text)>len(self.base_text):
+	  	command_text = self._text.text
+		self._text.text = self.base_text
+  		return command_text
+        if len(self._text.text)==self.max_line_length:
+		return
+	if symbol not in self._charset.valid_chars:
+	   	print("Unknown keypress")
+	   	return
+
+        new_char = self._charset.valid_chars[symbol]
+        if modifiers & key.MOD_SHIFT:
+		new_char = new_char.swapcase()
+		if symbol in self._charset.shift_chars:
+			new_char = self._charset.shift(symbol)
+	if modifiers & key.MOD_CAPSLOCK:
+	        new_char = new_char.swapcase()
+  	self._text.text = self._text.text + new_char 
+
+    #Input box functions
+    def delete(self,char_number):
+      	max_delete = len(self._text.text) - len(self.base_text)
+	if max_delete > char_number:
+	      max_delete = char_number
+	if max_delete > 0:
+	      self._text.text = self._text.text[0:(len(self._text.text)-max_delete)]
+    
+    def submit(self, symbol, modifiers):
+        return self._text.text
+        self._text.text = ""
+
+class LightTextBox(LightWidget):
+    
+    def __init__(self, *params):
+        LightWidget.__init__(self,*params)
+        self.__max_lines = self._height / (int(self._size*1.2))
+        self.__line_count = 0
+        self.__errors = False
+        pass
+
+    #Text addition methods:
+    
+    def text(self,new_text):
+        self._text.text = new_text
+
+    def append(self,app_text):
+    	if __line_count + self._text.text.count("\n") > self.__max_lines:
+    	    self.error("Too many lines, append failed")
+    	    return
+        self._text.text.append(app_text)
+        self.__line_count += self._text.text.count("\n")
+
+    def add_line_before(self, txt):
+    	#TODO multiple line addition
+    	if self.__line_count + 1 > self.__max_lines:
+    	    self.error("Too many lines, add_line_before failed")
+	self._text.text = txt + "\n" + self._text.text
+	__line_count += 1
+	
+    def add_line_after(self, txt):
+    	#TODO multiple line addition
+    	if self.__line_count + 1 > self.__max_lines:
+    	    self.error("Too many lines, add_line_after failed")
+    	self._text.text = self._text.text + "\n" + txt
+    	self.__line_count +=1
+    	
+    def force_line_after(self, txt):
+    	if self.__line_count + 1 > self.__max_lines:
+    	    self.error("Forced add : line dropped")
+    	    #drop the first line
+    	    self._text.text = self._text.text[self._text.text.find("\n")+1:]
+    	    self.__line_count -= 1
+    	self._text.text = self._text.text + "\n" + txt
+    	self.__line_count += 1
+    	
+    #Line number methods
+    
+    def set_max_lines(self,max_lines):
+    	self.__max_lines = max_lines
+    	
+    def get_max_lines(self):
+    	return self.__max_lines
+   
+    def get_line_count(self):
+        return self.__line_count
+    	
+    #Error detection methods
+    
+    def error(self,err_msg):
+    	if self.__errors == False:
+            self.__errors = True
+            self.__error_log = []
+        self.__error_log.append(err_msg)
+    
+    
+    
+class CharSet:
+    #storage class for character sets
+
+    def shift(self,symbol):
+      	if symbol in self.shift_chars:
+		return self.valid_chars[self.shift_chars[symbol]]
+  
+
+    def __init__(self):
+        valid = {} 
+        valid[key.A] = 'a'
+        valid[key.B] = 'b'
+        valid[key.C] = 'c'
+        valid[key.D] = 'd'
+        valid[key.E] = 'e'
+        valid[key.F] = 'f'
+        valid[key.G] = 'g'
+        valid[key.H] = 'h'
+        valid[key.I] = 'i'
+        valid[key.J] = 'j'
+        valid[key.K] = 'k'
+        valid[key.L] = 'l'
+        valid[key.M] = 'm'
+        valid[key.N] = 'n'
+        valid[key.O] = 'o'
+        valid[key.P] = 'p'
+        valid[key.Q] = 'q'
+        valid[key.R] = 'r'
+        valid[key.S] = 's'
+        valid[key.T] = 't'
+        valid[key.U] = 'u'
+        valid[key.V] = 'v'
+        valid[key.W] = 'w'
+        valid[key.X] = 'x'
+        valid[key.Y] = 'y'
+        valid[key.Z] = 'z'
+        valid[key._1] = '1'
+        valid[key._2] = '2'
+        valid[key._3] = '3'
+        valid[key._4] = '4'
+        valid[key._5] = '5'
+        valid[key._6] = '6'
+        valid[key._7] = '7'
+        valid[key._8] = '8'
+        valid[key._9] = '9'
+        valid[key._0] = '0'
+        valid[key.PERIOD] = '.'
+        valid[key.BRACKETLEFT] = '['
+        valid[key.BRACKETRIGHT] = ']'
+        valid[key.SPACE] = ' '
+        valid[key.COMMA] = ','
+        valid[key.PARENLEFT] = '('
+        valid[key.PARENRIGHT] = ')'
+        valid[key.BRACELEFT] = '{'
+        valid[key.BRACERIGHT] = '}'
+        valid[key.GREATER] = '>'
+        valid[key.LESS] = '<'
+        valid[key.BACKSPACE] = ''
+        valid[key.ENTER] = ''
+        valid[key.DELETE] = ''
+        valid[key.EQUAL] = '='
+        valid[key.PLUS] = '+'
+        valid[key.UNDERSCORE] = '_'
+        valid[key.MINUS] = '-'
+        valid[key.NUM_MULTIPLY] = '*'
+        valid[key.APOSTROPHE] = '\''
+        valid[key.DOUBLEQUOTE] = '"'
+        valid[key.DOLLAR] = '$'
+        valid[key.SLASH] = '/'
+        valid[key.QUESTION] = '?'
+        valid[key.UP] = ''
+	valid[key.LCTRL] = ''
+	valid[key.RCTRL] = ''
+	valid[key.LSHIFT] = ''
+	valid[key.RSHIFT] = ''
+        self.valid_chars = valid
+
+        shift = {}
+        shift[key._9] = key.PARENLEFT
+        shift[key._0] = key.PARENRIGHT
+        shift[key.PERIOD] = key.GREATER
+        shift[key.COMMA] = key.LESS
+        shift[key.BRACKETLEFT] = key.BRACELEFT
+        shift[key.BRACKETRIGHT] = key.BRACERIGHT
+        shift[key.EQUAL] = key.PLUS
+        shift[key.MINUS] = key.UNDERSCORE
+        shift[key._8] = key.NUM_MULTIPLY
+        shift[key.APOSTROPHE] = key.DOUBLEQUOTE
+        shift[key._4] = key.DOLLAR
+        shift[key.SLASH] = key.QUESTION
+        self.shift_chars = shift
+        
