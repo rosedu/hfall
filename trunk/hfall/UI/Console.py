@@ -105,8 +105,8 @@ class Console():
       	if self.enabled == False:
 		return
 	if symbol == key.ENTER and len(self.input_line._text.text)>len(self.input_line.base_text):
-	  	self.command = self.input_line._text.text
-	  	self.text_box.force_line_after(self.input_line._text.text)
+	  	self.command = self.input_line.text()
+	  	self.text_box.force_line_after(self.command)
   		self.input_line.input(symbol,modifiers)
 		self.parse_command()
   	if symbol == key.UP and len(self.command_history)>0:
@@ -114,7 +114,7 @@ class Console():
   		    pass
   		else:
   		    self.command_index -= 1
-                self.input_line.text(self.command_history[self.command_index])
+                self.input_line.set_text(self.command_history[self.command_index])
         elif symbol == key.DOWN and len(self.command_history)>0:
         	if self.command_index + 1 > len(self.command_history)-1:
         	    pass

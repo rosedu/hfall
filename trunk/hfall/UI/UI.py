@@ -410,6 +410,10 @@ class LightInputBox(LightWidget):
         """
         return self._text.text[:self.__cursor_position] + \
         	self._text.text[self.__cursor_position+1:]
+     
+    def set_text(self, new_text):
+    	self._text.text = self.base_text + new_text
+    	self.reset_cursor()
         
     def default(self,def_text):
         self._text.text = def_text + self._text.text
@@ -440,6 +444,7 @@ class LightInputBox(LightWidget):
 	if symbol == self._submit_key and len(self._text.text)>len(self.base_text):
 	  	command_text = self._text.text
 		self._text.text = self.base_text
+		self.reset_cursor()
   		return command_text
   		
         if len(self._text.text)==self.max_line_length:
@@ -495,7 +500,7 @@ class LightInputBox(LightWidget):
     	self.__cursor_state = True
     	self.__cursor_position = len(self._text.text)
     	self.__cursor_char = "|"
-    	self.__text_buffer = self.text()
+    	#self.__text_buffer = self.text()
     	self.paint_cursor()
     	
     def clock(self):
@@ -520,6 +525,10 @@ class LightInputBox(LightWidget):
     	else:
     	    self.__cursor_position += distance
     	return self.__cursor_position
+    	
+    def reset_cursor(self):
+    	self.__cursor_position = len(self._text.text)
+    	#self.__text_buffer = self.text()
     	
     def paint_cursor(self):
     	"""
