@@ -37,15 +37,17 @@ class Console():
     extended_lines = []
     extended = False
     texts = []
-    mem_var = []
     command = ""
+    command_history = []
     prompt = ">>>"
+    command_index = 0
 
     #Constants
     MAX_CHARS = 80 
     MAX_LINES = 0 	#changed from init
     CON_STAY = 0
     CON_PUSH = 1
+    CON_MAX_COMMAND_HISTORY = 10
 		
     def __init__(self,width,height,c_back,c_line,c_text,c_comm):
         """
@@ -112,17 +114,33 @@ class Console():
 	  	self.text_box.force_line_after(self.input_line._text.text)
   		self.input_line.input(symbol,modifiers)
 		self.parse_command()
-  		return
-  	if symbol == key.UP:
-                self.input_line = self.command
-                self.text_box.force_line_after("Up key temporarily disabled")
+  	if symbol == key.UP and len(self.command_history)>0:
+  		if self.command_index - 1 < 0:
+  		    pass
+  		else:
+  		    self.command_index -= 1
+                self.input_line.text(self.command_history[self.command_index])
+        elif symbol == key.DOWN and len(self.command_history)>0:
+        	if self.command_index + 1 > len(self.command_history)-1:
+        	    pass
+        	else:
+        	    self.command_index += 1
+        	self.input_line.text(self.command_history[self.command_index])
+        else:
+        	self.command_index = len(self.command_history)
+        	
 	self.input_line.input(symbol,modifiers)
+	
+    def add_command(self,command):
+    	if len(self.command_history)==self.CON_MAX_COMMAND_HISTORY:
+    	    self.command_history.pop(0)
+    	self.command_history.append(command)
 
     def parse_command(self):
-      	command = self.command[3:]
+      	command = self.command[len(self.prompt):]
 	command = command.strip()
+	self.add_command(command)
 	token_list = []
-	mem = self.mem_var
 	while True:
 	      parts = command.partition(" ")
 	      aux = parts[0].strip()
@@ -145,6 +163,10 @@ class Console():
                       self.text_box.force_line_after("Usage of lines: " + \
                           str(self.text_box.get_line_count()) + " out of " + 
                           str(self.text_box.get_max_lines()))
+                  elif token_list[0]=="history":
+                      self.text_box.force_line_after("Command history:")
+                      for command in self.command_history:
+                          self.text_box.force_line_after(command)
 	elif token_list[0]=="help":
 	      self.text_box.force_line_after("Available commands:")
 	      self.text_box.force_line_after("exec <python command> - execute code right in the engine")
