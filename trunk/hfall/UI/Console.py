@@ -32,7 +32,7 @@ class Console():
     enabled = False 
     bottom_left_y = 0
     bottom_left_x = 0
-    size = 14 
+    size = 11
     lines = []
     extended_lines = []
     extended = False
@@ -67,7 +67,7 @@ class Console():
 				       'Verdana',self.size,(0.8,1.0,0.8,1.0))
 	self.input_line.default(self.prompt)
     	self.text_box = UI.LightTextBox(0,UI.global_render.w.height - height, \
-                                    UI.global_render.w.width, height,'Helvetica',\
+                                    UI.global_render.w.width, height,'Verdana',\
 				    self.size,(0.8,0.8,1.0,1.0))
   	self.hide()
 
@@ -132,6 +132,7 @@ class Console():
     def parse_command(self):
       	command = self.command[len(self.prompt):]
 	command = command.strip()
+	aux_command = command
 	token_list = []
 	while True:
 	      parts = command.partition(" ")
@@ -171,6 +172,6 @@ class Console():
               run_command = run_command.strip()
               self.text_box.force_line_after("Executing engine call: " + run_command)
               exec(run_command)
-        self.add_command(command)
+        self.add_command(aux_command)
                   
 	      
