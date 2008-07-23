@@ -72,11 +72,11 @@ class Render(base.Task):
         self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
         self.ogl.activate_perspective(self.w.width,self.w.height)
 
-        self.light1 = Light.Light( GL_LIGHT1, \
+        """self.light1 = Light.Light( GL_LIGHT1, \
                     rLightAmbient = [1.0, 1.0, 1.0, 1.0],\
                     rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
                     rLightPosition = [0.0, -1.5, -50.0, 1.0])
-        self.light1.LEnable()
+        self.light1.LEnable()"""
         
     def start(self, kernel):
         """Starting the rendering module"""
@@ -111,10 +111,8 @@ class Render(base.Task):
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
             glEnable(GL_DEPTH_TEST)
   	    self.ogl.activate_model()
-  	    self.light1.LDisable()
-  	    self.light1.LPosition()
-  	    self.light1.LEnable()
-            glEnable(GL_LIGHTING)
+  	    #self.light1.LPosition()
+  	    glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
             
             # TODO: camera manipulation
@@ -166,7 +164,7 @@ class Render(base.Task):
             glGetDoublev(GL_PROJECTION_MATRIX,self.perspective_matrix)
             glPopMatrix()
   	    
-  	    self.ogl.activate_model()
+  	    #self.ogl.activate_model()
 	    #just to make it work
 
             for model in self._2dlist:

@@ -20,6 +20,7 @@ import array
 import Mathbase
 import base
 import Bitmap
+import Light
 from base import kernel as hfk
 
 class OGL:
@@ -72,6 +73,12 @@ class OGL:
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_COLOR_ARRAY)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+        self.light1 = Light.Light( GL_LIGHT1, \
+                    rLightAmbient = [1.0, 1.0, 1.0, 1.0],\
+                    rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
+                    #rLightPosition = [0.0, -1.5, -50.0, 0.0])
+                    rLightPosition = [0, 0, 1, 0])
+        self.light1.LEnable()
         hfk.log.msg('Open GL started')
 
     # Perspective switches - used for correct 2D/3D rendering
@@ -91,6 +98,7 @@ class OGL:
     def activate_model(self):
   	glMatrixMode(GL_MODELVIEW)
   	glLoadIdentity()
+  	self.light1.LPosition()
 
     # here we should define different functions to change OpenGL state
     # machine status. We should built functions to incrementally change
