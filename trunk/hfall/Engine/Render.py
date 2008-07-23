@@ -109,23 +109,6 @@ class Render(base.Task):
             # glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
             
-            # Fog.Fog()
-            # Fog.FEnable()
-            """
-            # glClearColor(0.5,0.5,0.5,1.0)	
-            rFogMode = [ GL_EXP, GL_EXP2, GL_LINEAR ]
-            rFogColor= [0.5, 0.5, 0.5, 1.0]
-            FogFilter = 0
-            FogMode = (GLuint * 3)(*rFogMode)
-            FogColor = (GLfloat * 4)(*rFogColor)
-            glFogi(GL_FOG_MODE, FogMode[FogFilter])
-            glFogfv(GL_FOG_COLOR, FogColor)
-            glFogf(GL_FOG_DENSITY, 0.1)
-            glHint(GL_FOG_HINT, GL_NICEST)
-            glFogf(GL_FOG_START, -50.0)
-            glFogf(GL_FOG_END, -100.0)
-            glEnable(GL_FOG)
-            """
             # TODO: camera manipulation
             # For dodecadron testing
             point_to_translate = Mathbase.Vector3D(self.transx,\
@@ -139,6 +122,7 @@ class Render(base.Task):
             # TODO: 3D model drawing
             for model in self._3dlist:
                 model.render(self.ogl)
+            glEnable(GL_LIGHTING)
             # TODO: special effects here
             # TODO: save openGL state here
             glDisable(GL_TEXTURE_2D)

@@ -204,31 +204,6 @@ class OGL:
     def pushMatrix(self, matrix):
         glPushMatrix()
         # glLoadIdentity()
-        """
-        mat = (GLfloat * 16)()
-        glGetFloatv(GL_MODELVIEW_MATRIX, mat)
-        rmat = []
-        for i in range(len(mat)):
-            rmat.append(mat[i])
-        print "MATRIX:"
-        print rmat
-
-        rmat = []
-        for i in range(len(matrix)):
-            rmat.append(matrix[i])
-        print "MATRIX_X:"
-        print rmat
-
-        glMultMatrixf(matrix)
-        
-        mat = (GLfloat * 16)()
-        glGetFloatv(GL_MODELVIEW_MATRIX, mat)
-        rmat = []
-        for i in range(len(mat)):
-            rmat.append(mat[i])
-        print "MATRIX_AFTER:"
-        print rmat
-        """
         glEnableClientState(GL_TEXTURE_COORD_ARRAY)
         pass
         
@@ -249,6 +224,8 @@ class OGL:
         
     def DrawElements(self, faces, mode):
         glDrawElements(mode, len(faces), GL_UNSIGNED_INT, faces)
+        glEnable(GL_LIGHTING)
 
     def popMatrix(self):
         glPopMatrix()
+        
