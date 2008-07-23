@@ -66,6 +66,8 @@ class Console():
                                        UI.global_render.w.width, self.size + 2,\
 				       'Verdana',self.size,(0.8,1.0,0.8,1.0))
 	self.input_line.default(self.prompt)
+	self.input_line.set_clock(60)
+	
     	self.text_box = UI.LightTextBox(0,UI.global_render.w.height - height, \
                                     UI.global_render.w.width, height,'Verdana',\
 				    self.size,(0.8,0.8,1.0,1.0))
@@ -121,7 +123,7 @@ class Console():
         	self.input_line.text(self.command_history[self.command_index])
         else:
         	self.command_index = len(self.command_history)
-        	
+        
 	self.input_line.input(symbol,modifiers)
 	
     def add_command(self,command):

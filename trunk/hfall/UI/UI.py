@@ -401,16 +401,22 @@ class LightInputBox(LightWidget):
         self._submit_key = key.ENTER
         self._delete_key = key.BACKSPACE
         self._left_key = key.LEFT
+        self._right_key = key.RIGHT
     
-    def text(self,new_text):
-        self._text.text = self.base_text + new_text
-        return self._text.text
+    def text(self):
+    	"""
+        This function ignores the cursor, it should always be used
+        when retrieving the text string
+        """
+        return self._text.text[:self.__cursor_position] + \
+        	self._text.text[self.__cursor_position+1:]
         
     def default(self,def_text):
         self._text.text = def_text + self._text.text
 	self.base_text = def_text
     
     def input(self, symbol, modifiers):
+    	self._text.text = self.text()
       	if symbol == key.DELETE:
 		self._text.text = self.base_text 
         if symbol == self._delete_key:
@@ -418,12 +424,27 @@ class LightInputBox(LightWidget):
        			self.delete(5)
        		else:
 		  	self.delete(1)
+		  	
+	if symbol == self._left_key:
+		if modifiers & key.MOD_CTRL:
+			self.cursor_left(5)
+		else:
+			self.cursor_left(1)
+		
+	if symbol == self._right_key:
+		if modifiers & key.MOD_CTRL:
+			self.cursor_right(5)
+		else:
+			self.cursor_right(1)
+		
 	if symbol == self._submit_key and len(self._text.text)>len(self.base_text):
 	  	command_text = self._text.text
 		self._text.text = self.base_text
   		return command_text
+  		
         if len(self._text.text)==self.max_line_length:
 		return
+		
 	if symbol not in self._charset.valid_chars:
 	   	print("Unknown keypress")
 	   	return
@@ -435,19 +456,80 @@ class LightInputBox(LightWidget):
 			new_char = self._charset.shift(symbol)
 	if modifiers & key.MOD_CAPSLOCK:
 	        new_char = new_char.swapcase()
-  	self._text.text = self._text.text + new_char 
+	        
+	print "loop"
+	if len(new_char)>0:
+  		self._text.text = self._text.text[:self.__cursor_position] + \
+  			    new_char + self._text.text[self.__cursor_position:]
+  		print self._text.text
+  		self.__cursor_position += 1
+  		
+  		
+  	self.paint_cursor()
+  	print self._text.text
+	
 
     #Input box functions
     def delete(self,char_number):
-      	max_delete = len(self._text.text) - len(self.base_text)
+      	max_delete = self.__cursor_position - len(self.base_text)
 	if max_delete > char_number:
 	      max_delete = char_number
 	if max_delete > 0:
-	      self._text.text = self._text.text[0:(len(self._text.text)-max_delete)]
+	      self._text.text = self._text.text[0:(self.__cursor_position - max_delete)] + \
+	      			self._text.text[self.__cursor_position:]
+	      self.__cursor_position -= max_delete
     
     def submit(self, symbol, modifiers):
         return self._text.text
         self._text.text = ""
+        
+    #Cursor functions
+    def set_clock(self, ticks=60):
+        """
+        Enables the cursor and all the necessary variables
+        __cursor_state = True     visible cursor
+        __cursor_state = False    invisible cursor
+        """
+    	self.__time = ticks
+    	self.__clock = ticks
+    	self.__cursor_state = True
+    	self.__cursor_position = len(self._text.text)
+    	self.__cursor_char = "|"
+    	self.__text_buffer = self.text()
+    	self.paint_cursor()
+    	
+    def clock(self):
+    	self.__clock -= 1
+    	if self.__clock == 0:
+    	    self.__clock = self.__time
+    	    self.switch_cursor_state()
+     
+    def switch_cursor_state(self):
+        self.__cursor_state = not self.__cursor_state
+        
+    def cursor_left(self, distance):
+    	if self.__cursor_position < distance:
+    	    self.__cursor_position = 0
+    	else:
+    	    self.__cursor_position -= distance
+    	return self.__cursor_position
+    	    
+    def cursor_right(self, distance):
+    	if len(self._text.text) - self.__cursor_position < distance:
+    	    self.__cursor_position = len(self._text.text)
+    	else:
+    	    self.__cursor_position += distance
+    	return self.__cursor_position
+    	
+    def paint_cursor(self):
+    	"""
+    	Add the cursor to the text string
+    	"""
+    	print self._text.text
+    	print "cursor position: " + str(self.__cursor_position)
+    	self._text.text = self._text.text[:self.__cursor_position] + \
+    		self.__cursor_char + \
+    		self._text.text[self.__cursor_position:]
 
 class LightTextBox(LightWidget):
     
@@ -585,10 +667,14 @@ class CharSet:
         valid[key.SLASH] = '/'
         valid[key.QUESTION] = '?'
         valid[key.UP] = ''
+        valid[key.DOWN] = ''
+        valid[key.RIGHT] = ''
+        valid[key.LEFT] = ''
 	valid[key.LCTRL] = ''
 	valid[key.RCTRL] = ''
 	valid[key.LSHIFT] = ''
 	valid[key.RSHIFT] = ''
+	valid[key.BACKSLASH] = '\\'
         self.valid_chars = valid
 
         shift = {}
@@ -603,6 +689,7 @@ class CharSet:
         shift[key._8] = key.NUM_MULTIPLY
         shift[key.APOSTROPHE] = key.DOUBLEQUOTE
         shift[key._4] = key.DOLLAR
+        shift[key.BACKSLASH] = key.BACKSLASH #Incorrect, but couldn't find "|" key
         shift[key.SLASH] = key.QUESTION
         self.shift_chars = shift
         
