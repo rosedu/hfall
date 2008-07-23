@@ -99,13 +99,6 @@ class Console():
 	self.input_line.load(UI.global_UI.load_2Dtext,UI.global_UI.load_2DUI)
     	self.text_box.load(UI.global_UI.load_2Dtext,UI.global_UI.load_2DUI)
 	self.enable()
-
-    def get_mem(self,p):
-      	if p>=len(self.mem_var) or p<0:
-		self.push_line("Error - no value at index")
-		return str("None")
-	else:
-	  	return str(self.mem_var[p])
     def read(self,symbol,modifiers):
       	if self.enabled == False:
 		return
@@ -139,7 +132,6 @@ class Console():
     def parse_command(self):
       	command = self.command[len(self.prompt):]
 	command = command.strip()
-	self.add_command(command)
 	token_list = []
 	while True:
 	      parts = command.partition(" ")
@@ -179,5 +171,6 @@ class Console():
               run_command = run_command.strip()
               self.text_box.force_line_after("Executing engine call: " + run_command)
               exec(run_command)
+        self.add_command(command)
                   
 	      
