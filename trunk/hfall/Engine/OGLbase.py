@@ -224,7 +224,6 @@ class OGL:
         
     def DrawElements(self, faces, mode):
         glDrawElements(mode, len(faces), GL_UNSIGNED_INT, faces)
-        glEnable(GL_LIGHTING)
 
     def popMatrix(self):
         glPopMatrix()

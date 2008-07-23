@@ -106,7 +106,7 @@ class Render(base.Task):
   	    
   	    self.ogl.activate_model()
   	    
-            # glEnable(GL_LIGHTING)
+            glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
             
             # TODO: camera manipulation
