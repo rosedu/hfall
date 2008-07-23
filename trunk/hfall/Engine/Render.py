@@ -71,6 +71,13 @@ class Render(base.Task):
         self.ogl = OGLbase.OGL(self.w, width, height, near, far, clearcolor)
         self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
         self.ogl.activate_perspective(self.w.width,self.w.height)
+
+        self.light1 = Light.Light( GL_LIGHT1, \
+                    rLightAmbient = [1.0, 1.0, 1.0, 1.0],\
+                    rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
+                    rLightPosition = [0.0, -1.5, -50.0, 1.0])
+        self.light1.LEnable()
+        
     def start(self, kernel):
         """Starting the rendering module"""
         kernel.log.msg('Rendering module started')
@@ -103,8 +110,8 @@ class Render(base.Task):
 
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
             glEnable(GL_DEPTH_TEST)
-  	    
   	    self.ogl.activate_model()
+  	    self.light1.LPosition()
   	    
             glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
@@ -117,12 +124,12 @@ class Render(base.Task):
             self.ogl.rotate(self.angle.x, Mathbase.Vector3D(1,0,0)) 
             self.ogl.rotate(self.angle.y, Mathbase.Vector3D(0,1,0)) 
             self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1))
+            # glEnable(GL_LIGHT1)
             
             glEnable(GL_TEXTURE_2D)
             # TODO: 3D model drawing
             for model in self._3dlist:
                 model.render(self.ogl)
-            glEnable(GL_LIGHTING)
             # TODO: special effects here
             # TODO: save openGL state here
             glDisable(GL_TEXTURE_2D)

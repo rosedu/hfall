@@ -24,7 +24,7 @@ def init(render):
     g_render = render
     Loader = ModelLoader.ModelLoader(modelmng, materialmng,\
                                          texturemng)
-def add_model(model_name, position):
+def add_model(model_name, position = [0,0,0,1]):
     Loader.loadModel(model_name)
     model = Loader.getModel()
     model.matrix4[12:] = position

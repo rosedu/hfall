@@ -45,12 +45,13 @@ class drawer(base.Task):
         AddModel.init(render)
         # AddModel.add_model(sys.argv[1], position = [30, 0, 0, 1])
         # AddModel.add_model(sys.argv[2], position = [-30, 0, 0, 1])
+        """
         light1 = Light.Light( GL_LIGHT1, \
                     rLightAmbient = [1.0, 1.0, 1.0, 1.0],\
                     rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
                     rLightPosition = [0.0, -1.5, -50.0, 1.0])
         light1.LEnable()
-        
+        """
     def stop(self, kernel):
         pass
 

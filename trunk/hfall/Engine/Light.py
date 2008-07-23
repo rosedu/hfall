@@ -23,3 +23,7 @@ class Light():
     def LDisable(self):
     
         glDisable(self.lightSource)
+
+    def LPosition(self):
+        
+        glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
