@@ -111,8 +111,9 @@ class Render(base.Task):
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
             glEnable(GL_DEPTH_TEST)
   	    self.ogl.activate_model()
+  	    self.light1.LDisable()
   	    self.light1.LPosition()
-  	    
+  	    self.light1.LEnable()
             glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
             
@@ -126,7 +127,7 @@ class Render(base.Task):
             self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1))
             # glEnable(GL_LIGHT1)
             
-            glEnable(GL_TEXTURE_2D)
+            # glEnable(GL_TEXTURE_2D)
             # TODO: 3D model drawing
             for model in self._3dlist:
                 model.render(self.ogl)

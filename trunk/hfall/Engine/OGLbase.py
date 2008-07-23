@@ -212,7 +212,7 @@ class OGL:
         glColorPointer(3, GL_FLOAT, 0, color)
 
     def vertexPointer(self, vertices):
-        glEnableClientState(GL_COLOR_ARRAY)
+        # glEnableClientState(GL_COLOR_ARRAY)
         glVertexPointer(3, GL_FLOAT, 0, vertices)
 
     def TexCoordPointer(self, texels):
