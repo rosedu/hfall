@@ -112,7 +112,7 @@ class Render(base.Task):
             glEnable(GL_DEPTH_TEST)
   	    self.ogl.activate_model()
   	    #self.light1.LPosition()
-  	    glEnable(GL_LIGHTING)
+  	    # glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
             
             # TODO: camera manipulation
