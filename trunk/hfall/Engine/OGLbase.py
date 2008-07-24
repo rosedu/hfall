@@ -215,7 +215,10 @@ class OGL:
 
     def vertexPointer(self, vertices):
         # glEnableClientState(GL_COLOR_ARRAY)
+        # rnormal = [ 0.33, 0.33
+        # glNormalPointer(3, GL_FLOAT,
         glVertexPointer(3, GL_FLOAT, 0, vertices)
+        print "\n\n\n\n\n", vertices[:], "\n\n\n\n\n"
 
     def TexCoordPointer(self, texels):
         glTexCoordPointer(2, GL_FLOAT, 0, texels)
