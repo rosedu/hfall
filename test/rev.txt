@@ -1,0 +1,8 @@
+Changes: (0.3.1)
+    - exec prefix is no longer needed
+    - rev command displays this help
+    - file logging of commands
+<OLD> 
+
+The above keyword blocks the reader's access to these lines.
+Old changelogs are to be placed here.

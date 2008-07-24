@@ -242,6 +242,7 @@ class UI(Task):
 	  	pass
 
 	def stop(self,kernel):
+		self.console.shutdown()
 	  	pass
 
 	def pause(self,kernel):
@@ -581,6 +582,14 @@ class LightTextBox(LightWidget):
     	    #drop the first line
     	    self._text.text = self._text.text[self._text.text.find("\n")+1:]
     	    self.__line_count -= 1
+    	#delete any existing newlines, testing phase
+    	timeout = 10
+    	while txt.find("\n")>=0 and timeout>0:
+    		pos = txt.find("\n")
+    		txt = txt[:pos] + txt[pos+1:]
+    		timeout -=1
+    	if timeout==0:
+    		self.force_line_after("Parse malfunction")
     	self._text.text = self._text.text + "\n" + txt
     	self.__line_count += 1
     	
@@ -684,6 +693,7 @@ class CharSet:
 	valid[key.LSHIFT] = ''
 	valid[key.RSHIFT] = ''
 	valid[key.BACKSLASH] = '\\'
+	valid[key.TAB] = '\t'
         self.valid_chars = valid
 
         shift = {}
