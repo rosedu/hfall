@@ -29,3 +29,30 @@ def matrixmult(m1, m2):
 	m[15] = m1[3] * m2[12] + m1[7] * m2[13] + m1[11] * m2[14] + m1[15] * m2[15]
 
 	return m
+
+def cross_product(v1, v2):
+	v = 3 * [0]
+
+	v[0] = v1[1]*v2[2] - v1[2]*v2[1]
+	v[1] = v1[2]*v2[0] - v1[0]*v2[2]
+	v[2] = v1[0]*v2[1] - v1[1]*v2[0]
+	
+	return v
+
+def length(v):
+        a = v[1] * v[1] + v[2] * v[2] + v[0] * v[0]
+        return a
+
+def normalize(v1):
+        v = 3 * [0]
+        
+        l = length(v1)
+
+        if l == 0:
+                return v1
+
+        v[0] = v1[0] / l
+        v[1] = v1[1] / l
+        v[2] = v1[2] / l
+
+        return v

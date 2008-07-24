@@ -203,10 +203,9 @@ class OGL:
   		glVertex2f(model.x, model.yy)
         	glEnd()      
 
-    def pushMatrix(self, matrix):
+    def pushMatrix(self):
         glPushMatrix()
         # glLoadIdentity()
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
         pass
         
     def colorPointer(self, color):
@@ -214,13 +213,14 @@ class OGL:
         glColorPointer(3, GL_FLOAT, 0, color)
 
     def vertexPointer(self, vertices):
-        # glEnableClientState(GL_COLOR_ARRAY)
-        # rnormal = [ 0.33, 0.33
-        # glNormalPointer(3, GL_FLOAT,
         glVertexPointer(3, GL_FLOAT, 0, vertices)
-        print "\n\n\n\n\n", vertices[:], "\n\n\n\n\n"
+
+    def normalPointer(self, normals):
+        glEnableClientState(GL_NORMAL_ARRAY)
+        glNormalPointer(GL_FLOAT, 0, normals)
 
     def TexCoordPointer(self, texels):
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
         glTexCoordPointer(2, GL_FLOAT, 0, texels)
 
     def setTexture(self, material):

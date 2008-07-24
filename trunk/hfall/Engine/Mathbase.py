@@ -49,7 +49,7 @@ class Vector3D:
     
     def Norm3D(self):
   	norm = sqrt(self.x*self.x+self.y*self.y+self.z*self.z)
-	if norm==0:
+	if norm == 0:
 	    self.x = 0
 	    self.y = 0
 	    self.z = 0

@@ -19,9 +19,10 @@ class Mesh:
 
     class Triangles:
     
-        def __init__(self, faces, material):
+        def __init__(self, faces, material, normals):
             self.faces = faces
             self.material = material
+            self.normals = normals
         
     """
     This is our Model class. It includes the faces, vertices, materials,
@@ -59,18 +60,23 @@ class Mesh:
         for i in range(0, len(self.triangles)):
             pfaces = (GLuint * len(self.triangles[i].faces))(*self.triangles[i].faces)
             self.triangles[i].faces = pfaces
+            """to be deleted when we have normals"""
+            pnormals = (GLfloat * len(self.triangles[i].normals))(*self.triangles[i].normals)
+            self.triangles[i].normals = pnormals
+            """---"""
         self.vertices = pvertices
         self.colors = pcolors
         self.texels = ptexels
         self.matrix4 = pmatrix4
 
     def render(self, renderDevice):
-        renderDevice.pushMatrix(self.matrix4)
+        renderDevice.pushMatrix()
         renderDevice.colorPointer(self.colors)
         renderDevice.vertexPointer(self.vertices)
         renderDevice.TexCoordPointer(self.texels)
-        for faces in self.triangles:
-            renderDevice.setTexture(faces.material)
-            renderDevice.DrawElements(faces.faces, self.mode)
+        for triangle in self.triangles:
+            renderDevice.normalPointer(triangle.normals)
+            renderDevice.setTexture(triangle.material)
+            renderDevice.DrawElements(triangle.faces, self.mode)
         renderDevice.popMatrix()
         
