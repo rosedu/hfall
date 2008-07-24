@@ -114,6 +114,8 @@ def check_keyboard(keyboard):
    			global_render.transy+=1
    		elif keyboard[key.E]:
    			global_render.transy-=1
+   	if global_UI.input_handler=="Console":
+   		global_UI.console.read_hold(keyboard)
 class UI(Task):
   	""" 
 	  Contains UI elements including console interaction
@@ -254,6 +256,7 @@ class UI(Task):
 	def run(self,kernel):
                 check_keyboard(self.keyboard)
 		self.refresh_fps()
+		self.console.input_clock()
 	  	pass
 	
 	def name(self):
@@ -261,7 +264,6 @@ class UI(Task):
 
 	def switch_focus(self,target=""):
                 self.unload_2Dtext(self.current_text)
-                print "Old: "+ self.input_handler
                 if target=="Engine":
                         self.input_handler = "Engine"
                 elif target=="Game":
@@ -280,7 +282,6 @@ class UI(Task):
                         kernel.log.error("Warning - unsafe focus switch" + \
                                          " operation not completed.")
                         pass
-                print "New: " + self.input_handler
                 
                 if self.input_handler=="Engine":
                         self.current_text = self.engine_text
@@ -424,6 +425,7 @@ class LightInputBox(LightWidget):
     	self._text.text = self.text()
       	if symbol == key.DELETE:
 		self._text.text = self.base_text 
+		self.reset_cursor()
         if symbol == self._delete_key:
        		if modifiers & key.MOD_CTRL:
        			self.delete(5)
@@ -463,16 +465,13 @@ class LightInputBox(LightWidget):
 	if modifiers & key.MOD_CAPSLOCK:
 	        new_char = new_char.swapcase()
 	        
-	print "loop"
 	if len(new_char)>0:
   		self._text.text = self._text.text[:self.__cursor_position] + \
   			    new_char + self._text.text[self.__cursor_position:]
-  		print self._text.text
   		self.__cursor_position += 1
   		
   		
   	self.paint_cursor()
-  	print self._text.text
 	
 
     #Input box functions
@@ -514,8 +513,8 @@ class LightInputBox(LightWidget):
         self.__cursor_state = not self.__cursor_state
         
     def cursor_left(self, distance):
-    	if self.__cursor_position < distance:
-    	    self.__cursor_position = 0
+    	if self.__cursor_position  < distance + len(self.base_text):
+    	    self.__cursor_position = len(self.base_text)
     	else:
     	    self.__cursor_position -= distance
     	return self.__cursor_position
@@ -535,8 +534,6 @@ class LightInputBox(LightWidget):
     	"""
     	Add the cursor to the text string
     	"""
-    	print self._text.text
-    	print "cursor position: " + str(self.__cursor_position)
     	self._text.text = self._text.text[:self.__cursor_position] + \
     		self.__cursor_char + \
     		self._text.text[self.__cursor_position:]

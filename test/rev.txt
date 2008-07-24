@@ -1,8 +1,21 @@
-Changes: (0.3.1)
-    - exec prefix is no longer needed
-    - rev command displays this help
-    - file logging of commands
+Changes: (0.3.2)
+    - bugfix: too many newlines in calls file
+    - bugfix: cursor before prompt
+    - bugfix: delete messes cursor
+    - feature: added hold key events to LEFT, RIGHT and BACKSPACE
 <OLD> 
 
 The above keyword blocks the reader's access to these lines.
 Old changelogs are to be placed here.
+
+Changes: (0.3.1)
+    - exec prefix is no longer needed
+    - rev command displays this help
+    - file logging of commands
+
+TODO:
+    - feature: console to the left of the screen
+
+NEXT:
+Changes: (0.3.3)
+ 

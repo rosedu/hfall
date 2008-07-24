@@ -44,12 +44,12 @@ class Console():
     command_index = 0
     __calls = []
     __calls_enabled = False
-    rev_file = "rev.txt"
     __calls_file = "calls.con"
+    rev_file = "rev.txt"
+    __speed_ratio = 0.1
 
     #Constants
     MAX_CHARS = 80 
-    MAX_LINES = 0 	#changed from init
     CON_STAY = 0
     CON_PUSH = 1
     CON_MAX_COMMAND_HISTORY = 10
@@ -64,8 +64,7 @@ class Console():
 	self.c_line = c_line
 	self.c_text = c_text
 	self.c_comm = c_comm
-
-	self.MAX_LINES = height/(self.size+4)
+	self.init_clock()
       
     	self.input_line = UI.LightInputBox(0,UI.global_render.w.height - height - self.size - 2,\
                                        UI.global_render.w.width, self.size + 2,\
@@ -108,9 +107,30 @@ class Console():
 	self.input_line.load(UI.global_UI.load_2Dtext,UI.global_UI.load_2DUI)
     	self.text_box.load(UI.global_UI.load_2Dtext,UI.global_UI.load_2DUI)
 	self.enable()
-    def read(self,symbol,modifiers):
+
+    def read_hold(self, keyboard):
+    	if self.__input_time==0:
+    		if keyboard[key.LEFT]:
+    			self.input_line.input(key.LEFT, 0)
+    		elif keyboard[key.RIGHT]:
+    			self.input_line.input(key.RIGHT, 0)
+    		elif keyboard[key.BACKSPACE]:
+    			self.input_line.input(key.BACKSPACE, 0)
+        pass
+        
+    def input_clock(self):
+    	if self.__input_time==0:	
+    		self.init_clock()
+    	else:
+    		self.__input_time -= 1
+    	return self.__input_time
+    
+    def init_clock(self,factor = 1):
+    	self.__input_time = int(int(UI.global_render.fps) * self.__speed_ratio * factor)
+            def read(self,symbol,modifiers):
       	if self.enabled == False:
 		return
+	self.init_clock(3) #prevent double keypress
 	if symbol == key.ENTER and len(self.input_line._text.text)>len(self.input_line.base_text):
 	  	self.command = self.input_line.text()
 	  	self.text_box.force_line_after(self.command)
@@ -222,9 +242,9 @@ class Console():
     		self.__calls_enabled = True
     		f = open(file_name,"r")
     		self.__calls = f.readlines()
-    		for line in self.__calls:
-    			newline_pos = line.find("\n")
-    			line = line[:newline_pos]
+    		for index in range(len(self.__calls)):
+    			newline_pos = self.__calls[index].find("\n")
+    			self.__calls[index] = self.__calls[index][:newline_pos]
     		f.close()
     		
     def save_calls(self,file_name):
