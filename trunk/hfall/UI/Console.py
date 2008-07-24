@@ -69,9 +69,10 @@ class Console():
     	self.input_line = UI.LightInputBox(0,UI.global_render.w.height - height - self.size - 2,\
                                        UI.global_render.w.width, self.size + 2,\
 				       'Verdana',self.size,(0.8,1.0,0.8,1.0))
+
 	self.input_line.default(self.prompt)
 	self.input_line.set_clock(60)
-	
+
     	self.text_box = UI.LightTextBox(0,UI.global_render.w.height - height, \
                                     UI.global_render.w.width, height,'Verdana',\
 				    self.size,(0.8,0.8,1.0,1.0))
@@ -276,7 +277,9 @@ class Console():
     		print "Dropped call"
     		pass
     	else:
-    		self.__calls.append(call)
+    	        if self.__calls.count(call)==0:
+    		        self.__calls.append(call)
+    		
     
     def make_call(self,index):
     	exec(self.__calls[int(index)])

@@ -191,7 +191,7 @@ class UI(Task):
 		self.add_fps()
 		self.add_world_coords()
 		self.loaded_UI = True
-		self.console = Console(0,200,self.C_GRAY,self.C_LIGHTGRAY,self.C_YELLOW,self.C_RED)
+		self.console = Console(400,200,self.C_GRAY,self.C_LIGHTGRAY,self.C_YELLOW,self.C_RED)
 
                 self.keyboard = key.KeyStateHandler()
                 global_render.w.push_handlers(self.keyboard)
@@ -295,14 +295,16 @@ class UI(Task):
                         
 	def add_fps(self):
   		self.fps = font.Text(self.f_header,global_render.fps,\
-		    25,60,halign=font.Text.LEFT,\
-		    valign = font.Text.BOTTOM,color = self.C_YELLOW)
+		    global_render.w.width-20,global_render.w.height-60,\
+		    halign=font.Text.RIGHT,\
+		    valign = font.Text.TOP,color = self.C_YELLOW)
 		self.load_2Dtext(self.fps)
 
         def add_world_coords(self):
                 self.world_coords = font.Text(self.f_small,"",\
-                        25,90,halign=font.Text.LEFT,\
-                        valign = font.Text.BOTTOM,color = self.C_YELLOW)
+                        global_render.w.width-20,global_render.w.height-90,\
+                        halign=font.Text.RIGHT,\
+                        valign = font.Text.TOP,color = self.C_YELLOW)
                 self.load_2Dtext(self.world_coords)
 
         def refresh_world_coords(self,x,y,z):
@@ -313,8 +315,8 @@ class UI(Task):
 
 	def testing(self):
 		self.text = font.Text(self.f_large,"Hammerfall Graphics Engine",\
-		    20,20,halign = font.Text.LEFT,\
-		    valign = font.Text.BOTTOM,color = (1,1,1,1))
+		    global_render.w.width-20,global_render.w.height-20,halign = font.Text.RIGHT,\
+		    valign = font.Text.TOP,color = (1,1,1,1))
 		global_render.addtext(self.text)
   		pass
 
