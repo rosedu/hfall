@@ -225,13 +225,6 @@ class OGL:
         glBindTexture(GL_TEXTURE_2D, material.texture.id)
         
     def DrawElements(self, faces, mode):
-        self.light1 = Light.Light( GL_LIGHT1, \
-                    rLightAmbient = [1.0, 1.0, 1.0, 1.0],\
-                    rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
-                    # rLightPosition = [0.0, -1.5, -50.0, 0.0])
-                    rLightPosition = [0, 0, 1, 0])
-        glEnable(GL_LIGHT1)
-        glEnable(GL_LIGHTING)
         glDrawElements(mode, len(faces), GL_UNSIGNED_INT, faces)
 
     def popMatrix(self):

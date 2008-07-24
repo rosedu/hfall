@@ -51,6 +51,7 @@ class Render(base.Task):
         """
         self._3dlist = []
         self._2dlist = []
+        self._lights = []
 	self._textlist = []
 	self.transx = posx;
 	self.transy = posy;
@@ -72,11 +73,6 @@ class Render(base.Task):
         self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
         self.ogl.activate_perspective(self.w.width,self.w.height)
 
-        """self.light1 = Light.Light( GL_LIGHT1, \
-                    rLightAmbient = [1.0, 1.0, 1.0, 1.0],\
-                    rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
-                    rLightPosition = [0.0, -1.5, -50.0, 1.0])
-        self.light1.LEnable()"""
         
     def start(self, kernel):
         """Starting the rendering module"""
@@ -111,9 +107,7 @@ class Render(base.Task):
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
             glEnable(GL_DEPTH_TEST)
   	    self.ogl.activate_model()
-  	    #self.light1.LPosition()
-  	    # glEnable(GL_LIGHTING)
-            glDisable(GL_LIGHT0)
+
             
             # TODO: camera manipulation
             # For dodecadron testing
@@ -123,9 +117,11 @@ class Render(base.Task):
             self.ogl.rotate(self.angle.x, Mathbase.Vector3D(1,0,0)) 
             self.ogl.rotate(self.angle.y, Mathbase.Vector3D(0,1,0)) 
             self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1))
-            # glEnable(GL_LIGHT1)
-            
-            # glEnable(GL_TEXTURE_2D)
+
+            glEnable(GL_LIGHTING)
+            glDisable(GL_LIGHT0)
+            for light in self._lights:
+                light.LEnable()
             # TODO: 3D model drawing
             for model in self._3dlist:
                 model.render(self.ogl)
@@ -218,6 +214,14 @@ class Render(base.Task):
         
         """
         self._3dlist.append(model)
+    def addLight(self, light):
+        """
+        This function is used to add a 3D model to the list of the
+        models to be drawn. This function sorts the list of 3D models
+        in a way that lets all model with the same texture to be grouped.
+        
+        """
+        self._lights.append(light)
 
     def addtext(self,text):
         self._textlist.append(text)
@@ -235,6 +239,14 @@ class Render(base.Task):
         
         """
 	self._3dlist.pop(x)
+        pass
+
+    def remLight(self,x):
+        """
+        This function is used to remove a 3D object from the drawing list.
+        
+        """
+	self._lights.pop(x)
         pass
 
     def rem2D(self,x):
