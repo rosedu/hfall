@@ -43,8 +43,20 @@ class drawer(base.Task):
         kernel.log.msg("Drawer started");
 
         AddModel.init(render)
+        creature = AddModel.add_model("models/creature.3ds", [0, 0, -20, 1])
+        AddModel.scale_model(creature, [18.0, 18.0, 18.0])
+
+        #AddModel.add_model("models/3dm-q3machinegun.3ds")
+        #AddModel.add_model("models/3dm-q3bfg.3ds")
+
+        #atrium = AddModel.add_model("models/atrium.3ds")
+        #AddModel.scale_model(atrium, [0.1, 0.1, 0.1])
+
+        #AddModel.add_model("models/Eagle.3ds")
+        #AddModel.add_model("models/Eaglepod.3ds")
+        #AddModel.add_model("models/MK4.3ds")
         light1 = Light.Light( GL_LIGHT1, \
-                    rLightAmbient = [1.0, 1.0, 1.0, 1.0],\
+                    rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
                     rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
                     rLightPosition = [0.0, -1.5, -50.0, 1.0])
         render.addLight(light1)
@@ -67,7 +79,7 @@ class drawer(base.Task):
     def name(self):
         return "drawer"
 
-render = Render.Render(800, 600, posx = 0, posy = -1.5, posz = -100)
+render = Render.Render(800, 600, posx = 0, posy = -1.5, posz = -100, far = 10000)
 hfk.insert(drawer())
 hfk.insert(render)
 hfk.insert(UI(render))

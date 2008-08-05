@@ -6,7 +6,8 @@ class TextureChunk:
     pass
 
 class MaterialChunk:
-    pass
+    def __init__(self):
+        self.textureMap1 = None
 
 class MaterialGroupChunk:
     pass

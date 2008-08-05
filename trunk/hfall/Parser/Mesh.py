@@ -19,10 +19,9 @@ class Mesh:
 
     class Triangles:
     
-        def __init__(self, faces, material, normals):
+        def __init__(self, faces, material):
             self.faces = faces
             self.material = material
-            self.normals = normals
         
     """
     This is our Model class. It includes the faces, vertices, materials,
@@ -31,7 +30,7 @@ class Mesh:
     """
 
     
-    def __init__(self, vert, texels, tri, matrix, color = None, draw_mode = GL_TRIANGLES):
+    def __init__(self, matrix, vert, norm = [], texels = [], tri = [], color = None, draw_mode = GL_TRIANGLES):
         
         """
         faces       - the faces formed with the vertices
@@ -45,6 +44,7 @@ class Mesh:
         """
 
         self.vertices = vert
+        self.normals = norm
         self.texels = texels
         self.triangles = tri
         self.matrix4 = matrix
@@ -53,30 +53,21 @@ class Mesh:
 
     def init(self):
         colors = (len(self.vertices))* [1, 1, 1]
-        pcolors = (GLfloat *len(colors))(*colors)
-        pvertices = (GLfloat * len(self.vertices))(*self.vertices)
-        ptexels = (GLfloat *len(self.texels))(*self.texels)
-        pmatrix4 = (GLfloat *len(self.matrix4))(*self.matrix4)
+        self.colors = (GLfloat *len(colors))(*colors)
+        self.vertices = (GLfloat * len(self.vertices))(*self.vertices)
+        self.normals = (GLfloat * len(self.normals))(*self.normals)
+        self.matrix4 = (GLfloat *len(self.matrix4))(*self.matrix4)
+        self.texels = (GLfloat *len(self.texels))(*self.texels)
         for i in range(0, len(self.triangles)):
-            pfaces = (GLuint * len(self.triangles[i].faces))(*self.triangles[i].faces)
-            self.triangles[i].faces = pfaces
-            """to be deleted when we have normals"""
-            pnormals = (GLfloat * len(self.triangles[i].normals))(*self.triangles[i].normals)
-            self.triangles[i].normals = pnormals
-            """---"""
-        self.vertices = pvertices
-        self.colors = pcolors
-        self.texels = ptexels
-        self.matrix4 = pmatrix4
+            self.triangles[i].faces = (GLuint * len(self.triangles[i].faces))(*self.triangles[i].faces)
+            
 
     def render(self, renderDevice):
-        renderDevice.pushMatrix()
         renderDevice.colorPointer(self.colors)
         renderDevice.vertexPointer(self.vertices)
+        renderDevice.normalPointer(self.normals)
         renderDevice.TexCoordPointer(self.texels)
         for triangle in self.triangles:
-            renderDevice.normalPointer(triangle.normals)
             renderDevice.setTexture(triangle.material)
             renderDevice.DrawElements(triangle.faces, self.mode)
-        renderDevice.popMatrix()
         

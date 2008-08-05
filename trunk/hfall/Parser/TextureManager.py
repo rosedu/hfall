@@ -11,14 +11,15 @@ class TextureManager:
         texture = self.textures[name]
         if not texture.inRAM:
             texture.loadImage()
-        if not texture.inVRAM:
+        if not texture.inVRAM and texture.inRAM:
             texture.loadFromRam()
-            #pass
         return texture
 
     def loadFromFile(self, name):
         texture = Texture(name)
-        return texture.loadImage()
+        if texture.loadImage():
+            return texture
+        else: return None
         
     def add(self, texture):
         self.textures[texture.name] = texture

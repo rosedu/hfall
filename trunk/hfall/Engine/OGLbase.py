@@ -69,9 +69,10 @@ class OGL:
   	#glEnable(GL_BLEND)
   	#glAlphaFunc(GL_GREATER,0.1)
   	#glEnable(GL_ALPHA_TEST)
-  	glEnable(GL_TEXTURE_2D)
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_COLOR_ARRAY)
+        glEnableClientState(GL_NORMAL_ARRAY)
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
         hfk.log.msg('Open GL started')
 
@@ -205,27 +206,29 @@ class OGL:
 
     def pushMatrix(self):
         glPushMatrix()
-        # glLoadIdentity()
-        pass
         
     def colorPointer(self, color):
-        glEnableClientState(GL_COLOR_ARRAY)
         glColorPointer(3, GL_FLOAT, 0, color)
 
     def vertexPointer(self, vertices):
         glVertexPointer(3, GL_FLOAT, 0, vertices)
 
     def normalPointer(self, normals):
-        glEnableClientState(GL_NORMAL_ARRAY)
         glNormalPointer(GL_FLOAT, 0, normals)
 
     def TexCoordPointer(self, texels):
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
         glTexCoordPointer(2, GL_FLOAT, 0, texels)
 
     def setTexture(self, material):
-        glEnable(GL_TEXTURE_2D)
-        glBindTexture(GL_TEXTURE_2D, material.texture.id)
+        # Materials initialization and activation
+	glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, material.ambient)
+        glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, material.diffuse)
+        glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, material.specular)
+        glMaterialfv (GL_FRONT_AND_BACK, GL_SHININESS, material.shininess)
+        
+        if material.texture:
+            glEnable(GL_TEXTURE_2D)
+            glBindTexture(GL_TEXTURE_2D, material.texture.id)
         
     def DrawElements(self, faces, mode):
         glDrawElements(mode, len(faces), GL_UNSIGNED_INT, faces)

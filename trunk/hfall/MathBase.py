@@ -4,6 +4,7 @@ Mathematic auxiliary functions
 
 import pyglet
 from pyglet.gl import *
+import math
 
 def matrixmult(m1, m2):
 	m = (GLfloat * 16)(*(16 * []))
@@ -46,7 +47,7 @@ def length(v):
 def normalize(v1):
         v = 3 * [0]
         
-        l = length(v1)
+        l = math.sqrt(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2])
 
         if l == 0:
                 return v1
@@ -56,3 +57,26 @@ def normalize(v1):
         v[2] = v1[2] / l
 
         return v
+
+def calculateNormals(vertices, faces):
+        nr_connections = len(vertices)*[0]
+        normals = 3*len(vertices)*[0]
+        for i in range(len(faces)):
+            v1 = vertices[faces[i][0]]
+            v2 = vertices[faces[i][1]]
+            v3 = vertices[faces[i][2]]
+            prod = cross_product([v2[0]-v1[0],v2[1]-v1[1],v2[2]-v1[2]], [v3[0]-v1[0],v3[1]-v1[1],v3[2]-v1[2]])
+            prod = normalize(prod)
+            nr_connections[faces[i][0]] += 1
+            nr_connections[faces[i][1]] += 1
+            nr_connections[faces[i][2]] += 1
+            for j in range(3):
+                    normals[3*faces[i][0]+j] += prod[j]
+                    normals[3*faces[i][1]+j] += prod[j]
+                    normals[3*faces[i][2]+j] += prod[j]
+        for i in range(len(vertices)):
+                if nr_connections[i] > 0:
+                        normals[3*i] /=nr_connections[i]
+                        normals[3*i+1] /=nr_connections[i]
+                        normals[3*i+2] /=nr_connections[i]
+        return normals

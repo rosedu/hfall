@@ -1,22 +1,26 @@
 from Image import Image
 from pyglet.gl import *
+import os
 
 class Texture:
-    def __init__(self, name):
+    def __init__(self, name = None):
         self.name = name
+        self.image = None
         self.inRAM = False
         self.inVRAM = False
+	self.id = (GLuint)(*[])
 
     def loadImage(self):
-        self.image = Image(self.name)
+        if os.path.exists(self.name):
+            self.image = Image(self.name)
+        else:
+            print "Could not find ", self.name
         if not self.image:
             return False
         self.inRAM = True
         return True
 
     def loadFromRam(self):
-        self.id = []
-	self.id = (GLuint)(*self.id)
 	glGenTextures(1, self.id)
         glBindTexture(GL_TEXTURE_2D, self.id)
         glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT) 

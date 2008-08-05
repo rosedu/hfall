@@ -477,11 +477,20 @@ class MaxParser:
         return name
 
     def readColor(self):
-        color = self.file.readArray(3, 'B')
-        print color
+        header = Chunks.ChunkHeader()
+        self.readChunkHeader(header)
+        for case in switch(header.chunk_id):
+            if case(_3DS.COLOR_24) or case(_3DS.LIN_COLOR_24):
+                color = self.file.readArray(3, 'B')
+                print color
+                break
+            if case():
+                print "    Skip unknown %X subchunk" %(header.chunk_id)
+        self.file.seek(header.start_position + header.chunk_length, os.SEEK_SET)
         return color
 
     def readFloatColor(self):
+        color = []
         header = Chunks.ChunkHeader()
         self.readChunkHeader(header)
         for case in switch(header.chunk_id):
