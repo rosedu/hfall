@@ -43,8 +43,8 @@ class drawer(base.Task):
         kernel.log.msg("Drawer started");
 
         AddModel.init(render)
-        creature = AddModel.add_model("models/creature.3ds", [0, 0, -20, 1])
-        AddModel.scale_model(creature, [18.0, 18.0, 18.0])
+        # creature = AddModel.add_model("models/creature.3ds", [0, 0, -20, 1])
+        # AddModel.scale_model(creature, [18.0, 18.0, 18.0])
 
         #AddModel.add_model("models/3dm-q3machinegun.3ds")
         #AddModel.add_model("models/3dm-q3bfg.3ds")
