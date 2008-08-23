@@ -20,15 +20,11 @@ import ModelManager
 import TextureManager
 import Bitmap
 import Light
+import Terrain
 from base import kernel as hfk
 
 class drawer(base.Task):
-    """
-    Desenez cateva chenare si apoi ies
-    
-    """
     def __init__(self):
-        self._maxframe = 100
         self._vertexes = []
         self._faces = []
         # self.mesh = []
@@ -60,6 +56,8 @@ class drawer(base.Task):
                     rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
                     rLightPosition = [0.0, -1.5, -50.0, 1.0])
         render.addLight(light1)
+        terrain = Terrain.Terrain()
+        render.terrain = terrain
         
     def stop(self, kernel):
         pass
@@ -71,10 +69,7 @@ class drawer(base.Task):
         pass
 
     def run(self, kernel):
-        #self._maxframe-=1
-        #print "Frame: ",self._maxframe
-        if (self._maxframe<0):
-            kernel.shutdown()
+        pass
 
     def name(self):
         return "drawer"

@@ -22,6 +22,7 @@ import Mathbase
 import OGLbase
 import Light
 import Fog
+import Terrain
 import base
 from base import kernel as hfk
 
@@ -61,6 +62,7 @@ class Render(base.Task):
   	self.angle = Mathbase.Vector3D(0,0,0)
   	self.enableaxis = True
   	self.fps = "0"
+  	self.terrain = None
         try:
             # Try to create a window with antialising
             # TODO: add other possible config via another parameter
@@ -107,7 +109,6 @@ class Render(base.Task):
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
             glEnable(GL_DEPTH_TEST)
   	    self.ogl.activate_model()
-
             
             # TODO: camera manipulation
             # For dodecadron testing
@@ -129,6 +130,10 @@ class Render(base.Task):
             # TODO: save openGL state here
             glDisable(GL_TEXTURE_2D)
   	    glDisable(GL_LIGHTING)
+
+            #drawing terrain
+            if self.terrain is not None:
+                self.terrain.render()
 
             #drawing axis:
   	    if self.enableaxis == True:
