@@ -1,27 +1,47 @@
 import sys
 sys.path.insert(0, "..")
-sys.path.insert(0, "../UI")
-from Bitmap import Bitmap
-from switch import switch
+from struct import *
+from pyglet import image
+
 
 class Image:
 
-    class Format:
-        JPEG   = 1
-        BMP    = 2
-        TGA    = 3
+    def __init__(self, filename):
         
+        img = image.load(filename)
+        self.width = img.width
+        self.height = img.height
+        self.size = self.width * self.height
+        self.format = img.image_data.format
+        self.channels = len(self.format)
+        data = img.image_data.data
+        length = len(data)
+        self.colors = []
+        for i in range(self.channels):
+            self.colors.append([])
+        for i in range(self.size-1, -1, -1):
+            for j in range(self.channels):
+                self.colors[j].append(unpack('B', data[i*self.channels+j])[0])
 
-    def __init__(self, filename, channels = 3, format = Format.BMP):
-        self.file = filename
-        self.channels = channels
+        print filename, "loaded", "(", self.format, ")"
+
+    def convert(self, format, alpha = 255):
+        if len(format) > len(self.format):
+            self.colors.append(len(self.colors[0])*[alpha])
+            self.format += 'A'
+        if format == self.format:
+            return
+        colors = []
+        for c in format:
+            index = self.format.find(c)
+            colors.append(self.colors[index])
+        self.colors = colors
         self.format = format
-        self.load()
 
-    def load(self):
-        for case in switch(self.format):
-            if case(Image.Format.BMP):
-                bitmap = Bitmap(self.file)
-                self.width = bitmap.width
-                self.height = bitmap.height
-                self.data = bitmap.data
+    def get_data(self):
+        data = []
+        for i in range(self.size):
+            for j in range(len(self.format)):
+                data.append(self.colors[j][i])
+        return data
+        
