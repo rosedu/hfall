@@ -13,6 +13,8 @@ class TextureManager:
             texture.loadImage()
         if not texture.inVRAM and texture.inRAM:
             texture.loadFromRam()
+        if not texture.inVRAM:
+            return None
         return texture
 
     def loadFromFile(self, name):

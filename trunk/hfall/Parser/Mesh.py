@@ -63,10 +63,10 @@ class Mesh:
             
 
     def render(self, renderDevice):
-        renderDevice.colorPointer(self.colors)
-        renderDevice.vertexPointer(self.vertices)
-        renderDevice.normalPointer(self.normals)
         renderDevice.TexCoordPointer(self.texels)
+        renderDevice.colorPointer(self.colors)
+        renderDevice.normalPointer(self.normals)
+        renderDevice.vertexPointer(self.vertices)
         for triangle in self.triangles:
             renderDevice.setTexture(triangle.material)
             renderDevice.DrawElements(triangle.faces, self.mode)

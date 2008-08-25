@@ -204,6 +204,19 @@ class OGL:
   		glVertex2f(model.x, model.yy)
         	glEnd()      
 
+    def resetTextureUnit(self, texture_unit):
+        glActiveTexture(GL_TEXTURE0 + texture_unit)
+        glMatrixMode(GL_TEXTURE)
+        glLoadIdentity()
+        glMatrixMode(GL_MODELVIEW)
+        glDisable(GL_TEXTURE_3D_EXT)
+        glDisable(GL_TEXTURE_CUBE_MAP_ARB)
+        glDisable(GL_TEXTURE_2D)
+        glDisable(GL_TEXTURE_GEN_S)
+        glDisable(GL_TEXTURE_GEN_T)
+        glDisable(GL_TEXTURE_GEN_R)
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
+
     def pushMatrix(self):
         glPushMatrix()
         
@@ -217,18 +230,54 @@ class OGL:
         glNormalPointer(GL_FLOAT, 0, normals)
 
     def TexCoordPointer(self, texels):
+        glActiveTextureARB(GL_TEXTURE0_ARB)
+        glClientActiveTextureARB(GL_TEXTURE0_ARB)
+        glTexCoordPointer(2, GL_FLOAT, 0, texels)
+
+        glActiveTextureARB(GL_TEXTURE1_ARB)
+        glClientActiveTextureARB(GL_TEXTURE1_ARB)
         glTexCoordPointer(2, GL_FLOAT, 0, texels)
 
     def setTexture(self, material):
         # Materials initialization and activation
-	glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, material.ambient)
-        glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, material.diffuse)
-        glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, material.specular)
-        glMaterialfv (GL_FRONT_AND_BACK, GL_SHININESS, material.shininess)
+	#glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, material.ambient)
+        #glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, material.diffuse)
+        #glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, material.specular)
+        #glMaterialfv (GL_FRONT_AND_BACK, GL_SHININESS, material.shininess)
+
+        self.resetTextureUnit(0)
+        self.resetTextureUnit(1)
         
-        if material.texture:
+        if material.bump:
+            glActiveTexture(GL_TEXTURE0)
+            glBindTexture(GL_TEXTURE_2D, material.bump.id)
             glEnable(GL_TEXTURE_2D)
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
+            glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_DOT3_RGB_EXT)
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE)
+            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_PRIMARY_COLOR_EXT)
+            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR)
+            
+            glActiveTexture(GL_TEXTURE1)
+            if material.texture:
+                glBindTexture(GL_TEXTURE_2D, material.texture.id)
+            glEnable(GL_TEXTURE_2D)
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
+            glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_MODULATE)
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_PREVIOUS_EXT)
+            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)            
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_TEXTURE)
+            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR)
+            
+        elif material.texture:
+            glActiveTexture(GL_TEXTURE0)
             glBindTexture(GL_TEXTURE_2D, material.texture.id)
+            glEnable(GL_TEXTURE_2D)
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
+            glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_REPLACE)
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE)
+            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)
         
     def DrawElements(self, faces, mode):
         glDrawElements(mode, len(faces), GL_UNSIGNED_INT, faces)

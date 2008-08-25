@@ -69,6 +69,8 @@ class ModelLoader:
             material.specular = m.specularColor + [0]
             if m.textureMap1:
                 material.texture = self.textureMng.get(m.textureMap1.name)
+            if m.bumpMap:
+                material.bump = self.textureMng.get(m.bumpMap.name)
             material.init()
             self.materialMng.add(material)
 

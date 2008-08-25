@@ -9,6 +9,7 @@ class Material:
         self.specular = specular
         self.shininess = shininess
         self.texture = None
+        self.bump = None
 
     def init(self):
         self.ambient = (GLfloat * len(self.ambient))(*self.ambient)
