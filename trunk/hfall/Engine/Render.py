@@ -124,8 +124,12 @@ class Render(base.Task):
             for light in self._lights:
                 light.LEnable()
             # TODO: 3D model drawing
+            glActiveTexture(GL_TEXTURE0)
+            glPushMatrix()
             for model in self._3dlist:
                 model.render(self.ogl)
+            glActiveTexture(GL_TEXTURE0)
+            glPopMatrix()
             # TODO: special effects here
             # TODO: save openGL state here
             glDisable(GL_TEXTURE_2D)

@@ -175,6 +175,8 @@ class OGL:
         """
 	self.activate_model()
         #glTranslatef(0.0,0.0,-6.0);
+	glActiveTextureARB(GL_TEXTURE0_ARB)
+        glClientActiveTextureARB(GL_TEXTURE0_ARB)
   	if model.is_textured==True:
 		glBindTexture(GL_TEXTURE_2D,model.texture_ids[0])
   		glTexImage2D(GL_TEXTURE_2D,0,4,model.pixelwidth,\
