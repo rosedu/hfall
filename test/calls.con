@@ -1,0 +1,6 @@
+AddModel.add_model("models/eagle/Eagle.3ds")
+AddModel.add_model("models/eagle/Eaglepod.3ds")
+AddModel.add_model("models/creature/creature2.3ds")
+AddModel.add_model("models/creature/creature.3ds")
+AddModel.add_model("models/atrium/atrium.3ds")
+AddModel.add_model("models/grenadelauncher/grenadelauncher.3ds")
