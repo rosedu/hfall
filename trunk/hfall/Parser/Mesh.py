@@ -70,4 +70,10 @@ class Mesh:
         for triangle in self.triangles:
             renderDevice.setTexture(triangle.material)
             renderDevice.DrawElements(triangle.faces, self.mode)
+            if triangle.material.bump:
+                renderDevice.resetTextureUnit(0)
+                if triangle.material.texture:
+                    renderDevice.resetTextureUnit(1)
+            elif triangle.material.texture:
+                renderDevice.resetTextureUnit(0)
         

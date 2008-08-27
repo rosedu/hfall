@@ -6,7 +6,7 @@ class TextureManager:
         self.textures = {}
 
     def get(self, name):
-        if not self.textures[name]:
+        if name not in self.textures:
             return self.loadFromFile(name)
         texture = self.textures[name]
         if not texture.inRAM:

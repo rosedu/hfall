@@ -17,10 +17,14 @@ class ModelLoader:
         self.modelMng = modelMng
         self.materialMng = matMng
         self.textureMng = texMng
+        self.currentDir = "./"
 
     def loadModel(self, filename):
         if not self.parser.parseFile(filename):
             return False
+        index = filename.rfind("/")
+        if index > -1:
+            self.currentDir = filename[0:index+1]
         self.modelName = filename
         self.saveMaterials()
         self.saveModel()
@@ -61,6 +65,7 @@ class ModelLoader:
         self.modelMng.add(self.model)
 
     def saveMaterials(self):
+        _dir = self.currentDir
         for m in self.parser.object.materials:
             self.saveTextures(m)
             material = Material(m.name)
@@ -68,15 +73,18 @@ class ModelLoader:
             material.diffuse = m.diffuseColor + [0]
             material.specular = m.specularColor + [0]
             if m.textureMap1:
-                material.texture = self.textureMng.get(m.textureMap1.name)
+                material.texture = self.textureMng.get(_dir+m.textureMap1.name)
             if m.bumpMap:
-                material.bump = self.textureMng.get(m.bumpMap.name)
+                material.bump = self.textureMng.get(_dir+m.bumpMap.name)
             material.init()
             self.materialMng.add(material)
 
     def saveTextures(self, material):
+        _dir = self.currentDir
         for tex in material.textures:
-            texture = Texture(tex.name)
+            texture = Texture(_dir + tex.name)
+            #if material.bumpMap and texture.name == _dir+material.bumpMap.name:
+            #    texture.normalMap = True
             self.textureMng.add(texture)
         
     def getModel(self):

@@ -5,6 +5,7 @@ import os
 class Texture:
     def __init__(self, name = None):
         self.name = name
+        self.normalMap = False
         self.image = None
         self.inRAM = False
         self.inVRAM = False
@@ -13,6 +14,8 @@ class Texture:
     def loadImage(self):
         if os.path.exists(self.name):
             self.image = Image(self.name)
+            if self.normalMap:
+                self.image.computeNormalMap(scaleHeightByNz = True)
             self.image.convert("RGBA")
         else:
             print "Could not find ", self.name

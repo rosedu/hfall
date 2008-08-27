@@ -235,10 +235,12 @@ class OGL:
         glActiveTextureARB(GL_TEXTURE0_ARB)
         glClientActiveTextureARB(GL_TEXTURE0_ARB)
         glTexCoordPointer(2, GL_FLOAT, 0, texels)
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 
         glActiveTextureARB(GL_TEXTURE1_ARB)
         glClientActiveTextureARB(GL_TEXTURE1_ARB)
         glTexCoordPointer(2, GL_FLOAT, 0, texels)
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 
     def setTexture(self, material):
         # Materials initialization and activation
@@ -246,9 +248,6 @@ class OGL:
         #glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, material.diffuse)
         #glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, material.specular)
         #glMaterialfv (GL_FRONT_AND_BACK, GL_SHININESS, material.shininess)
-
-        self.resetTextureUnit(0)
-        self.resetTextureUnit(1)
         
         if material.bump:
             glActiveTexture(GL_TEXTURE0)
@@ -261,16 +260,16 @@ class OGL:
             glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_PRIMARY_COLOR_EXT)
             glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR)
             
-            glActiveTexture(GL_TEXTURE1)
             if material.texture:
+                glActiveTexture(GL_TEXTURE1)
                 glBindTexture(GL_TEXTURE_2D, material.texture.id)
-            glEnable(GL_TEXTURE_2D)
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
-            glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_MODULATE)
-            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_PREVIOUS_EXT)
-            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)            
-            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_TEXTURE)
-            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR)
+                glEnable(GL_TEXTURE_2D)
+                glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
+                glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_MODULATE)
+                glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_PREVIOUS_EXT)
+                glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)            
+                glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_TEXTURE)
+                glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR)
             
         elif material.texture:
             glActiveTexture(GL_TEXTURE0)

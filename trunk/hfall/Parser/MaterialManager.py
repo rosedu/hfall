@@ -7,7 +7,7 @@ class MaterialManager:
         self.materials[material.name] = material
 
     def get(self, name):
-        if not self.materials[name]:
+        if name not in self.materials:
             return None
         return self.materials[name]
 
