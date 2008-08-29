@@ -38,12 +38,12 @@ class ModelLoader:
         for m in self.parser.object.meshes:
             if m.type != 1:
                 continue
-            mesh = Mesh(16*[0], [])
-            
+            mesh = Mesh([], [])
             # get system coordinates
-            for i in range(0, 3):
-                for j in range(0, 4):
-                    mesh.matrix4[i*3+j] = m.data.matrix[i+j*3]
+            mx = m.data.matrix
+            for i in range(4):
+                mesh.matrix4 += [mx[3*i], mx[3*i + 1], mx[3*i + 2], 0]
+            mesh.matrix4[15] = 1
             # get vertices & texCoordinates
             for i in range(0, m.data.nrOfVertices):
                 mesh.vertices += m.data.vertices[i]
@@ -54,7 +54,8 @@ class ModelLoader:
             # get faces
             if m.data.faces:
                 mesh.triangles = []
-                mesh.normals = MathBase.calculateNormals(m.data.vertices, m.data.faces.faces)
+                tbn = MathBase.computeTangentSpace(m.data.vertices, m.data.coordinates, m.data.faces.faces)
+                mesh.normals = tbn[2]
                 for group in m.data.faces.materialGroups:
                     triangles = Mesh.Triangles([], self.materialMng.get(group.materialName))
                     for i in group.faces:

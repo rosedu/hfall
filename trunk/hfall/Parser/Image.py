@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, "..")
 from struct import *
 from pyglet import image
+from math import sqrt
 
 
 class Image:
@@ -71,10 +72,10 @@ class Image:
                            height(-1,  0) * -2 + height( 1,  0) * 2 + \
                            height(-1,  1) * -1 + height( 1,  1) * 1)
                 deltaz = 4 * 2 * (whiteHeightInPixels / 255.0)
-                r = deltax*deltax + deltay*deltay + deltaz*deltaz
-                deltax /= r
-                deltay /= r
-                deltaz /= r
+                r = 1/sqrt(deltax*deltax + deltay*deltay + deltaz*deltaz)
+                deltax *= r
+                deltay *= r
+                deltaz *= r
 
                 H = bump[j] / 255.0
                 if lowPassBump:

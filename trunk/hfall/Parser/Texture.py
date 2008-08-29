@@ -15,7 +15,7 @@ class Texture:
         if os.path.exists(self.name):
             self.image = Image(self.name)
             if self.normalMap:
-                self.image.computeNormalMap(scaleHeightByNz = True)
+                self.image.computeNormalMap(4096)
             self.image.convert("RGBA")
         else:
             print "Could not find ", self.name
