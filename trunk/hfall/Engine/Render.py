@@ -71,6 +71,7 @@ class Render(base.Task):
             self.w = window.Window(resizable = True, fullscreen = True, config=config)
         except window.NoSuchConfigException:
             self.w = window.Window(resizable = True, fullscreen = True)
+        self.w.set_vsync(False)
         self.ogl = OGLbase.OGL(self.w, width, height, near, far, clearcolor)
         self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
         self.ogl.activate_perspective(self.w.width,self.w.height)

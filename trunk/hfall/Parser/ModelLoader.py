@@ -38,29 +38,30 @@ class ModelLoader:
         for m in self.parser.object.meshes:
             if m.type != 1:
                 continue
-            mesh = Mesh([], [])
+            geom = Mesh.Geometry([], [], [])
+            objectMatrix = []
+            triangles = []
             # get system coordinates
             mx = m.data.matrix
             for i in range(4):
-                mesh.matrix4 += [mx[3*i], mx[3*i + 1], mx[3*i + 2], 0]
-            mesh.matrix4[15] = 1
+                objectMatrix += [mx[3*i], mx[3*i + 1], mx[3*i + 2], 0]
+            objectMatrix[15] = 1
+            
             # get vertices & texCoordinates
-            for i in range(0, m.data.nrOfVertices):
-                mesh.vertices += m.data.vertices[i]
-                if m.data.coordinates:
-                    if not mesh.texels:
-                        mesh.texels = []
-                    mesh.texels += m.data.coordinates[i]
+            geom.vertices = m.data.vertices
+            if m.data.coordinates:
+                geom.texCoords = m.data.coordinates
+                
             # get faces
             if m.data.faces:
-                mesh.triangles = []
-                tbn = MathBase.computeTangentSpace(m.data.vertices, m.data.coordinates, m.data.faces.faces)
-                mesh.normals = tbn[2]
+                geom.faces = m.data.faces.faces
                 for group in m.data.faces.materialGroups:
-                    triangles = Mesh.Triangles([], self.materialMng.get(group.materialName))
+                    faces = []
                     for i in group.faces:
-                        triangles.faces += m.data.faces.faces[i]
-                    mesh.triangles.append(triangles)
+                        faces += m.data.faces.faces[i]
+                    triangles.append(Mesh.Triangles(faces, self.materialMng.get(group.materialName)))
+                    
+            mesh = Mesh(objectMatrix, geom, triangles)
             mesh.init()
             self.model.meshes.append(mesh)
         self.modelMng.add(self.model)

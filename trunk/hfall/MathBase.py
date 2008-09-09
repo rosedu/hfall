@@ -108,64 +108,71 @@ def normalize(v1):
 
         return v
 
+
+def _sum(v1, v2):
+        return [v1[0]+v2[0], v1[1]+v2[1], v1[2]+v2[2]]
+
 def computeTangentSpace(vertices, texels, faces):
         nr_connections = len(vertices)*[0]
-        normals = 3*len(vertices)*[0]
-        tangents = 3*len(vertices)*[0]
-        binormals = 3*len(vertices)*[0]
+        normals = len(vertices)*[[0, 0, 0]]
+        tangents = len(vertices)*[[0, 0, 0]]
+        binormals = len(vertices)*[[0, 0, 0]]
         for i in range(len(faces)):
-            v1 = vertices[faces[i][0]]
-            v2 = vertices[faces[i][1]]
-            v3 = vertices[faces[i][2]]
-            p21 = [v2[0]-v1[0],v2[1]-v1[1],v2[2]-v1[2]]
-            p31 = [v3[0]-v1[0],v3[1]-v1[1],v3[2]-v1[2]]
-            normal = normalize(cross_product(p21, p31))
-            if texels:
-                    t1 = texels[faces[i][0]]
-                    t2 = texels[faces[i][1]]
-                    t3 = texels[faces[i][2]]
-                    uv21 = [t2[0]-t1[0], t2[1]-t1[1]]
-                    uv31 = [t3[0]-t1[0], t3[1]-t1[1]]
-                    tangent = [p21[0]*uv31[1]-p31[0]*uv21[1], p21[1]*uv31[1]-p31[1]*uv21[1], p21[2]*uv31[1]-p31[2]*uv21[1]]
-                    tangent = normalize(tangent)
-                    binormal = [p31[0]*uv21[0]-p21[0]*uv31[0], p31[1]*uv21[0]-p21[1]*uv31[0], p31[2]*uv21[0]-p21[2]*uv31[0]]
-                    binormal = normalize(binormal)
-                    dot = dot_product(normal, tangent)
-                    tangent = [tangent[0] - normal[0]*dot, tangent[1] - normal[1]*dot, tangent[2] - normal[2]*dot]
-                    tangent = normalize(tangent)
-                    rightHanded = dot_product(cross_product(tangent, binormal), normal) >= 0
-                    binormal = cross_product(normal, tangent)
-                    if not rightHanded:
-                            binormal = [-binormal[0], -binormal[1], -binormal[2]]
+                v1 = vertices[faces[i][0]]
+                v2 = vertices[faces[i][1]]
+                v3 = vertices[faces[i][2]]
+                p21 = [v2[0]-v1[0],v2[1]-v1[1],v2[2]-v1[2]]
+                p31 = [v3[0]-v1[0],v3[1]-v1[1],v3[2]-v1[2]]
+                normal = normalize(cross_product(p21, p31))
+            
+                if texels:
+                        t1 = texels[faces[i][0]]
+                        t2 = texels[faces[i][1]]
+                        t3 = texels[faces[i][2]]
+                        uv21 = [t2[0]-t1[0], t2[1]-t1[1]]
+                        uv31 = [t3[0]-t1[0], t3[1]-t1[1]]
+                        tangent = [p21[0]*uv31[1]-p31[0]*uv21[1], p21[1]*uv31[1]-p31[1]*uv21[1], p21[2]*uv31[1]-p31[2]*uv21[1]]
+                        tangent = normalize(tangent)
+                        binormal = [p31[0]*uv21[0]-p21[0]*uv31[0], p31[1]*uv21[0]-p21[1]*uv31[0], p31[2]*uv21[0]-p21[2]*uv31[0]]
+                        binormal = normalize(binormal)
+                        dot = dot_product(normal, tangent)
+                        tangent = [tangent[0] - normal[0]*dot, tangent[1] - normal[1]*dot, tangent[2] - normal[2]*dot]
+                        tangent = normalize(tangent)
+                        rightHanded = dot_product(cross_product(tangent, binormal), normal) >= 0
+                        binormal = cross_product(normal, tangent)
+                        if not rightHanded:
+                                binormal = [-binormal[0], -binormal[1], -binormal[2]]
+                                
+                nr_connections[faces[i][0]] += 1
+                nr_connections[faces[i][1]] += 1
+                nr_connections[faces[i][2]] += 1
 
-            nr_connections[faces[i][0]] += 1
-            nr_connections[faces[i][1]] += 1
-            nr_connections[faces[i][2]] += 1
-            for j in range(3):
-                    normals[3*faces[i][0]+j] += normal[j]
-                    normals[3*faces[i][1]+j] += normal[j]
-                    normals[3*faces[i][2]+j] += normal[j]
-                    if texels:
-                            tangents[3*faces[i][0]+j] += tangent[j]
-                            tangents[3*faces[i][1]+j] += tangent[j]
-                            tangents[3*faces[i][2]+j] += tangent[j]
+                normals[faces[i][0]] = _sum(normals[faces[i][0]], normal)
+                normals[faces[i][1]] = _sum(normals[faces[i][1]], normal)
+                normals[faces[i][2]] = _sum(normals[faces[i][2]], normal)
+                
+                if texels:
+                        tangents[faces[i][0]] = _sum(tangents[faces[i][0]], tangent)
+                        tangents[faces[i][1]] = _sum(tangents[faces[i][1]], tangent)
+                        tangents[faces[i][2]] = _sum(tangents[faces[i][2]], tangent)
 
-                            binormals[3*faces[i][0]+j] += binormal[j]
-                            binormals[3*faces[i][1]+j] += binormal[j]
-                            binormals[3*faces[i][2]+j] += binormal[j]
+                        binormals[faces[i][0]] = _sum(binormals[faces[i][0]], binormal)
+                        binormals[faces[i][1]] = _sum(binormals[faces[i][1]], binormal)
+                        binormals[faces[i][2]] = _sum(binormals[faces[i][2]], binormal)
+                        
         for i in range(len(vertices)):
                 if nr_connections[i] > 0:
-                        normals[3*i] /=nr_connections[i]
-                        normals[3*i+1] /=nr_connections[i]
-                        normals[3*i+2] /=nr_connections[i]
+                        normals[i][0] /=nr_connections[i]
+                        normals[i][1] /=nr_connections[i]
+                        normals[i][2] /=nr_connections[i]
                         if texels:
-                                tangents[3*i] /=nr_connections[i]
-                                tangents[3*i+1] /=nr_connections[i]
-                                tangents[3*i+2] /=nr_connections[i]
+                                tangents[i][0] /=nr_connections[i]
+                                tangents[i][1] /=nr_connections[i]
+                                tangents[i][2] /=nr_connections[i]
 
-                                binormals[3*i] /=nr_connections[i]
-                                binormals[3*i+1] /=nr_connections[i]
-                                binormals[3*i+2] /=nr_connections[i]
+                                binormals[i][0] /=nr_connections[i]
+                                binormals[i][1] /=nr_connections[i]
+                                binormals[i][2] /=nr_connections[i]
 
         if texels:
                 return [tangents, binormals, normals]

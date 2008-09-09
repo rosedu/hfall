@@ -280,8 +280,8 @@ class OGL:
             glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE)
             glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)
         
-    def DrawElements(self, faces, mode):
-        glDrawElements(mode, len(faces), GL_UNSIGNED_INT, faces)
+    def drawRangeElements(self, mode, start, end, size, faces):
+        glDrawRangeElements(mode, start, end, size, GL_UNSIGNED_INT, faces)
 
     def popMatrix(self):
         glPopMatrix()
