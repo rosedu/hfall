@@ -309,9 +309,9 @@ def _sum(v1, v2):
 
 def computeTangentSpace(vertices, texels, faces):
         nr_connections = len(vertices)*[0]
-        normals = 3*len(vertices)*[0]
-        tangents = 3*len(vertices)*[0]
-        binormals = 3*len(vertices)*[0]
+        normals = len(vertices)*[[0, 0, 0]]
+        tangents = len(vertices)*[[0, 0, 0]]
+        binormals = len(vertices)*[[0, 0, 0]]
         for i in range(len(faces)):
             v1 = vertices[faces[i][0]]
             v2 = vertices[faces[i][1]]
@@ -357,17 +357,17 @@ def computeTangentSpace(vertices, texels, faces):
                         
         for i in range(len(vertices)):
                 if nr_connections[i] > 0:
-                        normals[3*i] /=nr_connections[i]
-                        normals[3*i+1] /=nr_connections[i]
-                        normals[3*i+2] /=nr_connections[i]
+                        normals[i][0] /=nr_connections[i]
+                        normals[i][1] /=nr_connections[i]
+                        normals[i][2] /=nr_connections[i]
                         if texels:
-                                tangents[3*i] /=nr_connections[i]
-                                tangents[3*i+1] /=nr_connections[i]
-                                tangents[3*i+2] /=nr_connections[i]
+                                tangents[i][0] /=nr_connections[i]
+                                tangents[i][1] /=nr_connections[i]
+                                tangents[i][2] /=nr_connections[i]
 
-                                binormals[3*i] /=nr_connections[i]
-                                binormals[3*i+1] /=nr_connections[i]
-                                binormals[3*i+2] /=nr_connections[i]
+                                binormals[i][0] /=nr_connections[i]
+                                binormals[i][1] /=nr_connections[i]
+                                binormals[i][2] /=nr_connections[i]
 
         if texels:
                 return [tangents, binormals, normals]
