@@ -259,7 +259,7 @@ def transpmatrix(m):
 def __transpmatrix3(m):
         return (GLfloat *9)(*[m[0], m[3], m[6],\
                               m[1], m[4], m[7],\
-                              m[2], m[5], m[8])
+                              m[2], m[5], m[8]])
 
 def __transpmatrix4(m):
         return (GLfloat *16)(*[m[0], m[4], m[8],  m[12],\
@@ -285,7 +285,7 @@ def dot_product(v1, v2):
 
 #vector length
 def length(v):
-        return math.sqrt(dot_product(v1,v1))
+        return math.sqrt(dot_product(v,v))
 
 #vector normalize
 def normalize(v1):
