@@ -251,7 +251,7 @@ class OGL:
         
         if material.bump:
             glActiveTexture(GL_TEXTURE0)
-            glBindTexture(GL_TEXTURE_2D, material.bump.id)
+            glBindTexture(GL_TEXTURE_2D, material.bump.glID)
             glEnable(GL_TEXTURE_2D)
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
             glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_DOT3_RGB_EXT)
@@ -262,7 +262,7 @@ class OGL:
             
             if material.texture:
                 glActiveTexture(GL_TEXTURE1)
-                glBindTexture(GL_TEXTURE_2D, material.texture.id)
+                glBindTexture(GL_TEXTURE_2D, material.texture.glID)
                 glEnable(GL_TEXTURE_2D)
                 glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
                 glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_MODULATE)
@@ -273,7 +273,7 @@ class OGL:
             
         elif material.texture:
             glActiveTexture(GL_TEXTURE0)
-            glBindTexture(GL_TEXTURE_2D, material.texture.id)
+            glBindTexture(GL_TEXTURE_2D, material.texture.glID)
             glEnable(GL_TEXTURE_2D)
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
             glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_REPLACE)

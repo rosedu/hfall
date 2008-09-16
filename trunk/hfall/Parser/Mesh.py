@@ -1,12 +1,10 @@
 import sys
 sys.path.insert(0, "..")
 sys.path.insert(0, "../Engine")
-import pyglet
-import ctypes
-import MathBase
+from OGLbase import OGL as RenderDevice
 from VertexBuffer import *
 from pyglet.gl import *
-from OGLbase import OGL as RenderDevice
+import MathBase
 
 class Mesh:
 
@@ -43,7 +41,7 @@ class Mesh:
             p = []
             if(data):
                 for i in range(len(data)):
-                    p += data[i]
+                    p.extend(data[i])
             return p
             
 
