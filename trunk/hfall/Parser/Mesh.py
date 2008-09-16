@@ -83,15 +83,14 @@ class Mesh:
             triangle.faces = vbo
 
     def render(self, renderDevice):
-        """
+
         if self.name == "Eyeball01" or self.name == "Eyeball03" :
             self.matrix4 = [3, 0, 0, 0,\
                             0, 3, 0, 0,\
                             0, 0, 3, 0,\
-                            0, 0, 0, 1]
+                            10, 0, 0, 1]
             self.matrix4 = (GLfloat *len(self.matrix4))(*self.matrix4)
-        print "Matrix for ", self.name,":\n",self.matrix4[0:4],"\n",self.matrix4[4:8],"\n",self.matrix4[8:12],"\n",self.matrix4[12:16],"\n"
-        """
+        # print "Matrix for ", self.name,":\n",self.matrix4[0:4],"\n",self.matrix4[4:8],"\n",self.matrix4[8:12],"\n",self.matrix4[12:16],"\n"
         self.vertices.buffer.enable()
         renderDevice.TexCoordPointer(self.texCoords.pointer())
         renderDevice.colorPointer(self.colors.pointer())

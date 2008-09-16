@@ -30,6 +30,12 @@ class Model:
         self.name = name
 
     def render(self, rnd):
+        self.matrix4 = [1, 0, 0, 0,\
+                        0, 1, 0, 0,\
+                        0, 0, 1, 0,\
+                        100, 0, 0, 1]
+        self.matrix4 = (GLfloat *len(self.matrix4))(*self.matrix4)
+        print "Matrix:\n",self.matrix4[0:4],"\n",self.matrix4[4:8],"\n",self.matrix4[8:12],"\n",self.matrix4[12:16],"\n"
         glPushMatrix();
         glMultMatrixf(self.matrix4)
         for mesh in self.meshes:
