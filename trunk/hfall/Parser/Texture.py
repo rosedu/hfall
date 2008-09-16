@@ -82,7 +82,7 @@ class Texture:
 
 
     def __init__(self, name, glID, target, format, parameters):
-        if not self.info:
+        if not self.__class__.info:
             self.__class__.info = gl_info.GLInfo()
             self.__class__.info.set_active_context()
         self.name = name

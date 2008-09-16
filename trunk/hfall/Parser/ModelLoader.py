@@ -44,6 +44,11 @@ class ModelLoader:
             for i in range(4):
                 objectMatrix.extend([mx[3*i], mx[3*i + 1], mx[3*i + 2], 0])
             objectMatrix[15] = 1
+            # transpose matrix
+            objectMatrixTransp = 16*[0]
+            for i in range(4):
+                for j in range(4):
+                    objectMatrixTransp[i*4 + j] = objectMatrix[i + 4*j]
             
             # get vertices & texCoordinates
             geom.vertices = m.data.vertices
@@ -59,7 +64,7 @@ class ModelLoader:
                         faces.extend(m.data.faces.faces[i])
                     triangles.append(Mesh.Triangles(faces, self.materialMng.get(group.materialName)))
                     
-            mesh = Mesh(objectMatrix, geom, triangles)
+            mesh = Mesh(objectMatrixTransp, geom, triangles)
             mesh.name = m.name
             mesh.init()
             self.model.meshes.append(mesh)
