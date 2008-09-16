@@ -50,8 +50,8 @@ class drawer(base.Task):
                     rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
                     rLightPosition = [0.0, -1.5, -50.0, 30.0])
         render.addLight(light1)
-        terrain = Terrain.Terrain()
-        render.terrain = terrain
+        # terrain = Terrain.Terrain()
+        # render.terrain = terrain
         
     def stop(self, kernel):
         pass
