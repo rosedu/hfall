@@ -41,7 +41,7 @@ class Texture:
             self.wrapMode = 1          # TILE
             self.maxLOD = 1000
             self.minLOD = -1000
-            self.maxAnisotropy = 0
+            self.maxAnisotropy = 1
             self.depthReadMode = 0     # DEPTH_NORMAL
             self.interpolateMode = 1   # TRILINEAR_MIPMAP
             self.autoGenerateMipMaps = False
