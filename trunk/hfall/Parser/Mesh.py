@@ -57,6 +57,7 @@ class Mesh:
         self.matrix4 = matrix
         self.mode = draw_mode
         self.geometry = geometry
+        self.name = "None"
 
     def init(self):
         self.geometry.computeTangentSpace()

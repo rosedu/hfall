@@ -60,6 +60,7 @@ class ModelLoader:
                     triangles.append(Mesh.Triangles(faces, self.materialMng.get(group.materialName)))
                     
             mesh = Mesh(objectMatrix, geom, triangles)
+            mesh.name = m.name
             mesh.init()
             self.model.meshes.append(mesh)
         self.modelMng.add(self.model)
