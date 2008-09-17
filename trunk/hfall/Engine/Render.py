@@ -174,7 +174,7 @@ class Render(base.Task):
 	    #just to make it work
 
             for model in self._2dlist:
-                self.ogl.Render2D(model)
+                self.Render2D(model)
 
   	    for text in self._textlist:
 	        text.draw()
@@ -191,6 +191,50 @@ class Render(base.Task):
             # if self._xpos > 3 :
             #    self._xpos = -3
             # self._xpos += 0.05
+
+    def Render2D(self, model):
+        """
+        This function is used to render any 2D graphic, mainly used for
+        rendering the user interface.
+            x - the x position of the 2D rendered element
+            y - the y position of the 2D rendered element
+            color - the color of the rendered element. It is possible to
+                    use alpha blending.
+
+        """
+	self.ogl.activate_model()
+        #glTranslatef(0.0,0.0,-6.0);
+	glActiveTextureARB(GL_TEXTURE0_ARB)
+        glClientActiveTextureARB(GL_TEXTURE0_ARB)
+  	if model.is_textured==True:
+		glBindTexture(GL_TEXTURE_2D,model.texture_ids[0])
+  		glTexImage2D(GL_TEXTURE_2D,0,4,model.pixelwidth,\
+		    model.pixelheight,0,GL_RGBA,GL_UNSIGNED_BYTE,model.data)
+ 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR)
+ 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR)
+        	glBegin(GL_QUADS)
+  		glTexCoord2f(0.0,0.0)
+        	glVertex2f(model.x, model.y)
+  		glTexCoord2f(1.0,0.0)
+        	glVertex2f(model.xx, model.y)
+  		glTexCoord2f(1.0,1.0)
+        	glVertex2f(model.xx, model.yy)
+  		glTexCoord2f(0.0,1.0)
+        	glVertex2f(model.x, model.yy)
+  		glEnd()
+  	else:
+		glBegin(GL_QUADS)
+        	if len(model.color) == 3:
+            		glColor3f(model.color[0], model.color[1], model.color[2])
+        	else:
+            		glColor4f(model.color[0], model.color[1], model.color[2], \
+              	        	model.color[3])
+		glVertex2f(model.x, model.y)
+  		glVertex2f(model.xx,model.y)
+  		glVertex2f(model.xx, model.yy)
+  		glVertex2f(model.x, model.yy)
+        	glEnd()      
+
             
     def rotate(self,angle,x,y,z):
          dir_to_rotate = Mathbase.Vector3D(x,y,z)
