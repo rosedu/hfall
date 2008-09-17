@@ -9,19 +9,17 @@ __version__ = '0.2'
 __author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)' ,\
               'Andrei Buhaiu (andreibuhaiu@gmail.com)'
 
-import pyglet
-import sys
-sys.path.insert(0, "..")
-sys.path.insert(0, "../UI")
-from pyglet.gl import *
-from pyglet import window
-import ctypes
-import array
-import Mathbase
-import base
-import Bitmap
-import Light
 from base import kernel as hfk
+from pyglet.gl import *
+from copy import copy
+
+class GLInfo:
+    def __init__(self):
+        self.info = gl_info.GLInfo()
+        self.info.set_active_context()
+        self.numTextureUnits = (GLint)(*[])
+        if self.info.have_extension("GL_ARB_multitexture"):
+            glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, self.numTextureUnits)
 
 class OGL:
     """
@@ -46,6 +44,9 @@ class OGL:
                          is drawn over the entire window.
                     
         """
+
+        self.glInfo = GLInfo()
+        
         self.w=w
         @self.w.event
         def on_resize(width, height):
@@ -206,22 +207,10 @@ class OGL:
   		glVertex2f(model.x, model.yy)
         	glEnd()      
 
-    def resetTextureUnit(self, texture_unit):
-        glActiveTexture(GL_TEXTURE0 + texture_unit)
-        glMatrixMode(GL_TEXTURE)
-        glLoadIdentity()
-        glMatrixMode(GL_MODELVIEW)
-        glDisable(GL_TEXTURE_3D_EXT)
-        glDisable(GL_TEXTURE_CUBE_MAP_ARB)
-        glDisable(GL_TEXTURE_2D)
-        glDisable(GL_TEXTURE_GEN_S)
-        glDisable(GL_TEXTURE_GEN_T)
-        glDisable(GL_TEXTURE_GEN_R)
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
 
-    def pushMatrix(self):
-        glPushMatrix()
-        
+    def supports(self, extensionName):
+        return self.glInfo.info.have_extension(extensionName)
+
     def colorPointer(self, color):
         glColorPointer(3, GL_FLOAT, 0, color)
 
@@ -231,18 +220,36 @@ class OGL:
     def normalPointer(self, normals):
         glNormalPointer(GL_FLOAT, 0, normals)
 
-    def TexCoordPointer(self, texels):
-        glActiveTextureARB(GL_TEXTURE0_ARB)
-        glClientActiveTextureARB(GL_TEXTURE0_ARB)
-        glTexCoordPointer(2, GL_FLOAT, 0, texels)
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+    def texCoordPointer(self, texels, units):
+        for i in units:    
+            glActiveTextureARB(GL_TEXTURE0_ARB + i)
+            glClientActiveTextureARB(GL_TEXTURE0_ARB + i)
+            glTexCoordPointer(2, GL_FLOAT, 0, texels)
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 
-        glActiveTextureARB(GL_TEXTURE1_ARB)
-        glClientActiveTextureARB(GL_TEXTURE1_ARB)
-        glTexCoordPointer(2, GL_FLOAT, 0, texels)
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+    def configureNormalMap(self, colorUnit, normalUnit, colorTexture, normalTexture):
+        glActiveTexture(GL_TEXTURE0)
+        glBindTexture(GL_TEXTURE_2D, normalTexture.glID)
+        glEnable(GL_TEXTURE_2D)
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
+        glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_DOT3_RGB_EXT)
+        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE)
+        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)
+        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_PRIMARY_COLOR_EXT)
+        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR)
+        
+        if colorTexture:
+            glActiveTexture(GL_TEXTURE1)
+            glBindTexture(GL_TEXTURE_2D, colorTexture.glID)
+            glEnable(GL_TEXTURE_2D)
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
+            glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_MODULATE)
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_PREVIOUS_EXT)
+            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)            
+            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_TEXTURE)
+            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR)
 
-    def setTexture(self, material):
+    def configureMaterial(self, material):
         # Materials initialization and activation
 	#glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, material.ambient)
         #glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, material.diffuse)
@@ -250,39 +257,15 @@ class OGL:
         #glMaterialfv (GL_FRONT_AND_BACK, GL_SHININESS, material.shininess)
         
         if material.bump:
-            glActiveTexture(GL_TEXTURE0)
-            glBindTexture(GL_TEXTURE_2D, material.bump.glID)
-            glEnable(GL_TEXTURE_2D)
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
-            glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_DOT3_RGB_EXT)
-            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE)
-            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)
-            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_PRIMARY_COLOR_EXT)
-            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR)
-            
-            if material.texture:
-                glActiveTexture(GL_TEXTURE1)
-                glBindTexture(GL_TEXTURE_2D, material.texture.glID)
-                glEnable(GL_TEXTURE_2D)
-                glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
-                glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_MODULATE)
-                glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_PREVIOUS_EXT)
-                glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)            
-                glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_TEXTURE)
-                glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR)
-            
+            self.configureNormalMap(1, 0, material.texture, material.bump)
         elif material.texture:
             glActiveTexture(GL_TEXTURE0)
             glBindTexture(GL_TEXTURE_2D, material.texture.glID)
             glEnable(GL_TEXTURE_2D)
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
-            glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_REPLACE)
-            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE)
-            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)
+            
         
-    def drawRangeElements(self, mode, start, end, size, faces):
-        glDrawRangeElements(mode, start, end, size, GL_UNSIGNED_INT, faces)
+    def drawRangeElements(self, mode, tri):
+        glDrawRangeElements(mode, tri.start, tri.end, tri.size, GL_UNSIGNED_INT, tri.faces.pointer())
 
-    def popMatrix(self):
-        glPopMatrix()
         

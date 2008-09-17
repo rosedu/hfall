@@ -83,36 +83,17 @@ class Mesh:
             triangle.faces = vbo
 
     def render(self, renderDevice):
-
-        if self.name == "Eyeball01" or self.name == "Eyeball03" :
-            self.matrix4 = [3, 0, 0, 0,\
-                            0, 3, 0, 0,\
-                            0, 0, 3, 0,\
-                            10, 0, 0, 1]
-            self.matrix4 = (GLfloat *len(self.matrix4))(*self.matrix4)
-        # print "Matrix for ", self.name,":\n",self.matrix4[0:4],"\n",self.matrix4[4:8],"\n",self.matrix4[8:12],"\n",self.matrix4[12:16],"\n"
         self.vertices.buffer.enable()
-        renderDevice.TexCoordPointer(self.texCoords.pointer())
+        renderDevice.texCoordPointer(self.texCoords.pointer(), [0, 1])
         renderDevice.colorPointer(self.colors.pointer())
         renderDevice.normalPointer(self.normals.pointer())
         renderDevice.vertexPointer(self.vertices.pointer())
         self.facesBuffer.enable()
-
-        glPushMatrix();
-        glMultMatrixf(self.matrix4)
         
         for triangle in self.triangles:
-            renderDevice.setTexture(triangle.material)
-            renderDevice.drawRangeElements(self.mode, triangle.start, triangle.end,
-                                             triangle.size, triangle.faces.pointer())
-            if triangle.material.bump:
-                renderDevice.resetTextureUnit(0)
-                if triangle.material.texture:
-                    renderDevice.resetTextureUnit(1)
-            elif triangle.material.texture:
-                renderDevice.resetTextureUnit(0)
-                
-        glPopMatrix()
+            renderDevice.configureMaterial(triangle.material)
+            renderDevice.drawRangeElements(self.mode, triangle)
+            glDisable(GL_TEXTURE_2D)
         
         self.vertices.buffer.disable()
         self.facesBuffer.disable()
