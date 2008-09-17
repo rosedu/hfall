@@ -50,8 +50,8 @@ def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
 zoom = -150
 pressed = False
 xrot = -80
-zrot = 0
-size = 128
+zrot = 10
+size = 256
 width = 100
 
 """--other--"""
@@ -65,34 +65,52 @@ def setup():
     glDepthFunc(GL_LEQUAL)
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
     tsetup()
+    #glEnable(GL_CULL_FACE)
     glEnableClientState(GL_VERTEX_ARRAY)
     glEnableClientState(GL_COLOR_ARRAY)
 
 def tsetup():
     global vlen
     vlen = 10 * (float(width) / size)
-    vert = [array.array('f', itertools.repeat(0.0, size))
-			for i in range(size)]
+    vert = [array.array('f', itertools.repeat(0.0, size + 1))for i in range(size + 1)]
+    vert[15][1] = 12
+    vert[15][2] = 12
+    vert[15][3] = 12
+    vert[15][4] = 15
+    vert[15][5] = 20
+    vert[15][6] = 21
+    vert[15][7] = 14
+    vert[15][8] = 4
+    vert[15][9] = -2
+    vert[16][1] = 12 + 3
+    vert[16][2] = 12 -2
+    vert[16][3] = 12 +1
+    vert[16][4] = 15 +0.5
+    vert[16][5] = 20 +5
+    vert[16][6] = 21 -23
+    vert[16][7] = 14 -2
+    vert[16][8] = 4 -1
+    vert[16][9] = -2 +2
     vertices = [0, 0, vert[0][0]]
-    colors = [1, 1, 1]
-    indices = [0]
+    colors = [0.5, 0.5, 0.5]
+    indices = []
     index = 1
-    for x in range(1, size):
+    for x in range(1, size + 1):
         vertices.extend([x * vlen, 0, vert[x][0]])
         colors.extend([0.5, 0.5, 0.5])
         index = index + 1
-    print "first row done", index
-    for y in range(1, size):
+    print "first row done"
+    for y in range(1, size + 1):
         vertices.extend([0, y * vlen, vert[0][y]])
         colors.extend([0.5, 0.5, 0.5])
         index = index + 1
-        for x in range(1, size):
+        for x in range(1, size + 1):
             vertices.extend([x * vlen, y * vlen, vert[x][y]])
-            colors.extend([0, 0, 0])
-            indices.extend([index, index - size - 1, index - size,\
-                            index, index - 1, index - size - 1])
+            colors.extend([0.5, 0.5, 0.5])
+            indices.extend([index, index - size - 2, index - size - 1,\
+                            index, index - 1, index - size - 2])
             index = index + 1
-    print "all done", index
+    print "all done"
     buffSize = (len(vertices) + len(colors)) * sizeof(GLfloat)
     buff = VertexBuffer(buffSize)
     global verts
@@ -104,6 +122,12 @@ def tsetup():
     fbuff = VertexBuffer(buffSize, target = VertexBuffer.ELEMENT_ARRAY_BUFFER)
     global vbo
     vbo = VBOArray(len(indices), GLuint, indices, fbuff)
+    global length
+    length = len(indices)
+    global start
+    start = min(indices)
+    global end
+    end = max(indices)
     print "buffers created"
 
 def draw():
@@ -120,8 +144,7 @@ def tdraw():
     glVertexPointer(3, GL_FLOAT, 0, verts.pointer())
     fbuff.enable()
 
-    #glDrawRangeElements(GL_TRIANGLES, 0, size**2, size, GL_UNSIGNED_INT, vbo.pointer())
-    glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, vbo.pointer())
+    glDrawRangeElements(GL_TRIANGLES, start, end, length, GL_UNSIGNED_INT, vbo.pointer())
     
     verts.buffer.disable()
     fbuff.disable()
@@ -133,4 +156,12 @@ while not w.has_exit:
     w.dispatch_events()
     draw()
     print clock.get_fps(),
+    glBegin(GL_LINES)
+    glColor3f(1,0,0)
+    glVertex3f(0,0,0)
+    glVertex3f(100,0,0)
+    glColor3f(0,1,0)
+    glVertex3f(0,0,0)
+    glVertex3f(0,100,0)
+    glEnd()
     w.flip()
