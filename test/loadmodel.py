@@ -50,8 +50,21 @@ class drawer(base.Task):
                     rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
                     rLightPosition = [0.0, -1.5, -50.0, 30.0])
         render.addLight(light1)
-        # terrain = Terrain.Terrain()
-        # render.terrain = terrain
+        terrain = Terrain.Terrain()
+        patch = Terrain.TerrainPatch(x_origin = -64)
+        patch.preparebuffers()
+        patch.makeVisible()
+        terrain.addPatch(patch)
+##        hf = Terrain.HeightField()
+##        for x in range(65):
+##            for y in range(65):
+##                hf.setHeight(x, y, x)
+##        patch = Terrain.TerrainPatch(hfield = hf)
+##        patch.preparebuffers()
+##        patch.makeVisible()
+##        terrain.addPatch(patch)
+        terrain.Enable()
+        render.terrain = terrain
         
     def stop(self, kernel):
         pass
