@@ -71,6 +71,14 @@ class Matrix3:
                         s += self._m[i][k] * self._m[k][j]
                     c._m[i][j] = s
             return c
+        elif isinstance(other, Vector.Vector3):
+            v = Vector.Vector3()
+            for i in range(3):
+                s = 0
+                for j in range(3):
+                    s += self._m[i][j] * other[j]
+                v[i] = s
+            return v
         else:
             return Matrix3([self._m[0][0] * other,\
                            self._m[0][1] * other,\
@@ -311,11 +319,11 @@ class Matrix4:
             return Matrix4([self._m[0][0] * other,\
                            self._m[0][1] * other,\
                            self._m[0][2] * other,\
-                           self._m[0][3] * other,\ 
+                           self._m[0][3] * other,\
                            self._m[1][0] * other,\
                            self._m[1][1] * other,\
                            self._m[1][2] * other,\
-                           self._m[1][3] * other,\  
+                           self._m[1][3] * other,\
                            self._m[2][0] * other,\
                            self._m[2][1] * other,\
                            self._m[2][2] * other,\
@@ -329,11 +337,11 @@ class Matrix4:
         return Matrix4([self._m[0][0] / other,\
                         self._m[0][1] / other,\
                         self._m[0][2] / other,\
-                        self._m[0][3] / other,\ 
+                        self._m[0][3] / other,\
                         self._m[1][0] / other,\
                         self._m[1][1] / other,\
                         self._m[1][2] / other,\
-                        self._m[1][3] / other,\  
+                        self._m[1][3] / other,\
                         self._m[2][0] / other,\
                         self._m[2][1] / other,\
                         self._m[2][2] / other,\
@@ -347,11 +355,11 @@ class Matrix4:
         return Matrix4([self._m[0][0] * other,\
                         self._m[0][1] * other,\
                         self._m[0][2] * other,\
-                        self._m[0][3] * other,\ 
+                        self._m[0][3] * other,\
                         self._m[1][0] * other,\
                         self._m[1][1] * other,\
                         self._m[1][2] * other,\
-                        self._m[1][3] * other,\  
+                        self._m[1][3] * other,\
                         self._m[2][0] * other,\
                         self._m[2][1] * other,\
                         self._m[2][2] * other,\

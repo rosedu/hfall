@@ -52,7 +52,12 @@ class Vector2:
     def __getitem__(self, key):
         if key == 0: return self.x
         elif key == 1: return self.y
-        else: raise IndexError("bad Vector3 index");
+        else: raise IndexError("bad Vector2 index");
+
+    def __setitem__(self, key, val):
+        if key == 0: self.x = val
+        elif key == 1: self.y = val
+        else: raise IndexError("bad Vector2 index");
 
     def length(self):
         return math.sqrt(self.dotProduct(self))
@@ -135,6 +140,12 @@ class Vector3:
         if key == 0: return self.x
         elif key == 1: return self.y
         elif key == 2: return self.z
+        else: raise IndexError("bad Vector3 index");
+
+    def __setitem__(self, key, val):
+        if key == 0: self.x = val
+        elif key == 1: self.y = val
+        elif key == 2: self.z = val
         else: raise IndexError("bad Vector3 index");
 
     def length(self):
@@ -231,7 +242,14 @@ class Vector4:
         elif key == 1: return self.y
         elif key == 2: return self.z
         elif key == 3: return self.w
-        else: raise IndexError("bad Vector3 index");
+        else: raise IndexError("bad Vector4 index");
+
+    def __setitem__(self, key, val):
+        if key == 0: self.x = val
+        elif key == 1: self.y = val
+        elif key == 2: self.z = val
+        elif key == 3: self.w = val
+        else: raise IndexError("bad Vector4 index");
 
     def length(self):
         return math.sqrt(self.dotProduct(self))
