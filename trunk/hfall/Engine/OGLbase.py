@@ -11,15 +11,44 @@ __author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)' ,\
 
 from base import kernel as hfk
 from pyglet.gl import *
-from copy import copy
 
 class GLInfo:
     def __init__(self):
         self.info = gl_info.GLInfo()
         self.info.set_active_context()
         self.numTextureUnits = (GLint)(*[])
+        self.maxTextures = (GLint)(*[])
+        self.maxTextureSize = (GLint)(*[])
+        self.maxLights = (GLint)(*[])
+        # get video card info
+        self.vendor = cast(glGetString(GL_VENDOR), c_char_p).value
+        self.renderer = cast(glGetString(GL_RENDERER), c_char_p).value
+        self.version = cast(glGetString(GL_VERSION), c_char_p).value
+        self.supportedExtensions = cast(glGetString(GL_EXTENSIONS), c_char_p).value
+        # get textures and lights info
         if self.info.have_extension("GL_ARB_multitexture"):
             glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, self.numTextureUnits)
+            self.numTextureUnits = self.numTextureUnits.value
+        else: self.numTextureUnits = 1
+        if self.info.have_extension("GL_NV_fragment_program"):
+            glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_NV, self.maxTextures)
+            self.maxTextures = self.maxTextures.value
+        else: self.maxTextures = self.numTextureUnits
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, self.maxTextureSize)
+        self.maxTextureSize = self.maxTextureSize.value
+        glGetIntegerv(GL_MAX_LIGHTS, self.maxLights)
+        self.maxLights = self.maxLights.value        
+
+    def __str__(self):
+        return "Vendor: " + self.vendor + "\n" + \
+               "Renderer: " + self.renderer + "\n" + \
+               "OpenGL version: " + self.version + "\n\n" + \
+               "Max. Lights: " + str(self.maxLights) + "\n" + \
+               "Max. Textures: " + str(self.maxTextures) + "\n" + \
+               "Texture units: " + str(self.numTextureUnits) + "\n" + \
+               "Max. Texture size: " + str(self.maxTextureSize) + "\n"
+               
+               
 
 class OGL:
     """
@@ -46,6 +75,7 @@ class OGL:
         """
 
         self.glInfo = GLInfo()
+        print self.glInfo
         
         self.w=w
         @self.w.event
