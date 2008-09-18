@@ -90,6 +90,7 @@ class Texture:
         self.width = (GLint)(*[])
         self.height = (GLint)(*[])
         self.format = format
+        self.target = target
         self.parameters = parameters
         glBindTexture(target, glID)
 	glGetTexLevelParameteriv(target, 0, GL_TEXTURE_WIDTH, self.width)

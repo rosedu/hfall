@@ -9,8 +9,13 @@ __version__ = '0.2'
 __author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)' ,\
               'Andrei Buhaiu (andreibuhaiu@gmail.com)'
 
+import sys
+sys.path.insert(0, "..")
+
 from base import kernel as hfk
 from pyglet.gl import *
+from Vector import *
+from Matrix import *
 
 class GLInfo:
     def __init__(self):
@@ -179,10 +184,43 @@ class OGL:
             glTexCoordPointer(2, GL_FLOAT, 0, texels)
             glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 
+    def configureShadowMap(self, unit, lightMVP, shadowMap):
+        glMatrixMode(GL_MODELVIEW)
+        glPushMatrix()
+        glLoadMatrix(cameraToWorldMatrixInverse)
+
+        glActiveTextureARB(GL_TEXTURE0_ARB + unit)
+        glBindTexture(shadowMap.target, shadowMap.glID)
+        glEnable(shadowMap.target)
+
+        bias = Matrix4([0.5, 0.0, 0.0, 0.5,
+                        0.0, 0.5, 0.0, 0.5,
+                        0.0, 0.0, 0.5, 0.5 - .000001,
+                        0.0, 0.0, 0.0, 1.0])
+        
+        textureMatrix = glGetMatrix(GL_TEXTURE_MATRIX)
+        textureProjectionMatrix = textureMatrix * bias * lightMVP
+
+        glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
+        glTexGenfv(GL_S, GL_EYE_PLANE, textureProjectionMatrix[0])
+        glEnable(GL_TEXTURE_GEN_S)
+        glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
+        glTexGenfv(GL_T, GL_EYE_PLANE, textureProjectionMatrix[1])
+        glEnable(GL_TEXTURE_GEN_T)
+        glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
+        glTexGenfv(GL_R, GL_EYE_PLANE, textureProjectionMatrix[2])
+        glEnable(GL_TEXTURE_GEN_R)
+        glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
+        glTexGenfv(GL_Q, GL_EYE_PLANE, textureProjectionMatrix[3])
+        glEnable(GL_TEXTURE_GEN_Q)
+
+        glMatrixMode(GL_MODELVIEW)
+        glPopMatrix()
+
     def configureNormalMap(self, colorUnit, normalUnit, colorTexture, normalTexture):
         glActiveTexture(GL_TEXTURE0)
-        glBindTexture(GL_TEXTURE_2D, normalTexture.glID)
-        glEnable(GL_TEXTURE_2D)
+        glBindTexture(normalTexture.target, normalTexture.glID)
+        glEnable(normalTexture.target)
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
         glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_DOT3_RGB_EXT)
         glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE)
@@ -192,8 +230,8 @@ class OGL:
         
         if colorTexture:
             glActiveTexture(GL_TEXTURE1)
-            glBindTexture(GL_TEXTURE_2D, colorTexture.glID)
-            glEnable(GL_TEXTURE_2D)
+            glBindTexture(colorTexture.target, colorTexture.glID)
+            glEnable(colorTexture.target)
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
             glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_MODULATE)
             glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_PREVIOUS_EXT)
@@ -212,8 +250,8 @@ class OGL:
             self.configureNormalMap(1, 0, material.texture, material.bump)
         elif material.texture:
             glActiveTexture(GL_TEXTURE0)
-            glBindTexture(GL_TEXTURE_2D, material.texture.glID)
-            glEnable(GL_TEXTURE_2D)
+            glBindTexture(material.texture.target, material.texture.glID)
+            glEnable(material.texture.target)
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
             
         
