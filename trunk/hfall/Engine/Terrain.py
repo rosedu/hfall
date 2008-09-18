@@ -116,6 +116,7 @@ class TerrainPatch:
 
     def render(self):
         if self.Visible == True:
+            glPushMatrix()
             glTranslatef(self.x, self.y, 0)
             self.verts.buffer.enable()
             glColorPointer(3, GL_FLOAT, 0, self.cols.pointer())
@@ -125,6 +126,7 @@ class TerrainPatch:
                                 self.ilength, GL_UNSIGNED_INT, self.vbo.pointer())
             self.verts.buffer.disable()
             self.fbuff.disable()
+            glPopMatrix()
 
 class Terrain:
     """
