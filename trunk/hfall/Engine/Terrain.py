@@ -79,17 +79,17 @@ class TerrainPatch:
         vsize = 3 * (vsize ** 2)
         colors = vsize * [0.5] #gray color for now
         vsize = self.size + 1
-        vertices = [0, 0, self._hf.vert[0][0]]
+        vertices = [0, self._hf.vert[0][0], 0]
         indices = []
         index = 1
         for x in range(1, vsize):
-            vertices.extend([x * self.stride, 0, self._hf.vert[x][0]])
+            vertices.extend([x * self.stride, self._hf.vert[x][0], 0])
             index += 1
         for y in range(1, vsize):
-            vertices.extend([0, y * self.stride, self._hf.vert[0][y]])
+            vertices.extend([0, self._hf.vert[0][y], y * self.stride])
             index += 1
             for x in range(1, vsize):
-                vertices.extend([x * self.stride, y * self.stride, self._hf.vert[x][y]])
+                vertices.extend([x * self.stride, self._hf.vert[x][y], y * self.stride])
                 indices.extend([index, index - vsize - 1, index - vsize,\
                                 index, index - 1, index - vsize - 1])
                 index += 1
