@@ -81,7 +81,7 @@ class TerrainPatch:
         vsize = self.size + 1
         vertices = [0, 0, self._hf.vert[0][0]]
         indices = []
-        index = 0
+        index = 1
         for x in range(1, vsize):
             vertices.extend([x * self.stride, 0, self._hf.vert[x][0]])
             index += 1
@@ -120,11 +120,9 @@ class TerrainPatch:
             self.verts.buffer.enable()
             glColorPointer(3, GL_FLOAT, 0, self.cols.pointer())
             glVertexPointer(3, GL_FLOAT, 0, self.verts.pointer())
-            #self.fbuff.enable()
             self.vbo.buffer.enable()
             glDrawRangeElements(GL_TRIANGLES, self.imin, self.imax,\
                                 self.ilength, GL_UNSIGNED_INT, self.vbo.pointer())
-            #error: raises: pyglet.gl.lib.GLException: invalid value
             self.verts.buffer.disable()
             self.fbuff.disable()
 
