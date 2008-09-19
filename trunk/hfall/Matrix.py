@@ -68,7 +68,7 @@ class Matrix3:
                 for j in range(3):
                     s = 0
                     for k in range(3):
-                        s += self._m[i][k] * self._m[k][j]
+                        s += self._m[i][k] * other._m[k][j]
                     c._m[i][j] = s
             return c
         elif isinstance(other, Vector.Vector3):
@@ -251,15 +251,15 @@ class Matrix4:
             self._m[1][0] = vals[4]
             self._m[1][1] = vals[5]
             self._m[1][2] = vals[6]
-            self._m[0][3] = vals[7]
+            self._m[1][3] = vals[7]
             self._m[2][0] = vals[8]
             self._m[2][1] = vals[9]
             self._m[2][2] = vals[10]
             self._m[2][3] = vals[11]
-            self._m[2][0] = vals[12]
-            self._m[2][1] = vals[13]
-            self._m[2][2] = vals[14]
-            self._m[2][3] = vals[15]
+            self._m[3][0] = vals[12]
+            self._m[3][1] = vals[13]
+            self._m[3][2] = vals[14]
+            self._m[3][3] = vals[15]
         else:
             raise TypeError("Invalid argument in matrix")
 
@@ -312,7 +312,7 @@ class Matrix4:
                 for j in range(4):
                     s = 0
                     for k in range(4):
-                        s += self._m[i][k] * self._m[k][j]
+                        s += self._m[i][k] * other._m[k][j]
                     c._m[i][j] = s
             return c
         else:
@@ -465,6 +465,6 @@ class Matrix4:
 
     def __str__(self):
         return '|' + str(self._m[0][0]) + ' ' + str(self._m[0][1]) + ' ' + str(self._m[0][2]) + ' ' + str(self._m[0][3]) + '|\n' +\
-               '|' + str(self._m[1][0]) + ' ' + str(self._m[1][1]) + ' ' + str(self._m[1][2]) + ' ' + str(self._m[0][3]) + '|\n' +\
-               '|' + str(self._m[2][0]) + ' ' + str(self._m[2][1]) + ' ' + str(self._m[2][2]) + ' ' + str(self._m[0][3]) + '|\n' +\
-               '|' + str(self._m[3][0]) + ' ' + str(self._m[3][1]) + ' ' + str(self._m[3][2]) + ' ' + str(self._m[0][3]) + '|'
+               '|' + str(self._m[1][0]) + ' ' + str(self._m[1][1]) + ' ' + str(self._m[1][2]) + ' ' + str(self._m[1][3]) + '|\n' +\
+               '|' + str(self._m[2][0]) + ' ' + str(self._m[2][1]) + ' ' + str(self._m[2][2]) + ' ' + str(self._m[2][3]) + '|\n' +\
+               '|' + str(self._m[3][0]) + ' ' + str(self._m[3][1]) + ' ' + str(self._m[3][2]) + ' ' + str(self._m[3][3]) + '|'
