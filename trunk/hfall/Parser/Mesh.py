@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, "..")
 sys.path.insert(0, "../Engine")
 from OGLbase import OGL as RenderDevice
+from Coordinate import Coordinate
 from VertexBuffer import *
 from pyglet.gl import *
 import MathBase
@@ -46,7 +47,7 @@ class Mesh:
             
 
     
-    def __init__(self, matrix, geometry, triangles, draw_mode = GL_TRIANGLES):
+    def __init__(self, geometry, triangles, matrix = Coordinate(), draw_mode = GL_TRIANGLES):
 
         self.vertices = None
         self.normals = None
@@ -54,7 +55,7 @@ class Mesh:
         self.colors = None
         self.facesBuffer = None
         self.triangles = triangles
-        self.matrix4 = matrix
+        self.matrix = matrix
         self.mode = draw_mode
         self.geometry = geometry
         self.name = "None"
@@ -65,7 +66,7 @@ class Mesh:
         texCoords = self.geometry.toList(self.geometry.texCoords)
         normals = self.geometry.toList(self.geometry.normals)
         colors = (len(vertices))*[1, 1, 1]
-        self.matrix4 = (GLfloat *len(self.matrix4))(*self.matrix4)
+        #self.matrix4 = (GLfloat *len(self.matrix4))(*self.matrix4)
         triSize = len(self.geometry.faces)*3
         self.createBuffers(vertices, texCoords, normals, colors, self.triangles, triSize)
 

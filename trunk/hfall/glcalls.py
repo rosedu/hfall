@@ -112,7 +112,7 @@ def glMultMatrix(matrix4):
         transp = (GLfloat * 16)(*[])
         for i in range(4):
             for j in range(4):
-                transp[4*i+j] = m[i][j]
+                transp[4*i+j] = m[j][i]
         m = transp
     glMultMatrixf(m)
 
@@ -128,7 +128,7 @@ def glMultInvMatrix(matrix4):
     if isinstance(matrix4, Matrix4):
         inverse = matrix4.inverse()
     if isinstance(matrix4, Coordinate):
-        inverse = matrix4.invMatrix()
+        inverse = matrix4.inverseMatrix()
     else: inverse = matrix4
     glMultMatrix(inverse)
 

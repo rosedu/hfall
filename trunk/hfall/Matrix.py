@@ -34,6 +34,11 @@ class Matrix3:
         else:
             raise TypeError("Invalid argument in matrix")
 
+    def __getitem__(self, index):
+        if index >=3:
+            raise IndexError("bad index")
+        return self._m[index]
+
     def __add__(self, other):
         return Matrix3([self._m[0][0] + other._m[0][0],\
                        self._m[0][1] + other._m[0][1],\
@@ -262,6 +267,11 @@ class Matrix4:
             self._m[3][3] = vals[15]
         else:
             raise TypeError("Invalid argument in matrix")
+
+    def __getitem__(self, index):
+        if index >=4:
+            raise IndexError("bad index")
+        return self._m[index]
 
     def __add__(self, other):
         return Matrix4([self._m[0][0] + other._m[0][0],\

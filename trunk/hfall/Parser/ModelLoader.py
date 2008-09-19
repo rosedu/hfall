@@ -1,6 +1,10 @@
+import sys
+sys.path.insert(0, "..")
+
 from MaterialManager import MaterialManager
 from TextureManager import TextureManager
 from ModelManager import ModelManager
+from Coordinate import Coordinate
 from MaxParser import MaxParser
 from Material import Material
 from Texture import Texture
@@ -29,29 +33,13 @@ class ModelLoader:
         return True
 
     def saveModel(self):
-        self.model = Model([], [1, 0, 0, 0] +
-                               [0, 1, 0, 0] +
-                               [0, 0, 1, 0] +
-                               [0, 0, 0, 1], self.modelName)
+        self.model = Model([], self.modelName)
         for m in self.parser.object.meshes:
             if m.type != 1:
                 continue
             geom = Mesh.Geometry([], [], [])
-            objectMatrix = []
-            triangles = []
-            # get system coordinates
-            mx = m.data.matrix
-            for i in range(4):
-                objectMatrix.extend([mx[3*i], mx[3*i + 1], mx[3*i + 2], 0])
-            objectMatrix[15] = 1
-            # transpose matrix
-            """
-            objectMatrixTransp = 16*[0]
-            for i in range(4):
-                for j in range(4):
-                    objectMatrixTransp[i*4 + j] = objectMatrix[i + 4*j]
-            """
             # get vertices & texCoordinates
+            triangles = []
             geom.vertices = m.data.vertices
             if m.data.coordinates:
                 geom.texCoords = m.data.coordinates
@@ -64,9 +52,14 @@ class ModelLoader:
                     for i in group.faces:
                         faces.extend(m.data.faces.faces[i])
                     triangles.append(Mesh.Triangles(faces, self.materialMng.get(group.materialName)))
+            # get mesh coordinates
+            mat = m.data.matrix
+            rot = 9*[0]
+            for i in range(3):
+                for j in range(3):
+                    rot[3*i + j] = mat[3*j + i]
                     
-            # mesh = Mesh(objectMatrixTransp, geom, triangles)
-            mesh = Mesh(objectMatrix, geom, triangles) 
+            mesh = Mesh(geom, triangles, Coordinate(rot, mat[9:])) 
             mesh.name = m.name
             mesh.init()
             self.model.meshes.append(mesh)

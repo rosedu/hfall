@@ -7,8 +7,11 @@ used to draw our models to screen.
 __version__ = '0.001'
 __author__ = 'Andrei Buhaiu(andreibuhaiu@gmail.com)'
 
+import sys
+sys.path.insert(0, "..")
+
 import Mesh
-import pyglet
+from glcalls import *
 from pyglet.gl import *
 
 class Model:
@@ -19,23 +22,23 @@ class Model:
     """
 
     
-    def __init__(self, mes, matrix, name):
+    def __init__(self, mes, name, matrix = Coordinate()):
         """
         meshes  - the actual meshes that form the model and that
                   are given to be render to OpenGL
         matrix4 - the perspective matrix
         """
         self.meshes = mes
-        self.matrix4 = matrix
+        self.matrix = matrix
         self.name = name
 
     def render(self, rnd):
         glPushMatrix();
-        glMultMatrixf(self.matrix4)
+        glMultMatrix(self.matrix)
         for mesh in self.meshes:
             #glPushMatrix()
-            #glMultMatrixf(mesh.matrix4)
+            #glMultMatrix(mesh.matrix)
             mesh.render(rnd)
-            #glPopMatrix
+            #glPopMatrix()
         glPopMatrix()
         
