@@ -86,44 +86,50 @@ def glGetVector4(name):
 def glGetMatrix(name):
     m = (GLfloat*16)(*[])
     glGetFloatv(name, m)
-    return Matrix4(m)
+    return Matrix4(m).transpose()
 
 def glLoadMatrix(matrix4):
+    m = matrix4
     if isinstance(matrix4, Coordinate):
-        matrix4 = matrix4.matrix()
-    if not isinstance(matrix4, Matrix4):
-        return
-    transp = matrix4.transpose()
-    m = []
-    for i in range(4):
-        m.extend(transp[i])
-    glLoadMatrixf((GLfloat * 16)(*m))
-
-def glLoadInvMatrix(matrix4):
-    inverse = None
-    if isinstance(matrix4, Matrix4):
-        inverse = matrix4.inverse()
-    if isinstance(matrix4, Coordinate):
-        inverse = matrix4.invMatrix()
-    glLoadMatrix(inverse)
+        m = matrix4.matrix()
+    elif isinstance(matrix4, list):
+        m = Matrix4(matrix4)
+    if isinstance(m, Matrix4):
+        transp = (GLfloat * 16)(*[])
+        for i in range(4):
+            for j in range(4):
+                transp[4*i+j] = m[j][i]
+        m = transp
+    glLoadMatrixf(m)
 
 def glMultMatrix(matrix4):
+    m = matrix4
     if isinstance(matrix4, Coordinate):
-        matrix4 = matrix4.matrix()
-    if not isinstance(matrix4, Matrix4):
-        return
-    transp = matrix4.transpose()
-    m = []
-    for i in range(4):
-        m.extend(transp[i])
-    glMultMatrixf((GLfloat * 16)(*m))
+        m = matrix4.matrix()
+    elif isinstance(matrix4, list):
+        m = Matrix4(matrix4)
+    if isinstance(m, Matrix4):
+        transp = (GLfloat * 16)(*[])
+        for i in range(4):
+            for j in range(4):
+                transp[4*i+j] = m[i][j]
+        m = transp
+    glMultMatrixf(m)
+
+def glLoadInvMatrix(matrix4):
+    if isinstance(matrix4, Matrix4):
+        inverse = matrix4.inverse()
+    if isinstance(matrix4, Coordinate):
+        inverse = matrix4.inverseMatrix()
+    else: inverse = matrix4
+    glLoadMatrix(inverse)
 
 def glMultInvMatrix(matrix4):
-    inverse = None
     if isinstance(matrix4, Matrix4):
         inverse = matrix4.inverse()
     if isinstance(matrix4, Coordinate):
         inverse = matrix4.invMatrix()
+    else: inverse = matrix4
     glMultMatrix(inverse)
 
 def glDisableAllTextures():
