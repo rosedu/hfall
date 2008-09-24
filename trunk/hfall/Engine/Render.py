@@ -24,6 +24,7 @@ import Light
 import Fog
 import Terrain
 import base
+import Wires
 from base import kernel as hfk
 
 
@@ -61,8 +62,10 @@ class Render(base.Task):
 	self.height = height
   	self.angle = Mathbase.Vector3D(0,0,0)
   	self.enableaxis = True
+	self.line_manager = Wires.LineManager()
   	self.fps = "0"
   	self.terrain = None
+	self.counter = 0 
         try:
             # Try to create a window with antialising
             # TODO: add other possible config via another parameter
@@ -141,6 +144,10 @@ class Render(base.Task):
                 self.terrain.render()
 
             #drawing axis:
+  	    self.line_manager.draw()
+  	    self.counter += 1
+	    if self.counter % 200 == 0:
+	        self.line_manager.run_diag()
   	    if self.enableaxis == True:
                 glBegin(GL_LINES)
                 glColor3f(1.0, 0.0, 0.0)

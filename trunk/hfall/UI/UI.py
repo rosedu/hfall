@@ -16,6 +16,7 @@ from pyglet import window
 from pyglet.window import *
 import Console
 import Sprite
+import Wires
 from pyglet import font 
 from pyglet import image
 from pyglet.gl import *
@@ -61,11 +62,27 @@ def on_mouse_press(x, y, button, modifiers):
                 world_x = (GLdouble * 1)()
                 world_y = (GLdouble * 1)()
                 world_z = (GLdouble * 1)()
-                if gluUnProject(x,y,10,mat_model,mat_proj,mat_view,\
+		world_x2 = (GLdouble * 1)()
+		world_y2 = (GLdouble * 1)()
+		world_z2 = (GLdouble * 1)()
+                if gluUnProject(x,y,-5,mat_model,mat_proj,mat_view,\
                      world_x,world_y,world_z) == GLU_FALSE:
                         print "Error in UI.on_mouse_press - projection results" + \
                               "are not valid"
-                print 
+		if gluUnProject(x,y,5,mat_model,mat_proj,mat_view,\
+		     world_x2,world_y2,world_z2) == GLU_FALSE:
+		        print "Error in UI.on_mouse_press - projection results" + \
+			      "are not valid"
+		# Folosim ecuatiile parametrice ale dreptei in spatiu 
+		factor = 100
+		x1 = world_x[0] + factor * (world_x2[0]-world_x[0])
+		x2 = world_x[0] - factor * (world_x2[0]-world_x[0])
+		y1 = world_y[0] + factor * (world_y2[0]-world_y[0])
+		y2 = world_y[0] - factor * (world_y2[0]-world_y[0])
+		z1 = world_z[0] + factor * (world_z2[0]-world_z[0])
+		z2 = world_z[0] - factor * (world_z2[0]-world_z[0])
+  		
+		global_render.line_manager.add(Wires.Line(x1,y1,z1,z2,y2,z2))
                 global_UI.refresh_world_coords(world_x[0],world_y[0],world_z[0])
         
 def engine_get(symbol,modifiers):
