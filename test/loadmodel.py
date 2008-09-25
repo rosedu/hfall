@@ -51,6 +51,7 @@ class drawer(base.Task):
                     rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
                     rLightPosition = [0.0, -1.5, -50.0, 30.0])
         render.addLight(light1)
+        """This is an example of terrain rendering
         terrain = Terrain.Terrain()
         patch = Terrain.TerrainPatch(x_origin = -64)
         patch.preparebuffers()
@@ -66,6 +67,7 @@ class drawer(base.Task):
         terrain.addPatch(patch)
         terrain.Enable()
         render.terrain = terrain
+        """
         
     def stop(self, kernel):
         pass
