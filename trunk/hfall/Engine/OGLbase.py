@@ -12,8 +12,11 @@ __author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)' ,\
 import sys
 sys.path.insert(0, "..")
 
+from TextureFormat import TextureFormat
 from base import kernel as hfk
+from Texture import Texture
 from pyglet.gl import *
+from glcalls import *
 from Vector import *
 from Matrix import *
 
@@ -81,6 +84,10 @@ class OGL:
 
         self.glInfo = GLInfo()
         print self.glInfo
+
+        self.shadowMap = Texture.create("shadows", 0, 512, 512, GL_TEXTURE_2D, \
+                                        TextureFormat.fromString("DEPTH"), \
+                                        Texture.Parameters.shadow(), Texture.Settings())
         
         self.w=w
         @self.w.event
@@ -184,10 +191,56 @@ class OGL:
             glTexCoordPointer(2, GL_FLOAT, 0, texels)
             glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 
+    def createShadowMap(self, models, light):
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glLoadIdentity()
+	gluPerspective(60.0, 1.0, 2.0, 100.0)
+	lightProjectionMatrix = glGetMatrix(GL_PROJECTION_MATRIX)
+	
+	glMatrixMode(GL_MODELVIEW)
+	glPushMatrix()
+	lightPos = (GLfloat * 4)(*[])
+	glGetLightfv( GL_LIGHT0 + light, GL_POSITION, lightPos)
+	glLoadIdentity()
+	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+	lightViewMatrix = glGetMatrix(GL_MODELVIEW_MATRIX)
+	
+	glViewport(0, 0, self.shadowMap.width, self.shadowMap.height)
+	glEnable(GL_CULL_FACE)
+	glCullFace(GL_FRONT)
+
+	glShadeModel(GL_FLAT)
+	glColorMask(0, 0, 0, 0)
+	
+	for model in models:
+            model.render(self, False)
+	
+	glBindTexture(GL_TEXTURE_2D, self.shadowMap.glID)
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, self.shadowMap.width, self.shadowMap.height)
+
+        glDisable(GL_CULL_FACE)
+	glShadeModel(GL_SMOOTH)
+	glColorMask(1, 1, 1, 1)
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+	glViewport(0, 0, self.w.width, self.w.height)
+
+        glMatrixMode(GL_PROJECTION)
+        glPopMatrix()
+        glMatrixMode(GL_MODELVIEW)
+        glPopMatrix()
+	return lightProjectionMatrix*lightViewMatrix
+
+    def enableShadows(self, models):
+        lightMVP = self.createShadowMap(models, 1)
+        self.configureShadowMap(2, lightMVP, self.shadowMap)
+
     def configureShadowMap(self, unit, lightMVP, shadowMap):
         glMatrixMode(GL_MODELVIEW)
         glPushMatrix()
-        glLoadMatrix(cameraToWorldMatrixInverse)
+        #glLoadMatrix(cameraToWorldMatrixInverse)
+        #glLoadInvMatrix(glGetMatrix(GL_MODELVIEW_MATRIX))
 
         glActiveTextureARB(GL_TEXTURE0_ARB + unit)
         glBindTexture(shadowMap.target, shadowMap.glID)
@@ -202,16 +255,16 @@ class OGL:
         textureProjectionMatrix = textureMatrix * bias * lightMVP
 
         glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
-        glTexGenfv(GL_S, GL_EYE_PLANE, textureProjectionMatrix[0])
+        glTexGenfv(GL_S, GL_EYE_PLANE, (GLfloat*4)(*textureProjectionMatrix[0]))
         glEnable(GL_TEXTURE_GEN_S)
         glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
-        glTexGenfv(GL_T, GL_EYE_PLANE, textureProjectionMatrix[1])
+        glTexGenfv(GL_T, GL_EYE_PLANE, (GLfloat*4)(*textureProjectionMatrix[1]))
         glEnable(GL_TEXTURE_GEN_T)
         glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
-        glTexGenfv(GL_R, GL_EYE_PLANE, textureProjectionMatrix[2])
+        glTexGenfv(GL_R, GL_EYE_PLANE, (GLfloat*4)(*textureProjectionMatrix[2]))
         glEnable(GL_TEXTURE_GEN_R)
         glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
-        glTexGenfv(GL_Q, GL_EYE_PLANE, textureProjectionMatrix[3])
+        glTexGenfv(GL_Q, GL_EYE_PLANE, (GLfloat*4)(*textureProjectionMatrix[3]))
         glEnable(GL_TEXTURE_GEN_Q)
 
         glMatrixMode(GL_MODELVIEW)

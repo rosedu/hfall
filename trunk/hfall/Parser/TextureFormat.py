@@ -27,6 +27,7 @@ class TextureFormat:
             if case(GL_ALPHA): return "A"
             if case(GL_LUMINANCE): return "L"
             if case(GL_LUMINANCE_ALPHA): return "LA"
+            if case(GL_DEPTH_COMPONENT): return "DEPTH"
 
     def dataType(self):
         for case in switch(self.dataFormat):
@@ -53,6 +54,8 @@ class TextureFormat:
                 return TextureFormat.create(GL_LUMINANCE, GL_LUMINANCE8, GL_UNSIGNED_BYTE, 1)
             if case("LA"):
                 return TextureFormat.create(GL_LUMINANCE_ALPHA, GL_LUMINANCE8_ALPHA8, GL_UNSIGNED_BYTE, 2)
+            if case("DEPTH"):
+                return TextureFormat.create(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 1)
 
     create = Callable(create)
     fromString = Callable(fromString)

@@ -32,13 +32,14 @@ class Model:
         self.matrix = matrix
         self.name = name
 
-    def render(self, rnd):
+    def render(self, rnd, textured = True):
         glPushMatrix();
         glMultMatrix(self.matrix)
         for mesh in self.meshes:
             #glPushMatrix()
             #glMultMatrix(mesh.matrix)
-            mesh.render(rnd)
+            if textured: mesh.render(rnd)
+            else: mesh.renderNonTextured(rnd)
             #glPopMatrix()
         glPopMatrix()
         

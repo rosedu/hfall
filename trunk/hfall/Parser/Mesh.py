@@ -83,6 +83,18 @@ class Mesh:
             vbo = VBOArray(len(triangle.faces), GLuint, triangle.faces, self.facesBuffer)
             triangle.faces = vbo
 
+    def renderNonTextured(self, renderDevice):
+        self.vertices.buffer.enable()
+        renderDevice.texCoordPointer(self.texCoords.pointer(), [0])
+        renderDevice.colorPointer(self.colors.pointer())
+        renderDevice.normalPointer(self.normals.pointer())
+        renderDevice.vertexPointer(self.vertices.pointer())
+        self.facesBuffer.enable()
+        for triangle in self.triangles:
+            renderDevice.drawRangeElements(self.mode, triangle)
+        self.vertices.buffer.disable()
+        self.facesBuffer.disable()
+
     def render(self, renderDevice):
         self.vertices.buffer.enable()
         renderDevice.texCoordPointer(self.texCoords.pointer(), [0, 1])
