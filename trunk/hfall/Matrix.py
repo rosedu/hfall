@@ -146,7 +146,7 @@ class Matrix3:
                        self._m[0][0] * self._m[1][1] - self._m[0][1] * self._m[1][0]])
 
     def inverse(self):
-        return self.adjoint()/self.determinant()
+        return self.adjoint()/float(self.determinant())
 
     def orthonormalize(self):
         i_l =1 / math.sqrt(self._m[0][0] * self._m[0][0] +\
@@ -397,31 +397,85 @@ class Matrix4:
         return t
 
     def adjoint(self):
-        """return Matrix3([self._m[1][1] * self._m[2][2] - self._m[1][2] * self._m[2][1],\
-                       -self._m[0][1] * self._m[2][2] + self._m[0][2] * self._m[2][1],\
-                       self._m[0][1] * self._m[1][2] - self._m[0][2] * self._m[1][1],\
-                       -self._m[1][0] * self._m[2][2] + self._m[1][2] * self._m[2][0],\
-                       self._m[0][0] * self._m[2][2] - self._m[0][2] * self._m[2][0],\
-                       -self._m[0][0] * self._m[1][2] + self._m[0][2] * self._m[1][0],\
-                       self._m[1][0] * self._m[2][1] - self._m[1][1] * self._m[2][0],\
-                       -self._m[0][0] * self._m[2][1] + self._m[0][1] * self._m[2][0],\
-                       self._m[0][0] * self._m[1][1] - self._m[0][1] * self._m[1][0]])"""
-        raise NotImplemented("n.i.y.")
+        return Matrix4([
+            Matrix3([self._m[1][1], self._m[1][2], self._m[1][3],\
+                    self._m[2][1], self._m[2][2], self._m[2][3],\
+                    self._m[3][1], self._m[3][2], self._m[3][3]]).determinant(),\
+            -Matrix3([self._m[0][1], self._m[0][2], self._m[0][3],\
+                    self._m[2][1], self._m[2][2], self._m[2][3],\
+                    self._m[3][1], self._m[3][2], self._m[3][3]]).determinant(),\
+            Matrix3([self._m[0][1], self._m[0][2], self._m[0][3],\
+                    self._m[1][1], self._m[1][2], self._m[1][3],\
+                    self._m[3][1], self._m[3][2], self._m[3][3]]).determinant(),\
+            -Matrix3([self._m[0][1], self._m[0][2], self._m[0][3],\
+                    self._m[1][1], self._m[1][2], self._m[1][3],\
+                    self._m[2][1], self._m[2][2], self._m[2][3]]).determinant(),\
+            \
+            -Matrix3([self._m[1][0], self._m[1][2], self._m[1][3],\
+                    self._m[2][0], self._m[2][2], self._m[2][3],\
+                    self._m[3][0], self._m[3][2], self._m[3][3]]).determinant(),\
+            Matrix3([self._m[0][0], self._m[0][2], self._m[0][3],\
+                    self._m[2][0], self._m[2][2], self._m[2][3],\
+                    self._m[3][0], self._m[3][2], self._m[3][3]]).determinant(),\
+            -Matrix3([self._m[0][0], self._m[0][2], self._m[0][3],\
+                    self._m[1][0], self._m[1][2], self._m[1][3],\
+                    self._m[3][0], self._m[3][2], self._m[3][3]]).determinant(),\
+            Matrix3([self._m[0][0], self._m[0][2], self._m[0][3],\
+                    self._m[1][0], self._m[1][2], self._m[1][3],\
+                    self._m[2][0], self._m[2][2], self._m[2][3]]).determinant(),\
+            \
+            Matrix3([self._m[1][0], self._m[1][1], self._m[1][3],\
+                    self._m[2][0], self._m[2][1], self._m[2][3],\
+                    self._m[3][0], self._m[3][1], self._m[3][3]]).determinant(),\
+            -Matrix3([self._m[0][0], self._m[0][1], self._m[0][3],\
+                    self._m[2][0], self._m[2][1], self._m[2][3],\
+                    self._m[3][0], self._m[3][1], self._m[3][3]]).determinant(),\
+            Matrix3([self._m[0][0], self._m[0][1], self._m[0][3],\
+                    self._m[1][0], self._m[1][1], self._m[1][3],\
+                    self._m[3][0], self._m[3][1], self._m[3][3]]).determinant(),\
+            -Matrix3([self._m[0][0], self._m[0][1], self._m[0][3],\
+                    self._m[1][0], self._m[1][1], self._m[1][3],\
+                    self._m[2][0], self._m[2][1], self._m[2][3]]).determinant(),\
+            \
+            -Matrix3([self._m[1][0], self._m[1][1], self._m[1][2],\
+                    self._m[2][0], self._m[2][1], self._m[2][2],\
+                    self._m[3][0], self._m[3][1], self._m[3][2]]).determinant(),\
+            Matrix3([self._m[0][0], self._m[0][1], self._m[0][2],\
+                    self._m[2][0], self._m[2][1], self._m[2][2],\
+                    self._m[3][0], self._m[3][1], self._m[3][2]]).determinant(),\
+            -Matrix3([self._m[0][0], self._m[0][1], self._m[0][2],\
+                    self._m[1][0], self._m[1][1], self._m[1][2],\
+                    self._m[3][0], self._m[3][1], self._m[3][2]]).determinant(),\
+            Matrix3([self._m[0][0], self._m[0][1], self._m[0][2],\
+                    self._m[1][0], self._m[1][1], self._m[1][2],\
+                    self._m[2][0], self._m[2][1], self._m[2][2]]).determinant(),\
+            ])
+        #raise NotImplemented("n.i.y.")
 
     def inverse(self):
-        return self.adjoint()/self.determinant()
+        return self.adjoint()/float(self.determinant())
 
     def orthonormalize(self):
         raise NotImplemented("n.i.y")      
 
     def determinant(self):
-        "return self._m[0][0] * self._m[1][1] * self._m[2][2] +\
-               self._m[0][1] * self._m[1][2] * self._m[2][0] +\
-               self._m[0][2] * self._m[1][0] * self._m[2][1] -\
-               self._m[0][2] * self._m[1][1] * self._m[2][0] -\
-               self._m[0][1] * self._m[1][0] * self._m[2][2] -\
-               self._m[0][0] * self._m[1][2] * self._m[2][1]"
-        raise NotImplemented("n.i.y")
+        a = Matrix3([self._m[1][1], self._m[1][2], self._m[1][3],\
+                    self._m[2][1], self._m[2][2], self._m[2][3],\
+                    self._m[3][1], self._m[3][2], self._m[3][3]])
+        a = a.determinant() * self._m[0][0]
+        b = Matrix3([self._m[0][1], self._m[0][2], self._m[0][3],\
+                    self._m[2][1], self._m[2][2], self._m[2][3],\
+                    self._m[3][1], self._m[3][2], self._m[3][3]])
+        b = b.determinant() * self._m[1][0]
+        c = Matrix3([self._m[0][1], self._m[0][2], self._m[0][3],\
+                    self._m[1][1], self._m[1][2], self._m[1][3],\
+                    self._m[3][1], self._m[3][2], self._m[3][3]])
+        c = c.determinant() * self._m[2][0]
+        d = Matrix3([self._m[0][1], self._m[0][2], self._m[0][3],\
+                    self._m[1][1], self._m[1][2], self._m[1][3],\
+                    self._m[2][1], self._m[2][2], self._m[2][3]])
+        d = d.determinant() * self._m[3][0]
+        return a - b + c - d
 
     def getRow(self, key):
         if key >= 0 and key <=3:

@@ -115,6 +115,7 @@ class TerrainPatch:
         self.Visible = False
 
     def render(self):
+	print 'rendering'
         if self.Visible == True:
             glPushMatrix()
             glTranslatef(self.x, self.y, 0)
@@ -122,8 +123,15 @@ class TerrainPatch:
             glColorPointer(3, GL_FLOAT, 0, self.cols.pointer())
             glVertexPointer(3, GL_FLOAT, 0, self.verts.pointer())
             self.vbo.buffer.enable()
-            glDrawRangeElements(GL_TRIANGLES, self.imin, self.imax,\
-                                self.ilength, GL_UNSIGNED_INT, self.vbo.pointer())
+            print 'range2'
+            glDisableClientState(GL_NORMAL_ARRAY)
+            glDisable(GL_NORMAL_ARRAY)
+            print self.verts.pointer(), self.vbo.pointer(), '<---'
+	    #glDrawRangeElements(GL_TRIANGLES, self.imin, self.imax,\
+            #                    self.ilength, GL_UNSIGNED_INT, self.vbo.pointer())
+	    glDrawElements(GL_TRIANGLES, self.ilength, GL_UNSIGNED_INT,\
+	    		   self.vbo.pointer())
+	    print 'disabling'
             self.verts.buffer.disable()
             self.fbuff.disable()
             glPopMatrix()
