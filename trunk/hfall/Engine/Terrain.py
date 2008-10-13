@@ -132,9 +132,11 @@ class TerrainPatch:
 
     def preparebuffers(self):
         self.list = glGenLists(1)
+        glDisable(GL_CULL_FACE)
         glNewList(self.list, GL_COMPILE)
         self.makelist()
         glEndList()
+        glEnable(GL_CULL_FACE)
         print self.list
         self.renderable = True
 
