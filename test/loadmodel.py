@@ -21,6 +21,7 @@ import TextureManager
 import Bitmap
 import Light
 import Terrain
+import Test
 import math
 from base import kernel as hfk
 
@@ -56,7 +57,8 @@ class drawer(base.Task):
         patch = Terrain.TerrainPatch(x_origin = -64)
         patch.preparebuffers()
         patch.makeVisible()
-        terrain.addPatch(patch)
+        #terrain.addPatch(patch)
+        """
         hf = Terrain.HeightField()
         for x in range(65):
             for y in range(65):
@@ -64,10 +66,11 @@ class drawer(base.Task):
         patch = Terrain.TerrainPatch(hfield = hf)
         patch.preparebuffers()
         patch.makeVisible()
-        terrain.addPatch(patch)
+        terrain.addPatch(patch)"""
         terrain.Enable()
         render.terrain = terrain
-        
+        #model = Test.TTest()
+        #render.testmodel = model
         
     def stop(self, kernel):
         pass

@@ -140,6 +140,7 @@ def draw():
 
 def tdraw():
     verts.buffer.enable()
+    print cols.pointer(), verts.pointer(), vbo.pointer(), '<--'
     glColorPointer(3, GL_FLOAT, 0, cols.pointer())
     glVertexPointer(3, GL_FLOAT, 0, verts.pointer())
     fbuff.enable()
@@ -155,7 +156,6 @@ while not w.has_exit:
     dt = clock.tick()
     w.dispatch_events()
     draw()
-    print clock.get_fps(),
     glBegin(GL_LINES)
     glColor3f(1,0,0)
     glVertex3f(0,0,0)

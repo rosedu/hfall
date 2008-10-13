@@ -73,23 +73,27 @@ class TerrainPatch:
         self.stride = float(self.width) / size
         self.visible = False
         self.renderable = False
+        self.list = 0;
 
-    def preparebuffers(self):
+    def opreparebuffers(self):
         vsize = self.size + 1
         vsize = 3 * (vsize ** 2)
-        colors = vsize * [0.5] #gray color for now
+        #colors = vsize * [0.5] #gray color for now
+        colors = [0.5, 0.5, 0.5]
         vsize = self.size + 1
         vertices = [0, self._hf.vert[0][0], 0]
         indices = []
         index = 1
         for x in range(1, vsize):
             vertices.extend([x * self.stride, self._hf.vert[x][0], 0])
+            colors.extend([0.5, 0.5, 0.5])
             index += 1
         for y in range(1, vsize):
             vertices.extend([0, self._hf.vert[0][y], y * self.stride])
             index += 1
             for x in range(1, vsize):
                 vertices.extend([x * self.stride, self._hf.vert[x][y], y * self.stride])
+                colors.extend([0.5, 0.5, 0.5])
                 indices.extend([index, index - vsize - 1, index - vsize,\
                                 index, index - 1, index - vsize - 1])
                 index += 1
@@ -105,6 +109,35 @@ class TerrainPatch:
         self.imax = max(indices)
         self.renderable = True
 
+    def makelist(self):
+        glPushMatrix()
+        width = self.width
+        glTranslatef(-width/2, -width/2, 0)
+        glBegin(GL_TRIANGLES)
+        glColor3f(0.5, 0.5, 0.5)
+        vlen = self.stride
+        vert = self._hf.vert
+        size = self.size
+        for y in range(1, size):
+            for x in range(1, size):
+                glVertex3f(x * vlen, y * vlen, vert[x][y])
+                glVertex3f((x-1) * vlen, (y-1) * vlen, vert[x-1][y-1])
+                glVertex3f(x * vlen, (y-1) * vlen, vert[x][y-1])
+
+                glVertex3f(x * vlen, y * vlen, vert[x][y])
+                glVertex3f((x-1) * vlen, y * vlen, vert[x-1][y])
+                glVertex3f((x-1) * vlen, (y-1) * vlen, vert[x-1][y-1])
+        glEnd()
+        glPopMatrix()
+
+    def preparebuffers(self):
+        self.list = glGenLists(1)
+        glNewList(self.list, GL_COMPILE)
+        self.makelist()
+        glEndList()
+        print self.list
+        self.renderable = True
+
     def makeVisible(self):
         if self.renderable == False:
             raise Exception("this terrain patch is not renderable yet, call preparebuffers")
@@ -114,7 +147,7 @@ class TerrainPatch:
     def makeInvisible(self):
         self.Visible = False
 
-    def render(self):
+    def orender(self):
 	print 'rendering'
         if self.Visible == True:
             glPushMatrix()
@@ -122,11 +155,11 @@ class TerrainPatch:
             self.verts.buffer.enable()
             glColorPointer(3, GL_FLOAT, 0, self.cols.pointer())
             glVertexPointer(3, GL_FLOAT, 0, self.verts.pointer())
-            self.vbo.buffer.enable()
+            self.fbuff.enable()
             print 'range2'
             glDisableClientState(GL_NORMAL_ARRAY)
             glDisable(GL_NORMAL_ARRAY)
-            print self.verts.pointer(), self.vbo.pointer(), '<---'
+            print self.verts.pointer(), self.cols.pointer(), '<---'
 	    #glDrawRangeElements(GL_TRIANGLES, self.imin, self.imax,\
             #                    self.ilength, GL_UNSIGNED_INT, self.vbo.pointer())
 	    glDrawElements(GL_TRIANGLES, self.ilength, GL_UNSIGNED_INT,\
@@ -135,6 +168,12 @@ class TerrainPatch:
             self.verts.buffer.disable()
             self.fbuff.disable()
             glPopMatrix()
+
+    def render(self):
+        glPushMatrix()
+        glTranslatef(self.x, self.y, 0)
+        glCallList(self.list)
+        glPopMatrix()
 
 class Terrain:
     """

@@ -25,6 +25,7 @@ import Fog
 import Terrain
 import base
 import Wires
+import Test
 from base import kernel as hfk
 
 
@@ -65,6 +66,9 @@ class Render(base.Task):
 	self.line_manager = Wires.LineManager()
   	self.fps = "0"
   	self.terrain = None
+  	####to remove
+  	self.testmodel = None
+  	####stop here
 	self.counter = 0 
         try:
             # Try to create a window with antialising
@@ -146,6 +150,11 @@ class Render(base.Task):
             #drawing terrain
             if self.terrain is not None:
                 self.terrain.render()
+
+            ####to remove
+            if self.testmodel is not None:
+                self.testmodel.render()
+            ####stop here
 
             #drawing axis:
   	    self.line_manager.draw()
