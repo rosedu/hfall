@@ -25,7 +25,6 @@ import Fog
 import Terrain
 import base
 import Wires
-import Test
 from base import kernel as hfk
 
 

@@ -21,7 +21,6 @@ import TextureManager
 import Bitmap
 import Light
 import Terrain
-import Test
 import math
 from base import kernel as hfk
 
