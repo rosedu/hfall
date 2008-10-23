@@ -57,7 +57,6 @@ class drawer(base.Task):
         patch.preparebuffers()
         patch.makeVisible()
         terrain.addPatch(patch)
-        """
         hf = Terrain.HeightField()
         for x in range(65):
             for y in range(65):
@@ -65,7 +64,7 @@ class drawer(base.Task):
         patch = Terrain.TerrainPatch(hfield = hf)
         patch.preparebuffers()
         patch.makeVisible()
-        terrain.addPatch(patch)"""
+        terrain.addPatch(patch)#"""
         terrain.Enable()
         render.terrain = terrain
         #model = Test.TTest()
