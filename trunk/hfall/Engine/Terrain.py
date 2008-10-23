@@ -165,7 +165,7 @@ class TerrainPatch:
 	    #glDrawRangeElements(GL_TRIANGLES, self.imin, self.imax,\
             #                    self.ilength, GL_UNSIGNED_INT, self.vbo.pointer())
 	    glDrawElements(GL_TRIANGLES, self.ilength, GL_UNSIGNED_INT,\
-	    		   self.vbo.pointer())
+	     		   self.vbo.pointer())
 	    print 'disabling'
             self.verts.buffer.disable()
             self.fbuff.disable()

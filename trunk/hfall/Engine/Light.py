@@ -14,7 +14,11 @@ class Light():
         glLightfv(self.lightSource, GL_AMBIENT, self.LightAmbient)
         glLightfv(self.lightSource, GL_DIFFUSE, self.LightDiffuse)
         glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
-
+	spot_direction = [- self.LightPosition[0], - self.LightPosition[1],\
+                          - self.LightPosition[2], 0.0]
+	self.spotDirection = (GLfloat * 4)(*spot_direction)
+	glLightf(self.lightSource, GL_SPOT_CUTOFF, 45.0)
+	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, self.spotDirection)
         #to be deleted later
         self.q = gluNewQuadric()
 
