@@ -67,7 +67,7 @@ class LineManager:
          self.lines.clear()
 
     def run_diag(self):
-         print "running diag..."
+         #print "running diag..."
          for k,v in self.lines.iteritems():
 	     print "self.lines[",k,"]=((",v.x1,",",v.y1,",",v.z1,")(",v.x2,",",v.y2,",",v.z2,"))"
 

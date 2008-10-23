@@ -210,7 +210,7 @@ class Render(base.Task):
             glGetDoublev(GL_PROJECTION_MATRIX,self.perspective_matrix)
             glPopMatrix()
   	    
-  	    #self.ogl.activate_model()
+  	    self.ogl.activate_model()
 	    #just to make it work
 
             for model in self._2dlist:
