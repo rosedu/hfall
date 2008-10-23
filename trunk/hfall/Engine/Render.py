@@ -148,7 +148,7 @@ class Render(base.Task):
 
             #drawing terrain
             if self.terrain is not None:
-                #self.terrain.render()
+                self.terrain.render()
                 """glBegin(GL_LINES)
                 glColor3f(1.0, 0.0, 0.0)
                 glVertex3i(10, 10, 0)
@@ -164,12 +164,12 @@ class Render(base.Task):
                 glVertex3i(10, 10, 0)
                 """
                 glColor3f(0.5, 0.5, 0.5)
-                glBegin(GL_QUADS)
+                """glBegin(GL_QUADS)
                 glVertex3i(-25, 0, -25)
                 glVertex3i(25, 0, -25)
                 glVertex3i(25, 0, 25)
                 glVertex3i(-25, 0, 25)
-                glEnd()
+                glEnd()"""
 
             ####to remove
             if self.testmodel is not None:
