@@ -163,7 +163,7 @@ class Render(base.Task):
                 glVertex3i(10, 100, 0)
                 glVertex3i(10, 10, 0)
                 """
-                glColor3f(0.5, 0.5, 0.5)
+                ###glColor3f(0.5, 0.5, 0.5)
                 """glBegin(GL_QUADS)
                 glVertex3i(-25, 0, -25)
                 glVertex3i(25, 0, -25)
