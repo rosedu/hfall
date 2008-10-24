@@ -198,7 +198,7 @@ class Terrain:
     def render(self):
         if self.enabled == True:
             for tpatch in self._patch:
-                tpatch.render()
+                tpatch.orender()
 
     def addPatch(self, patch):
         if isinstance(patch, TerrainPatch):

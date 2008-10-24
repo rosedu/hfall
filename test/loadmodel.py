@@ -52,9 +52,10 @@ class drawer(base.Task):
                     rLightPosition = [0.0, 50, -20.0, 30.0])
         render.addLight(light1)
         #This is an example of terrain rendering
+        AddModel.add_model("models/grenadelauncher/grenadelauncher.3ds", [0, 10, 0])
         terrain = Terrain.Terrain()
         patch = Terrain.TerrainPatch(x_origin = -64)
-        patch.preparebuffers()
+        patch.opreparebuffers()
         patch.makeVisible()
         terrain.addPatch(patch)
         #hf = Terrain.HeightField()
@@ -62,7 +63,7 @@ class drawer(base.Task):
         #    for y in range(65):
         #        hf.setHeight(x, y, math.sin(x+y))
         patch = Terrain.TerrainPatch()#hfield = hf)
-        patch.preparebuffers()
+        patch.opreparebuffers()
         patch.makeVisible()
         terrain.addPatch(patch)#"""
         terrain.Enable()

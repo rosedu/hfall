@@ -67,6 +67,7 @@ class Render(base.Task):
   	self.terrain = None
   	####to remove
   	self.testmodel = None
+  	self.firstframe = True
   	####stop here
 	self.counter = 0 
         try:
@@ -147,7 +148,7 @@ class Render(base.Task):
   	    glDisable(GL_LIGHTING)
 
             #drawing terrain
-            if self.terrain is not None:
+            if self.terrain is not None and self.firstframe is not True:
                 self.terrain.render()
                 """glBegin(GL_LINES)
                 glColor3f(1.0, 0.0, 0.0)
@@ -231,6 +232,7 @@ class Render(base.Task):
             # if self._xpos > 3 :
             #    self._xpos = -3
             # self._xpos += 0.05
+            self.firstframe = False
 
     def Render2D(self, model):
         """
