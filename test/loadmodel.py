@@ -52,7 +52,7 @@ class drawer(base.Task):
                     rLightPosition = [0.0, 50, -20.0, 30.0])
         render.addLight(light1)
         #This is an example of terrain rendering
-        AddModel.add_model("models/grenadelauncher/grenadelauncher.3ds", [0, 10, 0])
+        AddModel.add_model("models/machinegun/3dm-q3machinegun.3ds", [0, 10, 0])
         terrain = Terrain.Terrain()
         patch = Terrain.TerrainPatch(x_origin = -64)
         patch.opreparebuffers()
