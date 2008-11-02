@@ -22,6 +22,8 @@ from pyglet import image
 from pyglet.gl import *
 import Mathbase
 from Console import Console
+from glcalls import *
+from View import *
 
 """
 Collection of Event Overrides
@@ -51,38 +53,124 @@ def on_key_press(symbol,modifiers):
         else:
                 game_get(symbol,modifiers)
 
-def on_mouse_press(x, y, button, modifiers):
+def on_mouse_press(X, Y, button, modifiers):
+        if button == mouse.LEFT and modifiers & key.LCTRL:
+                proj = glGetMatrix(GL_PROJECTION_MATRIX)
+                model = glGetMatrix(GL_MODELVIEW_MATRIX)
+                print model
+                invmodel = model.inverse()
+                view = glGetVector4(GL_VIEWPORT)
+                z = 0.0
+                posX = (GLdouble * 1)()
+                posY = (GLdouble * 1)()
+                posZ = (GLdouble * 1)()
+                gluUnProject(X, Y, 1.0, model.asDouble(), proj.asDouble(),\
+                             view.asDouble(), posX, posY, posZ)
+                x = posX[0]
+                y = posY[0]
+                z = posZ[0]
+                gluUnProject(X, Y, 1.0, model.asDouble(), proj.asDouble(),\
+                             view.asDouble(), posX, posY, posZ)
+                xx = posX[0]
+                yy = posY[0]
+                zz = posZ[0]
+                gluUnProject(X, Y, 10.0, model.asDouble(), proj.asDouble(),\
+                             view.asDouble(), posX, posY, posZ)
+                x10 = posX[0]
+                y10 = posY[0]
+                z10 = posZ[0]
+                gluUnProject(X, Y, 100.0, model.asDouble(), proj.asDouble(),\
+                             view.asDouble(), posX, posY, posZ)
+                xxx = posX[0]
+                yyy = posY[0]
+                zzz = posZ[0]
+                #print "0:",x10,y10,z10
+                #print "1:",xx,yy,zz
+                #print "10:",x,y,z
+                #print "100:",xxx,yyy,zzz
+                #print "r:",(x10-xx)/(x-xx),(y10-yy)/(y-yy),(z10-zz)/(z-zz)
+                #print "rr:",(x10-xxx)/(x-xxx),(y10-yyy)/(y-yyy),(z10-zzz)/(z-zzz)
+                #print ""
+                V1 = Vector3(xx - x,\
+                             yy - y,\
+                             zz - z)
+                #print "V1:",V1
+                V2 = Vector3(0-x, 0-y, 0-z)
+                #print "V2:",V2
+                #print "distance to 0:", V1.crossProduct(V2).length() / V1.length()
+                P0 = Vector3(x, y, z)
+                n = Vector3(0,1,0)
+                #lamda = - P0.dotProduct(n) / V1.dotProduct(n)
+                #P = P0 + V1 * lamda
+                print P0
+                #print P
+                print ""
+                r_p = Vector4(0,0,0,1)
+                r_v = Vector4(x,y,z,0)
+                r_p = invmodel * r_p
+                r_v = invmodel * r_v
+                print r_p, "\n"
+                print r_v
+                r_v = r_v * (-1000000)
+                global_render.line_manager.add(Wires.Line(r_p[0], r_p[1], r_p[2],\
+                                                          r_p[0] + r_v[0],\
+                                                          r_p[1] + r_v[1],\
+                                                          r_p[2] + r_v[2]))
+                global_UI.refresh_world_coords(x,y,z)
+
+
+def old_on_mouse_press(x, y, button, modifiers):
         if button == mouse.LEFT and modifiers & key.LCTRL:
                 mat_proj = (GLdouble * 16)()
                 mat_model = (GLdouble * 16)()
                 mat_view = (GLint* 4)()
-                glGetDoublev(GL_PROJECTION_MATRIX,mat_proj)
-                glGetDoublev(GL_MODELVIEW_MATRIX,mat_model)
-                glGetIntegerv(GL_VIEWPORT,mat_view)
+                ##glGetDoublev(GL_PROJECTION_MATRIX,mat_proj)
+                ##glGetDoublev(GL_MODELVIEW_MATRIX,mat_model)
+                ##glGetIntegerv(GL_VIEWPORT,mat_view)
+
+                mat_proj = glGetMatrix(GL_PROJECTION_MATRIX)
+                
+                #print mat_proj[:]
+                print mat_model[:]
+                print mat_view[:]
                 world_x = (GLdouble * 1)()
                 world_y = (GLdouble * 1)()
                 world_z = (GLdouble * 1)()
 		world_x2 = (GLdouble * 1)()
 		world_y2 = (GLdouble * 1)()
 		world_z2 = (GLdouble * 1)()
-                if gluUnProject(x,y,-5,mat_model,mat_proj,mat_view,\
+		y = mat_view[3] - y;
+                if gluUnProject(x,y,0.0,mat_model,mat_proj,mat_view,\
                      world_x,world_y,world_z) == GLU_FALSE:
                         print "Error in UI.on_mouse_press - projection results" + \
                               "are not valid"
-		if gluUnProject(x,y,5,mat_model,mat_proj,mat_view,\
+		if gluUnProject(x,y,1.0,mat_model,mat_proj,mat_view,\
 		     world_x2,world_y2,world_z2) == GLU_FALSE:
 		        print "Error in UI.on_mouse_press - projection results" + \
 			      "are not valid"
 		# Folosim ecuatiile parametrice ale dreptei in spatiu 
-		factor = 100
+		factor = 10
+		print world_x[0], world_y[0], world_z[0], '<-----'
 		x1 = world_x[0] + factor * (world_x2[0]-world_x[0])
 		x2 = world_x[0] - factor * (world_x2[0]-world_x[0])
 		y1 = world_y[0] + factor * (world_y2[0]-world_y[0])
 		y2 = world_y[0] - factor * (world_y2[0]-world_y[0])
 		z1 = world_z[0] + factor * (world_z2[0]-world_z[0])
 		z2 = world_z[0] - factor * (world_z2[0]-world_z[0])
+		x = world_x[0]
+		y = world_y[0]
+		z = world_z[0]
+		xx = world_x2[0]
+  		yy = world_y2[0]
+  		zz = world_z2[0]
+  		print x, y, z, xx, yy, zz, '<<---verifica-le'
   		
-		global_render.line_manager.add(Wires.Line(x1,y1,z1,z2,y2,z2))
+		global_render.line_manager.add(Wires.Line(x,y,z,xx,yy,zz))
+		glBegin(GL_LINES)
+                glColor3f(1.0, 0.0, 0.0);
+                glVertex3f(x+1, y+1, z+1)
+                glVertex3f(xx+1, yy+1, zz+1)
+		glEnd()
                 global_UI.refresh_world_coords(world_x[0],world_y[0],world_z[0])
         
 def engine_get(symbol,modifiers):

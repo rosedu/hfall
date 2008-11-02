@@ -52,7 +52,7 @@ class drawer(base.Task):
                     rLightPosition = [0.0, 50, -20.0, 30.0])
         render.addLight(light1)
         #This is an example of terrain rendering
-        AddModel.add_model("models/machinegun/3dm-q3machinegun.3ds", [0, 10, 0])
+        #AddModel.add_model("models/machinegun/3dm-q3machinegun.3ds", [0, 10, 10])
         terrain = Terrain.Terrain()
         patch = Terrain.TerrainPatch(x_origin = -64)
         patch.opreparebuffers()
@@ -67,7 +67,7 @@ class drawer(base.Task):
         patch.makeVisible()
         terrain.addPatch(patch)#"""
         terrain.Enable()
-        render.terrain = terrain
+        #render.terrain = terrain
         #model = Test.TTest()
         #render.testmodel = model
         
@@ -86,7 +86,7 @@ class drawer(base.Task):
     def name(self):
         return "drawer"
 
-render = Render.Render(800, 600, posx = 0, posy = -1.5, posz = -100, far = 10000)
+render = Render.Render(800, 600, posx = 0, posy = 0, posz = -100, far = 10000)
 hfk.insert(drawer())
 hfk.insert(render)
 hfk.insert(UI(render))

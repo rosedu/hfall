@@ -2,6 +2,7 @@
 Matrix math
 """
 import math
+from pyglet.gl import *
 
 import Vector
 
@@ -325,6 +326,14 @@ class Matrix4:
                         s += self._m[i][k] * other._m[k][j]
                     c._m[i][j] = s
             return c
+        elif isinstance(other, Vector.Vector4):
+            v = Vector.Vector4()
+            for i in range(4):
+                s = 0
+                for j in range(4):
+                    s += self._m[i][j] * other[j]
+                v[i] = s
+            return v
         else:
             return Matrix4([self._m[0][0] * other,\
                            self._m[0][1] * other,\
@@ -532,3 +541,23 @@ class Matrix4:
                '|' + str(self._m[1][0]) + ' ' + str(self._m[1][1]) + ' ' + str(self._m[1][2]) + ' ' + str(self._m[1][3]) + '|\n' +\
                '|' + str(self._m[2][0]) + ' ' + str(self._m[2][1]) + ' ' + str(self._m[2][2]) + ' ' + str(self._m[2][3]) + '|\n' +\
                '|' + str(self._m[3][0]) + ' ' + str(self._m[3][1]) + ' ' + str(self._m[3][2]) + ' ' + str(self._m[3][3]) + '|'
+
+    def asDouble(self):
+        m = (GLdouble*16)(*[])
+        m[0] = self._m[0][0]
+        m[1] = self._m[0][1]
+        m[2] = self._m[0][2]
+        m[3] = self._m[0][3]
+        m[4] = self._m[1][0]
+        m[5] = self._m[1][1]
+        m[6] = self._m[1][2]
+        m[7] = self._m[1][3]
+        m[8] = self._m[2][0]
+        m[9] = self._m[2][1]
+        m[10] = self._m[2][2]
+        m[11] = self._m[2][3]
+        m[12] = self._m[3][0]
+        m[13] = self._m[3][1]
+        m[14] = self._m[3][2]
+        m[15] = self._m[3][3]
+        return m

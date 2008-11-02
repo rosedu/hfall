@@ -2,6 +2,7 @@
 Vector math
 """
 import math
+from pyglet.gl import *
 
 class Vector2:
     """
@@ -281,3 +282,11 @@ class Vector4:
                ' ' + str(self.y) +\
                ' ' + str(self.z) +\
                ' ' + str(self.w) + ']'
+
+    def asDouble(self):
+        m = (GLint*4)(*[])
+        m[0] = int(self.x)
+        m[1] = int(self.y)
+        m[2] = int(self.z)
+        m[3] = int(self.w)
+        return m
