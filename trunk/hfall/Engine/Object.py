@@ -4,7 +4,7 @@ sys.path.insert(0, "..")
 
 from Vector import Vector3
 from Matrix import Matrix4
-from Math import *
+from math import *
 from pyglet.gl import *
 from glcalls import *
 
@@ -27,10 +27,12 @@ def invMatrix(m):
 class Object:
 
     def __init__(self, _type):
-        self.modelView = Matrix4()
-        self.projection = Matrix4()
+        self.modelView = Matrix4.identity()
+        self.projection = Matrix4.identity()
         self.type = _type
-
+        """
+        what type of object this is : model, camera, light source
+        """
     def setModelView(self):
         glLoadMatrix(self.modelView)
 
@@ -48,18 +50,21 @@ class Object:
     def getInvProjection(self):
         return invMatrix(projection)
 
-    def scale(self, x, y, z):
-        Matrix4f m([x, 0, 0, 0,
+    def scale(self, vector):
+        x = vector[0]
+	y = vector[1]
+	z = vector[2]
+        m = Matrix4([x, 0, 0, 0,
                     0, y, 0, 0,
 		    0, 0, z, 0,
-		    0, 0, 0,	1])
+		    0, 0, 0, 1])
 			   
 	self.modelView *= m
 
     def translate(self, x, y, z):
-        Matrix4f m([0, 0, 0, x,
-		    0, 0, 0, y,
-		    0, 0, 0, z,
+        m = Matrix4([1, 0, 0, x,
+		    0, 1, 0, y,
+		    0, 0, 1, z,
 		    0, 0, 0, 1])
 			   
 	self.modelView *= m

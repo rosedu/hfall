@@ -9,12 +9,14 @@ __author__ = 'Andrei Buhaiu(andreibuhaiu@gmail.com)'
 
 import sys
 sys.path.insert(0, "..")
+sys.path.insert(0, "../Engine/")
 
 import Mesh
 from glcalls import *
 from pyglet.gl import *
+from Object import *
 
-class Model:
+class Model(Object):
     """
     This is our Model class. It contains the perspective and
     the meshes matrix that form the model.
@@ -22,24 +24,21 @@ class Model:
     """
 
     
-    def __init__(self, mes, name, matrix = Coordinate()):
+    def __init__(self, mes, name, matrix = Matrix4.identity()):
         """
         meshes  - the actual meshes that form the model and that
                   are given to be render to OpenGL
         matrix4 - the perspective matrix
         """
         self.meshes = mes
-        self.matrix = matrix
+        self.modelView = matrix
         self.name = name
 
     def render(self, rnd, textured = True):
         glPushMatrix();
-        glMultMatrix(self.matrix)
+        glMultMatrix(self.modelView)
         for mesh in self.meshes:
-            #glPushMatrix()
-            #glMultMatrix(mesh.matrix)
             if textured: mesh.render(rnd)
             else: mesh.renderNonTextured(rnd)
-            #glPopMatrix()
         glPopMatrix()
         

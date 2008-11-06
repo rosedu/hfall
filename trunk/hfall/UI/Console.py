@@ -14,8 +14,10 @@ from pyglet import font
 import base
 import UI
 import AddModel
+import Object
 import os.path
 from AddModel import *
+from Object import *
 from pyglet.gl import *
 from Sprite import Sprite
 from pyglet.window import key
@@ -128,7 +130,8 @@ class Console():
     
     def init_clock(self,factor = 1):
     	self.__input_time = int(int(UI.global_render.fps) * self.__speed_ratio * factor)
-            def read(self,symbol,modifiers):
+        
+    def read(self,symbol,modifiers):
       	if self.enabled == False:
 		return
 	self.init_clock(3) #prevent double keypress
@@ -174,7 +177,8 @@ class Console():
 	      	  token_list.append(aux)
 	      command = parts[2].strip()
 	      if command=="":
-	      	  break	if token_list[0]=="axes":
+	      	  break
+	if token_list[0]=="axes":
 		self.warning_argc(token_list, 1)
               	UI.global_render.enableaxis = not UI.global_render.enableaxis
         elif token_list[0]=="lines":
@@ -257,7 +261,8 @@ class Console():
     		for line in self.__calls:
     			f.write(line+"\n")
     		#f.writelines(self.__calls)
-	          def print_calls(self):
+	      
+    def print_calls(self):
     	if self.__calls_enabled == False:
     		self.text_box.force_line_after("Error - calls have not been initialized")
     	else:
