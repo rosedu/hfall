@@ -81,7 +81,7 @@ class OGL:
                          is drawn over the entire window.
                     
         """
-
+        print far
         self.glInfo = GLInfo()
         print self.glInfo
 
@@ -97,7 +97,7 @@ class OGL:
             glLoadIdentity()
             if height == 0:
                 height = 1
-            gluPerspective(60.0, width / float(height), .1, 1000.0)
+            gluPerspective(60.0, width / float(height), near, far)
             #glMatrixMode(GL_MODELVIEW)
 
         # finalizing the initialization

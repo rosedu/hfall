@@ -55,6 +55,23 @@ def on_key_press(symbol,modifiers):
 
 def on_mouse_press(X, Y, button, modifiers):
         if button == mouse.LEFT and modifiers & key.LCTRL:
+                model = glGetMatrix(GL_MODELVIEW_MATRIX)
+                invmodel = model.inverse()
+                #m = MatrixManager
+                data = MatrixManager().PCMatrixData()
+                print data
+                wy = (window_height - Y) - window_height/2;
+                ny = wy/(window_height/2);
+                wx = X - window_width/2;
+                nx = wx/(window_width/2);
+                y = near_height * ny;
+                x = near_height * aspect * nx;
+                z = -near_distance;
+                r_p = Vector4(0,0,0,1)
+                r_v = Vector4(x,y,z,0)
+                
+def bad_on_mouse_press(X, Y, button, modifiers):
+        if button == mouse.LEFT and modifiers & key.LCTRL:
                 proj = glGetMatrix(GL_PROJECTION_MATRIX)
                 model = glGetMatrix(GL_MODELVIEW_MATRIX)
                 print model
