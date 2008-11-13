@@ -58,21 +58,50 @@ def on_mouse_press(X, Y, button, modifiers):
                 model = glGetMatrix(GL_MODELVIEW_MATRIX)
                 invmodel = model.inverse()
                 #m = MatrixManager
-                data = MatrixManager().PCMatrixData()
-                print data
-                wy = (window_height - Y) - window_height/2;
-                ny = wy/(window_height/2);
-                wx = X - window_width/2;
-                nx = wx/(window_width/2);
+                #data = MatrixManager().PCMatrixData()
+                #print data
+                #Perspective Matrix:
+                zFar =  9986.5
+                zNear = 0.0999
+                f     = 1.7320
+                fovy  = 1.0471
+                view = glGetVector4(GL_VIEWPORT)
+                window_height = view[3]
+                window_width = view[2]
+                print window_height, window_width
+                aspect = window_height / window_width
+                factor = 10000
+                near_distance = 170#? - trebuie vazut cum o luam
+                near_height = 100 #????
+                wy = Y - window_height/2.0;
+                ny = wy/(window_height/2.0);
+                wx = X - window_width/2.0;
+                nx = wx/(window_width/2.0);
+                print X,Y
+                print wx,wy
+                print nx, ny
+                #halt = 1/0
                 y = near_height * ny;
                 x = near_height * aspect * nx;
                 z = -near_distance;
                 r_p = Vector4(0,0,0,1)
                 r_v = Vector4(x,y,z,0)
+                r_p = invmodel * r_p
+                r_v = invmodel * r_v
+                r_v *= 1000
+                print r_p
+                print r_v
+                global_render.line_manager.add(Wires.Line(r_p[0], r_p[1], r_p[2],\
+                                                          r_p[0] + r_v[0],\
+                                                          r_p[1] + r_v[1],\
+                                                          r_p[2] + r_v[2]))
+                global_UI.refresh_world_coords(x,y,z)
                 
 def bad_on_mouse_press(X, Y, button, modifiers):
         if button == mouse.LEFT and modifiers & key.LCTRL:
                 proj = glGetMatrix(GL_PROJECTION_MATRIX)
+                X /= 2.0
+                Y /= 2.0
                 model = glGetMatrix(GL_MODELVIEW_MATRIX)
                 print model
                 invmodel = model.inverse()

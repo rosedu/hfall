@@ -27,9 +27,9 @@ class Light():
     
     def draw(self):
         glPushMatrix()
-        glTranslatef(self.LightPosition[0],\
-                     self.LightPosition[1],\
-                     self.LightPosition[2])
+        glTranslatef(self.LightPosition[0] / self.LightPosition[3],\
+                     self.LightPosition[1] / self.LightPosition[3],\
+                     self.LightPosition[2] / self.LightPosition[3])
         gluSphere(self.q, 1, 12, 12)
         glPopMatrix()
         #until here - replace in draw with pass

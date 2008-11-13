@@ -65,7 +65,7 @@ class OGL:
 
     """
 
-    def __init__(self, w, width, height, near=0.1, far=100.0, \
+    def __init__(self, w, width, height, near=0.1, far=100.0, fov = 60.0,\
                  clearcolor=(0.0, 0.0, 0.0, 0.0)):
         """
         OpenGL and pyglet initialization.
@@ -81,9 +81,10 @@ class OGL:
                          is drawn over the entire window.
                     
         """
-        print far
         self.glInfo = GLInfo()
-        print self.glInfo
+	self.far = far
+	self.near = near
+	self.fov = fov
 
         self.shadowMap = Texture.create("shadows", 0, 512, 512, GL_TEXTURE_2D, \
                                         TextureFormat.fromString("DEPTH"), \
@@ -97,7 +98,7 @@ class OGL:
             glLoadIdentity()
             if height == 0:
                 height = 1
-            gluPerspective(60.0, width / float(height), near, far)
+            gluPerspective(fov, width / float(height), near, far)
             #glMatrixMode(GL_MODELVIEW)
 
         # finalizing the initialization
@@ -124,7 +125,7 @@ class OGL:
         glMatrixMode(GL_PROJECTION)
         glPushMatrix()
         glLoadIdentity()
-        gluPerspective(60.0, 1.0*width/height, 0.1, 1000.0)
+        gluPerspective(fov, 1.0*width/height, 0.1, 1000.0)
 
     def activate_ortho(self,left,right,bottom,top,\
 	near=-1, far=1):
