@@ -31,6 +31,7 @@ class Model(Object):
         matrix4 - the perspective matrix
         """
         self.meshes = mes
+        self.type = "Model"
         self.modelView = matrix
         self.name = name
 

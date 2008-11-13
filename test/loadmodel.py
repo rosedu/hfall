@@ -65,7 +65,7 @@ class drawer(base.Task):
         patch = Terrain.TerrainPatch(hfield = hf)
         patch.opreparebuffers()
         patch.makeVisible()
-        terrain.addPatch(patch)#
+        terrain.addPatch(patch)
         terrain.Enable()
         render.terrain = terrain
         #model = Test.TTest()

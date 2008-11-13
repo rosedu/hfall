@@ -1,6 +1,12 @@
-from pyglet.gl import *
+import sys
+sys.path.insert(0, "..")
+sys.path.insert(0, "../Engine/")
 
-class Light():
+from pyglet.gl import *
+from Object import *
+from Matrix import *
+
+class Light(Object):
     """
     For light effects.
     
@@ -8,6 +14,14 @@ class Light():
     def __init__(self, lightSource, rLightAmbient,\
                  rLightDiffuse, rLightPosition):
         self.lightSource = lightSource
+        self.modelView = Matrix4();
+        self.modelView[0][3] = rLightPosition[0]
+        self.modelView[1][3] = rLightPosition[1]
+        self.modelView[2][3] = rLightPosition[2]
+        self.modelView[0][0] = 1;
+        self.modelView[1][1] = 1;
+        self.modelView[2][2] = 1;
+        self.modelView[3][3] = 1;
 	self.LightAmbient = (GLfloat * 4)(*rLightAmbient)
 	self.LightDiffuse = (GLfloat * 4)(*rLightDiffuse)
 	self.LightPosition = (GLfloat * 4)(*rLightPosition)
@@ -19,6 +33,7 @@ class Light():
 	self.spotDirection = (GLfloat * 4)(*spot_direction)
 	glLightf(self.lightSource, GL_SPOT_CUTOFF, 45.0)
 	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, self.spotDirection)
+	print(self.modelView);
         #to be deleted later
         self.q = gluNewQuadric()
 
