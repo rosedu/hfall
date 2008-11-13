@@ -229,8 +229,8 @@ class Render(base.Task):
         """
         This function is used for rendering only the selectable parts
         """
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        glEnable(GL_DEPTH_TEST)
+        glClear(GL_DEPTH_BUFFER_BIT)
+        #glEnable(GL_DEPTH_TEST)
   	self.ogl.activate_model()
         point_to_translate = Mathbase.Vector3D(self.transx,\
                                 self.transy, self.transz)
@@ -248,6 +248,8 @@ class Render(base.Task):
             glLoadName(self._3dlist.index(model))
             model.render(self.ogl, textured = False)
         glPopMatrix()
+        glPushMatrix()
+	glLoadMatrixd(self.perspective_matrix)
         glEnable(GL_LIGHT0)
 
     def RenderSelectable(self, x, y):
@@ -291,6 +293,8 @@ class Render(base.Task):
                 print "name: ", self._3dlist[choose].name
             else:
                 print "Light: ", choose
+            return 1
+        return 0
 
     def Render2D(self, model):
         """
