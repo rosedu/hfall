@@ -55,7 +55,7 @@ def on_key_press(symbol,modifiers):
 
 def on_mouse_press(X, Y, button, modifiers):
 	if button == mouse.LEFT and modifiers & key.LCTRL:
-		pass
+		global_render.RenderSelectable(X, Y)
 
 def new_on_mouse_press(X, Y, button, modifiers):
 	# this is not used due to Bu High You

@@ -65,11 +65,7 @@ class Render(base.Task):
 	self.line_manager = Wires.LineManager()
   	self.fps = "0"
   	self.terrain = None
-  	####to remove
-  	self.testmodel = None
-  	self.firstframe = True
-  	####stop here
-	self.counter = 0 
+  	self.counter = 0 
         try:
             # Try to create a window with antialising
             # TODO: add other possible config via another parameter
@@ -148,7 +144,7 @@ class Render(base.Task):
   	    glDisable(GL_LIGHTING)
 
             #drawing terrain
-            if self.terrain is not None and self.firstframe is not True:
+            if self.terrain is not None:
                 self.terrain.render()
                 """glBegin(GL_LINES)
                 glColor3f(1.0, 0.0, 0.0)
@@ -171,11 +167,6 @@ class Render(base.Task):
                 glVertex3i(25, 0, 25)
                 glVertex3i(-25, 0, 25)
                 glEnd()"""
-
-            ####to remove
-            if self.testmodel is not None:
-                self.testmodel.render()
-            ####stop here
 
             #drawing axis:
   	    self.line_manager.draw()
@@ -233,6 +224,73 @@ class Render(base.Task):
             #    self._xpos = -3
             # self._xpos += 0.05
             self.firstframe = False
+
+    def DrawTargets(self):
+        """
+        This function is used for rendering only the selectable parts
+        """
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        glEnable(GL_DEPTH_TEST)
+  	self.ogl.activate_model()
+        point_to_translate = Mathbase.Vector3D(self.transx,\
+                                self.transy, self.transz)
+        self.ogl.translate( point_to_translate)
+        self.ogl.rotate(self.angle.x, Mathbase.Vector3D(1,0,0)) 
+        self.ogl.rotate(self.angle.y, Mathbase.Vector3D(0,1,0)) 
+        self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1))
+        glDisable(GL_LIGHT0)
+        for light in self._lights:
+            # delete the following line after debugging
+            glLoadName(self._lights.index(light) + 2000) # 2000 must be changed
+            light.draw()
+        glPushMatrix()
+        for model in self._3dlist:
+            glLoadName(self._3dlist.index(model))
+            model.render(self.ogl, textured = False)
+        glPopMatrix()
+        glEnable(GL_LIGHT0)
+
+    def RenderSelectable(self, x, y):
+        """
+        This function SHOULD be used ONLY for rendering the selectable
+        models of the scene.
+
+        Please make sure that this function is a subset of the previous
+        one: include all lines that are used for drawing
+        """
+        sbuffer = (GLuint * 512)(*[])#TODO: change the size
+        mat_view = (GLint* 4)()
+        glGetIntegerv(GL_VIEWPORT,mat_view)
+        glSelectBuffer(512, sbuffer)
+
+        glRenderMode(GL_SELECT)
+
+        glInitNames()
+        glPushName(0)
+
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glLoadIdentity()
+
+        gluPickMatrix(x, y, 1.0, 1.0, mat_view)
+        r = float(mat_view[2] - mat_view[0])/\
+                           (mat_view[3] - mat_view[1])
+        gluPerspective(45.0, r, 0.1, 100.0)#TODO: change them
+        glMatrixMode(GL_MODELVIEW)        
+        self.DrawTargets()
+        glMatrixMode(GL_PROJECTION)
+        glPopMatrix()
+        glMatrixMode(GL_MODELVIEW)
+        hits = glRenderMode(GL_RENDER)
+        print hits
+        if hits > 0:
+            choose = sbuffer[3]
+            depth = sbuffer[1]
+            if choose < 2000:
+                print "Chosen (model): ", choose
+                print "name: ", self._3dlist[choose].name
+            else:
+                print "Light: ", choose
 
     def Render2D(self, model):
         """
