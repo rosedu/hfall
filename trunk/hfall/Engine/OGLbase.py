@@ -125,7 +125,7 @@ class OGL:
         glMatrixMode(GL_PROJECTION)
         glPushMatrix()
         glLoadIdentity()
-        gluPerspective(fov, 1.0*width/height, 0.1, 1000.0)
+        gluPerspective(self.ov, 1.0*width/height, 0.1, 1000.0)
 
     def activate_ortho(self,left,right,bottom,top,\
 	near=-1, far=1):

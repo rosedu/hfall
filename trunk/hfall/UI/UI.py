@@ -54,6 +54,11 @@ def on_key_press(symbol,modifiers):
                 game_get(symbol,modifiers)
 
 def on_mouse_press(X, Y, button, modifiers):
+	if button == mouse.LEFT and modifiers & key.LCTRL:
+		pass
+
+def new_on_mouse_press(X, Y, button, modifiers):
+	# this is not used due to Bu High You
         if button == mouse.LEFT and modifiers & key.LCTRL:
                 model = glGetMatrix(GL_MODELVIEW_MATRIX)
                 invmodel = model.inverse()
