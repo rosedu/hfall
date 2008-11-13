@@ -35,7 +35,7 @@ class Render(base.Task):
 
     """
     
-    def __init__(self, width, height, near=0.1, far=100.0,\
+    def __init__(self, width, height, near=0.1, far=100.0, fov=60.0,\
                  clearcolor=(0.0, 0.0, 0.0, 0.0),\
                  posx = 0, posy = 0, posz = 0):
         """
@@ -79,7 +79,7 @@ class Render(base.Task):
         except window.NoSuchConfigException:
             self.w = window.Window(resizable = True, fullscreen = True)
         self.w.set_vsync(False)
-        self.ogl = OGLbase.OGL(self.w, width, height, near, far, clearcolor)
+        self.ogl = OGLbase.OGL(self.w, width, height, near, far, fov, clearcolor)
         self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
         self.ogl.activate_perspective(self.w.width,self.w.height)
 
