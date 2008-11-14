@@ -61,8 +61,8 @@ class drawer(base.Task):
         hf = Terrain.HeightField()
         for x in range(65):
             for y in range(65):
-                hf.setHeight(x, y, x + math.sin(y + 2* x))
-        patch = Terrain.TerrainPatch()#hfield = hf)
+                hf.setHeight(x, y, math.sin(y + 5 * x))
+        patch = Terrain.TerrainPatch(hfield = hf)
         patch.opreparebuffers()
         patch.makeVisible()
         terrain.addPatch(patch)#

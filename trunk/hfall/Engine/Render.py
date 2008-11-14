@@ -277,7 +277,7 @@ class Render(base.Task):
         gluPickMatrix(x, y, 1.0, 1.0, mat_view)
         r = float(mat_view[2] - mat_view[0])/\
                            (mat_view[3] - mat_view[1])
-        gluPerspective(45.0, r, 0.1, 100.0)#TODO: change them
+        gluPerspective(45.0, r, 0.1, 1000000.0)#TODO: change them
         glMatrixMode(GL_MODELVIEW)        
         self.DrawTargets()
         glMatrixMode(GL_PROJECTION)
