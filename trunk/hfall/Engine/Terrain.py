@@ -78,22 +78,22 @@ class TerrainPatch:
     def opreparebuffers(self):
         vsize = self.size + 1
         vsize = 3 * (vsize ** 2)
-        #colors = vsize * [0.5] #gray color for now
-        colors = [0.5, 0.5, 0.5]
+        colors = vsize * [0.5] #gray color for now
+        #colors = [0.5, 0.5, 0.5]
         vsize = self.size + 1
         vertices = [0, self._hf.vert[0][0], 0]
         indices = []
         index = 1
         for x in range(1, vsize):
             vertices.extend([x * self.stride, self._hf.vert[x][0], 0])
-            colors.extend([0.5, 0.5, 0.5])
+            #colors.extend([0.5, 0.5, 0.5])
             index += 1
         for y in range(1, vsize):
             vertices.extend([0, self._hf.vert[0][y], y * self.stride])
             index += 1
             for x in range(1, vsize):
                 vertices.extend([x * self.stride, self._hf.vert[x][y], y * self.stride])
-                colors.extend([0.5, 0.5, 0.5])
+                #colors.extend([0.5, 0.5, 0.5])
                 indices.extend([index, index - vsize - 1, index - vsize,\
                                 index, index - 1, index - vsize - 1])
                 index += 1
