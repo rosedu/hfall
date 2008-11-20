@@ -72,11 +72,11 @@ class Mesh:
 
     def createBuffers(self, vertices, texCoords, normals, colors, triangles, triSize):
         buffSize = (len(vertices) + len(normals) + len(texCoords) + len(colors)) * sizeof(GLfloat)
-        vertBuff = VertexBuffer(buffSize)
-        self.vertices = VBOArray(len(vertices), GLfloat, vertices, vertBuff)
-        self.normals = VBOArray(len(normals), GLfloat, normals, vertBuff)
-        self.texCoords = VBOArray(len(texCoords), GLfloat, texCoords, vertBuff)
-        self.colors = VBOArray(len(colors), GLfloat, colors, vertBuff)
+        self.vertBuff = VertexBuffer(buffSize)
+        self.vertices = VBOArray(len(vertices), GLfloat, vertices, self.vertBuff)
+        self.normals = VBOArray(len(normals), GLfloat, normals, self.vertBuff)
+        self.texCoords = VBOArray(len(texCoords), GLfloat, texCoords, self.vertBuff)
+        self.colors = VBOArray(len(colors), GLfloat, colors, self.vertBuff)
         buffSize = triSize*sizeof(GLuint)
         self.facesBuffer = VertexBuffer(buffSize, target = VertexBuffer.ELEMENT_ARRAY_BUFFER)
         for triangle in triangles:

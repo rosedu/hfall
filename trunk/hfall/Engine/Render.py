@@ -289,9 +289,16 @@ class Render(base.Task):
             if choose < 2000:
                 print "Chosen (model): ", choose
                 print "name: ", self._3dlist[choose].name
+                for mesh in self._3dlist[choose].meshes:
+                    mesh.selected()
 		print "buffer: ", sbuffer[0], sbuffer[1], sbuffer[2], sbuffer[3]
             else:
                 print "Light: ", choose
+            print ""
+            print "buffer content: "
+            for i in range(len(sbuffer)):
+                print sbuffer[i],
+            print ""
             return 1
         return 0
 

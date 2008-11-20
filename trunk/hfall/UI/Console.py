@@ -61,6 +61,7 @@ class Console():
         About constructor.
         
         """
+        1/0
 	self.enabled = True
 	self.c_back = c_back
 	self.c_line = c_line

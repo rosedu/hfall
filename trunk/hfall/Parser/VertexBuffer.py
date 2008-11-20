@@ -82,5 +82,4 @@ class VBOArray:
 
     def type():
         return self._type
-
-    
+  
