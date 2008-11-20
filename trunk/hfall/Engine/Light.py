@@ -18,22 +18,17 @@ class Light(Object):
         self.modelView[0][3] = rLightPosition[0]
         self.modelView[1][3] = rLightPosition[1]
         self.modelView[2][3] = rLightPosition[2]
-        self.modelView[0][0] = 1;
-        self.modelView[1][1] = 1;
-        self.modelView[2][2] = 1;
-        self.modelView[3][3] = 1;
+        self.modelView[0][0] = 1
+        self.modelView[1][1] = 1
+        self.modelView[2][2] = 1
+        self.modelView[3][3] = 1
+        self.type = "Light"
 	self.LightAmbient = (GLfloat * 4)(*rLightAmbient)
 	self.LightDiffuse = (GLfloat * 4)(*rLightDiffuse)
 	self.LightPosition = (GLfloat * 4)(*rLightPosition)
         glLightfv(self.lightSource, GL_AMBIENT, self.LightAmbient)
         glLightfv(self.lightSource, GL_DIFFUSE, self.LightDiffuse)
         glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
-	spot_direction = [- self.LightPosition[0], - self.LightPosition[1],\
-                          - self.LightPosition[2], 0.0]
-	self.spotDirection = (GLfloat * 4)(*spot_direction)
-	glLightf(self.lightSource, GL_SPOT_CUTOFF, 45.0)
-	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, self.spotDirection)
-	print(self.modelView);
         #to be deleted later
         self.q = gluNewQuadric()
 
@@ -57,3 +52,15 @@ class Light(Object):
 
     def LPosition(self):
         glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
+
+class Spotlight(Light):
+
+    def __init__(self, lightSource, rLightAmbient,\
+                 rLightDiffuse, rLightPosition):
+        Light.__init__(self, lightSource, rLightAmbient,\
+               rLightDiffuse, rLightPosition)
+	spot_direction = [- self.LightPosition[0], - self.LightPosition[1],\
+                          - self.LightPosition[2], 0.0]
+	self.spotDirection = (GLfloat * 4)(*spot_direction)
+	glLightf(self.lightSource, GL_SPOT_CUTOFF, 45.0)
+	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
