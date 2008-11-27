@@ -1,6 +1,9 @@
+import sys
+sys.path.insert(0, "..")
 from ctypes import *
 from pyglet.gl import *
 from switch import switch
+from Vector import *
 
 class Variable:
 
@@ -133,14 +136,14 @@ class ShaderProgram:
                 glUniform2f(u.location, 1, value[0], value[1])
         elif isinstance(value, Vector3):
             if u.type == GL_INT_VEC3 or u.type == GL_BOOL_VEC3:
-                glUniform3i(u.location, 1, value[0], value[1], value[2])
+                glUniform3i(u.location, value[0], value[1], value[2])
             elif u.type == GL_FLOAT_VEC3:
-                glUniform3f(u.location, 1, value[0], value[1], value[2])
+                glUniform3f(u.location, value[0], value[1], value[2])
         elif isinstance(value, Vector4):
             if u.type == GL_INT_VEC4 or u.type == GL_BOOL_VEC4:
-                glUniform4i(u.location, 1, value[0], value[1], value[2], value[3])
+                glUniform4i(u.location, value[0], value[1], value[2], value[3])
             elif u.type == GL_FLOAT_VEC4:
-                glUniform4f(u.location, 1, value[0], value[1], value[2], value[3])
+                glUniform4f(u.location, value[0], value[1], value[2], value[3])
         elif isinstance(value, Matrix3):
             l = []
             if u.type == GL_FLOAT_MAT3:
@@ -164,19 +167,19 @@ class ShaderProgram:
                 glVertexAttrib1i(a.location, value)
         elif isinstance(value, Vector2):
             if a.type == GL_INT_VEC2 or a.type == GL_BOOL_VEC2:
-                glVertexAttrib2i(a.location, 1, value[0], value[1])
+                glVertexAttrib2i(a.location, value[0], value[1])
             elif a.type == GL_FLOAT_VEC2:
-                glVertexAttrib2f(a.location, 1, value[0], value[1])
+                glVertexAttrib2f(a.location, value[0], value[1])
         elif isinstance(value, Vector3):
             if a.type == GL_INT_VEC3 or a.type == GL_BOOL_VEC3:
-                glVertexAttrib3i(a.location, 1, value[0], value[1], value[2])
+                glVertexAttrib3i(a.location, value[0], value[1], value[2])
             elif a.type == GL_FLOAT_VEC3:
-                glVertexAttrib3f(a.location, 1, value[0], value[1], value[2])
+                glVertexAttrib3f(a.location, value[0], value[1], value[2])
         elif isinstance(value, Vector4):
             if a.type == GL_INT_VEC4 or a.type == GL_BOOL_VEC4:
-                glVertexAttrib4i(a.location, 1, value[0], value[1], value[2], value[3])
+                glVertexAttrib4i(a.location, value[0], value[1], value[2], value[3])
             elif a.type == GL_FLOAT_VEC4:
-                glVertexAttrib4f(a.location, 1, value[0], value[1], value[2], value[3])
+                glVertexAttrib4f(a.location, value[0], value[1], value[2], value[3])
 
     def getUniformsAndAttributes(self):
         nameLength = (GLint)(*[])
