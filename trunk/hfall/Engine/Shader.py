@@ -131,9 +131,9 @@ class ShaderProgram:
                 glUniform1i(u.location, value)
         elif isinstance(value, Vector2):
             if u.type == GL_INT_VEC2 or u.type == GL_BOOL_VEC2:
-                glUniform2i(u.location, 1, value[0], value[1])
+                glUniform2i(u.location, value[0], value[1])
             elif u.type == GL_FLOAT_VEC2:
-                glUniform2f(u.location, 1, value[0], value[1])
+                glUniform2f(u.location, value[0], value[1])
         elif isinstance(value, Vector3):
             if u.type == GL_INT_VEC3 or u.type == GL_BOOL_VEC3:
                 glUniform3i(u.location, value[0], value[1], value[2])
