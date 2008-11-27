@@ -50,6 +50,7 @@ class Light(Object):
         glPushMatrix()
         glLoadIdentity()
         glMultMatrix(self.modelView)
+        # glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
         glEnable(self.lightSource)
         glPopMatrix()
 
@@ -73,4 +74,16 @@ class Spotlight(Light):
 	glLightf(self.lightSource, GL_SPOT_CUTOFF, 45.0)
 	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
 	glLightf(self.lightSource, GL_SPOT_EXPONENT, 0.0);
+
+    def LEnable(self):
+        # glMatrixMode(GL_MODELVIEW)
+        glPushMatrix()
+        glLoadIdentity()
+        glMultMatrix(self.modelView)
+        model = glGetMatrix(GL_MODELVIEW_MATRIX)
+        print model
+        glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
+	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
+        glEnable(self.lightSource)
+        glPopMatrix()
 

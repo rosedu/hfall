@@ -46,7 +46,7 @@ class drawer(base.Task):
         #atrium = AddModel.add_model("models/atrium.3ds")
         #AddModel.scale_model(atrium, [0.1, 0.1, 0.1])
 
-        light1 = Light.Light( GL_LIGHT1, \
+        light1 = Light.Spotlight( GL_LIGHT1, \
                     rLightSpecular = [1.0, 1.0, 1.0, 1.0],\
                     rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
                     rLightDiffuse = [1.0, 0.0, 0.0, 1.0],\
