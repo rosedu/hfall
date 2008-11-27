@@ -11,7 +11,7 @@ class Light(Object):
     For light effects.
     
     """
-    def __init__(self, lightSource, rLightAmbient,\
+    def __init__(self, lightSource, rLightSpecular , rLightAmbient,\
                  rLightDiffuse, rLightPosition):
         self.lightSource = lightSource
         self.modelView = Matrix4();
@@ -25,10 +25,12 @@ class Light(Object):
         self.type = "Light"
         self.name = "light" + str(lightSource - GL_LIGHT0)
 	self.LightAmbient = (GLfloat * 4)(*rLightAmbient)
+      	self.LightSpecular = (GLfloat * 4)(*rLightSpecular)
 	self.LightDiffuse = (GLfloat * 4)(*rLightDiffuse)
 	self.LightPosition = (GLfloat * 4)(*rLightPosition)
         glLightfv(self.lightSource, GL_AMBIENT, self.LightAmbient)
         glLightfv(self.lightSource, GL_DIFFUSE, self.LightDiffuse)
+        glLightfv(self.lightSource, GL_SPECULAR, self.LightSpecular)
         glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
         #to be deleted later
         self.q = gluNewQuadric()
@@ -59,9 +61,9 @@ class Light(Object):
 
 class Spotlight(Light):
 
-    def __init__(self, lightSource, rLightAmbient,\
+    def __init__(self, lightSource, rLightSpecular, rLightAmbient,\
                  rLightDiffuse, rLightPosition):
-        Light.__init__(self, lightSource, rLightAmbient,\
+        Light.__init__(self, lightSource, rLightSpecular, rLightAmbient,\
                rLightDiffuse, rLightPosition)
         self.type = "Spotlight"
 	spot_direction = [-self.LightPosition[0], -self.LightPosition[1],\
