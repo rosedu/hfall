@@ -132,7 +132,7 @@ class Render(base.Task):
             glDisable(GL_LIGHT0)
             for light in self._lights:
                 light.LEnable()
-                print light.name, light.type, light.LightDiffuse[:]
+                print light.name, light.type #, light.spotDirection[:]
                 # delete the following line after debugging
                 light.draw()
             # TODO: 3D model drawing           

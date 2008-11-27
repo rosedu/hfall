@@ -62,10 +62,11 @@ class Spotlight(Light):
         Light.__init__(self, lightSource, rLightAmbient,\
                rLightDiffuse, rLightPosition)
         self.type = "Spotlight"
-	spot_direction = [- self.LightPosition[0], - self.LightPosition[1],\
-                          - self.LightPosition[2], 0.0]
-	self.spotDirection = (GLfloat * 4)(*spot_direction)
-	glLightf(self.lightSource, GL_SPOT_CUTOFF, 0.0)
+	spot_direction = [-self.LightPosition[0], -self.LightPosition[1],\
+                          -self.LightPosition[2]]
+        # spot_direction = [-1, -1 ,0]
+	self.spotDirection = (GLfloat * 3)(*spot_direction)
+	glLightf(self.lightSource, GL_SPOT_CUTOFF, 45.0)
 	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
-	glLightf(self.lightSource, GL_SPOT_EXPONENT, 2.0);
+	glLightf(self.lightSource, GL_SPOT_EXPONENT, 0.0);
 
