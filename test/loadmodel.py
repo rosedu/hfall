@@ -50,7 +50,7 @@ class drawer(base.Task):
                     rLightSpecular = [1.0, 1.0, 1.0, 1.0],\
                     rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
                     rLightDiffuse = [1.0, 0.0, 0.0, 1.0],\
-                    rLightPosition = [0.0, 50, -20.0, 1.0])
+                    rLightPosition = [0.0, 90, 0.0, 1.0])
         render.addLight(light1)
         """
         light2 = Light.Light( GL_LIGHT2, \

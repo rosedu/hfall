@@ -47,10 +47,16 @@ class Light(Object):
         #until here - replace in draw with pass
         
     def LEnable(self):
+##        glPushMatrix()
+##        glLoadIdentity()
+##        glMultMatrix(self.modelView)
+##        # glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
+        matrix = glGetMatrix(GL_MODELVIEW_MATRIX)
+        invmodel = matrix.inverse()
         glPushMatrix()
-        glLoadIdentity()
-        glMultMatrix(self.modelView)
-        # glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
+        glMultMatrix(invmodel)
+        #glLoadIdentity()
+        self.LPosition()
         glEnable(self.lightSource)
         glPopMatrix()
 
@@ -72,18 +78,18 @@ class Spotlight(Light):
         # spot_direction = [-1, -1 ,0]
 	self.spotDirection = (GLfloat * 3)(*spot_direction)
 	glLightf(self.lightSource, GL_SPOT_CUTOFF, 45.0)
-	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
+	#glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
 	glLightf(self.lightSource, GL_SPOT_EXPONENT, 0.0);
 
-    def LEnable(self):
-        # glMatrixMode(GL_MODELVIEW)
-        glPushMatrix()
-        glLoadIdentity()
-        glMultMatrix(self.modelView)
-        model = glGetMatrix(GL_MODELVIEW_MATRIX)
-        #print model
-        glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
-	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
-        glEnable(self.lightSource)
-        glPopMatrix()
+##    def LEnable(self):
+##        # glMatrixMode(GL_MODELVIEW)
+##        glPushMatrix()
+##        glLoadIdentity()
+##        glMultMatrix(self.modelView)
+##        model = glGetMatrix(GL_MODELVIEW_MATRIX)
+##        #print model
+##        glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
+##	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
+##        glEnable(self.lightSource)
+##        glPopMatrix()
 

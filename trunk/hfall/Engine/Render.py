@@ -132,6 +132,7 @@ class Render(base.Task):
             glDisable(GL_LIGHT0)
             for light in self._lights:
                 light.LEnable()
+                #light.LPosition()
                 #print light.name, light.type #, light.spotDirection[:]
                 # delete the following line after debugging
                 light.draw()
