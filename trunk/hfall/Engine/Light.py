@@ -38,16 +38,18 @@ class Light(Object):
     
     def draw(self):
         glPushMatrix()
-        glTranslatef(self.LightPosition[0] / self.LightPosition[3],\
-                     self.LightPosition[1] / self.LightPosition[3],\
-                     self.LightPosition[2] / self.LightPosition[3])
         glColor3f(self.LightDiffuse[0], self.LightDiffuse[1], self.LightDiffuse[2])
+        glMultMatrix(self.modelView)
         gluSphere(self.q, 1, 12, 12)
         glPopMatrix()
         #until here - replace in draw with pass
         
     def LEnable(self):
+        glPushMatrix()
+        glLoadIdentity()
+        glMultMatrix(self.modelView)
         glEnable(self.lightSource)
+        glPopMatrix()
 
     def LDisable(self):
         glDisable(self.lightSource)

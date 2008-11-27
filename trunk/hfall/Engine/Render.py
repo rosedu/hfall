@@ -135,7 +135,7 @@ class Render(base.Task):
                 print light.name, light.type #, light.spotDirection[:]
                 # delete the following line after debugging
                 light.draw()
-            # TODO: 3D model drawing           
+            # TODO: 3D model drawing
             glActiveTexture(GL_TEXTURE0)
             glPushMatrix()
             for model in self._3dlist:
