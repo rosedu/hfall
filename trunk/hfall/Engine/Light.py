@@ -81,7 +81,7 @@ class Spotlight(Light):
         glLoadIdentity()
         glMultMatrix(self.modelView)
         model = glGetMatrix(GL_MODELVIEW_MATRIX)
-        print model
+        #print model
         glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
 	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
         glEnable(self.lightSource)

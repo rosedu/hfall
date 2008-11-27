@@ -132,7 +132,7 @@ class Render(base.Task):
             glDisable(GL_LIGHT0)
             for light in self._lights:
                 light.LEnable()
-                print light.name, light.type #, light.spotDirection[:]
+                #print light.name, light.type #, light.spotDirection[:]
                 # delete the following line after debugging
                 light.draw()
             # TODO: 3D model drawing
@@ -276,11 +276,12 @@ class Render(base.Task):
                 print "buffer: ", sbuffer[0], sbuffer[1], sbuffer[2], sbuffer[3]
             else:
                 print "Light: ", choose
-            print ""
             print "buffer content: "
-            for i in range(4 * hits):
-                print sbuffer[i],
-            print ""
+            for i in range(hits):
+                print "Chosen (model): ", sbuffer[4*i + 3]
+                print "name: ", self._3dlist[sbuffer[4*i+3]].name
+                print "\nnext element:"
+            print " "
             return 1
         return 0
 
