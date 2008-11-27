@@ -41,6 +41,7 @@ class Light(Object):
         glTranslatef(self.LightPosition[0] / self.LightPosition[3],\
                      self.LightPosition[1] / self.LightPosition[3],\
                      self.LightPosition[2] / self.LightPosition[3])
+        glColor3f(self.LightDiffuse[0], self.LightDiffuse[1], self.LightDiffuse[2])
         gluSphere(self.q, 1, 12, 12)
         glPopMatrix()
         #until here - replace in draw with pass
@@ -64,7 +65,7 @@ class Spotlight(Light):
 	spot_direction = [- self.LightPosition[0], - self.LightPosition[1],\
                           - self.LightPosition[2], 0.0]
 	self.spotDirection = (GLfloat * 4)(*spot_direction)
-	glLightf(self.lightSource, GL_SPOT_CUTOFF, 45.0)
+	glLightf(self.lightSource, GL_SPOT_CUTOFF, 0.0)
 	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
 	glLightf(self.lightSource, GL_SPOT_EXPONENT, 2.0);
 

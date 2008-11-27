@@ -46,11 +46,16 @@ class drawer(base.Task):
         #atrium = AddModel.add_model("models/atrium.3ds")
         #AddModel.scale_model(atrium, [0.1, 0.1, 0.1])
 
-        light1 = Light.Spotlight( GL_LIGHT1, \
+        light1 = Light.Light( GL_LIGHT1, \
                     rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
-                    rLightDiffuse = [1.0, 0.0, 0.0, 1.0],\
+                    rLightDiffuse = [1.0, 0.0, 0.0, 0.0],\
                     rLightPosition = [0.0, 50, -20.0, 1.0])
         render.addLight(light1)
+        light2 = Light.Light( GL_LIGHT2, \
+                    rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
+                    rLightDiffuse = [0.0, 0.0, 1.0, 0.0],\
+                    rLightPosition = [1.0, 41, 21.0, 1.0])
+        render.addLight(light2)
         #This is an example of terrain rendering
         AddModel.add_model("models/machinegun/3dm-q3machinegun.3ds", [0, 10, 10])
         terrain = Terrain.Terrain()

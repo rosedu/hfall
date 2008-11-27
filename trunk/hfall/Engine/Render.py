@@ -123,6 +123,9 @@ class Render(base.Task):
             self.ogl.rotate(self.angle.x, Mathbase.Vector3D(1,0,0)) 
             self.ogl.rotate(self.angle.y, Mathbase.Vector3D(0,1,0)) 
             self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1))
+
+            #for light in self._lights:
+            #    light.draw()
             
             self.ogl.enableShadows(self._3dlist)
             glEnable(GL_LIGHTING)
