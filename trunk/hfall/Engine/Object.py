@@ -26,10 +26,11 @@ def invMatrix(m):
 
 class Object:
 
-    def __init__(self, _type):
+    def __init__(self, _type, _name):
         self.modelView = Matrix4.identity()
         self.projection = Matrix4.identity()
         self.type = _type
+        self.name = _name
         """
         what type of object this is : model, camera, light source
         """

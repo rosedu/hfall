@@ -48,7 +48,7 @@ class drawer(base.Task):
 
         light1 = Light.Spotlight( GL_LIGHT1, \
                     rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
-                    rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
+                    rLightDiffuse = [1.0, 0.0, 0.0, 1.0],\
                     rLightPosition = [0.0, 50, -20.0, 1.0])
         render.addLight(light1)
         #This is an example of terrain rendering

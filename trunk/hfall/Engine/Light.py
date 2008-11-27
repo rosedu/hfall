@@ -23,6 +23,7 @@ class Light(Object):
         self.modelView[2][2] = 1
         self.modelView[3][3] = 1
         self.type = "Light"
+        self.name = "light" + str(lightSource - GL_LIGHT0)
 	self.LightAmbient = (GLfloat * 4)(*rLightAmbient)
 	self.LightDiffuse = (GLfloat * 4)(*rLightDiffuse)
 	self.LightPosition = (GLfloat * 4)(*rLightPosition)
@@ -59,8 +60,11 @@ class Spotlight(Light):
                  rLightDiffuse, rLightPosition):
         Light.__init__(self, lightSource, rLightAmbient,\
                rLightDiffuse, rLightPosition)
+        self.type = "Spotlight"
 	spot_direction = [- self.LightPosition[0], - self.LightPosition[1],\
                           - self.LightPosition[2], 0.0]
 	self.spotDirection = (GLfloat * 4)(*spot_direction)
 	glLightf(self.lightSource, GL_SPOT_CUTOFF, 45.0)
 	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
+	glLightf(self.lightSource, GL_SPOT_EXPONENT, 2.0);
+
