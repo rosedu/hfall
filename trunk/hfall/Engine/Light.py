@@ -78,7 +78,7 @@ class Spotlight(Light):
         # spot_direction = [-1, -1 ,0]
 	self.spotDirection = (GLfloat * 3)(*spot_direction)
 	glLightf(self.lightSource, GL_SPOT_CUTOFF, 45.0)
-	#glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
+	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
 	glLightf(self.lightSource, GL_SPOT_EXPONENT, 0.0);
 
 ##    def LEnable(self):

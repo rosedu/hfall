@@ -1,4 +1,5 @@
 import sys
+import traceback
 import pyglet
 from pyglet.gl import *
 sys.path.insert(0, "../trunk/hfall")
@@ -50,7 +51,7 @@ class drawer(base.Task):
                     rLightSpecular = [1.0, 1.0, 1.0, 1.0],\
                     rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
                     rLightDiffuse = [1.0, 0.0, 0.0, 1.0],\
-                    rLightPosition = [0.0, 90, 0.0, 1.0])
+                    rLightPosition = [0.0, 40, 0.0, 1.0])
         render.addLight(light1)
         """
         light2 = Light.Light( GL_LIGHT2, \
@@ -61,7 +62,7 @@ class drawer(base.Task):
         render.addLight(light2)
         """
         #This is an example of terrain rendering
-        AddModel.add_model("models/machinegun/3dm-q3machinegun.3ds", [0, 10, 10])
+        AddModel.add_model("models/machinegun/mg.3ds", [0, 10, 10])
         terrain = Terrain.Terrain()
         patch = Terrain.TerrainPatch(x_origin = -64)
         patch.opreparebuffers()
@@ -70,7 +71,7 @@ class drawer(base.Task):
         hf = Terrain.HeightField()
         for x in range(65):
             for y in range(65):
-                hf.setHeight(x, y, math.sin(y + 5 * x))
+                hf.setHeight(x, y, 10* math.sin(x/13.0))
         patch = Terrain.TerrainPatch(hfield = hf)
         patch.opreparebuffers()
         patch.makeVisible()
