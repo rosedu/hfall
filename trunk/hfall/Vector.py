@@ -166,6 +166,8 @@ class Vector3:
                self.z * other.z
 
     def normalize(self):
+        #import traceback
+        #traceback.print_stack()
         l = self.length()
         self.x /= l
         self.y /= l

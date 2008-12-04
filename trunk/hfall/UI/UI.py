@@ -34,10 +34,10 @@ global_UI = None
 def on_mouse_drag(x,y,dx,dy,buttons,modifiers):
   	factor=3
   	if global_UI.mouse_enabled==True and buttons==window.mouse.RIGHT:
-		global_render.rotate(factor,0,0,dx)
+		global_render.camera.rotate(0,0,dx,factor)
   		pass
 	if global_UI.mouse_enabled==True and buttons==window.mouse.LEFT:
-	  	global_render.rotate(factor,-dy,dx,0)
+	  	global_render.camera.rotate(-dy,dx,0,factor)
 
 
 def on_mouse_motion(x,y,dx,dy):
@@ -233,7 +233,8 @@ def engine_get(symbol,modifiers):
 		else:
 			global_UI.load_full_2DUI()
 	elif symbol==window.key.A:
-		global_render.camera.translate(0,-1,-1)
+                pass
+		#global_render.camera.translate(0,-1,-1)
         elif symbol==window.key.QUOTELEFT:
                 global_UI.switch_focus()
   	elif symbol==window.key.M:
