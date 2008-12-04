@@ -136,7 +136,7 @@ class OGL:
 	       
     def activate_model(self):
   	glMatrixMode(GL_MODELVIEW)
-  	glLoadIdentity()
+  	# glLoadIdentity()
   	# self.light1.LPosition()
 
     # here we should define different functions to change OpenGL state

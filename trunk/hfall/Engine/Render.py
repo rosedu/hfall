@@ -22,6 +22,7 @@ import Mathbase
 import OGLbase
 import Light
 import Fog
+import Camera
 import Terrain
 import base
 import Wires
@@ -78,7 +79,7 @@ class Render(base.Task):
         self.ogl = OGLbase.OGL(self.w, width, height, near, far, fov, clearcolor)
         self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
         self.ogl.activate_perspective(self.w.width,self.w.height)
-
+        self.camera = Camera.Camera(posx,posy,posz);
         
     def start(self, kernel):
         """Starting the rendering module"""
@@ -117,13 +118,14 @@ class Render(base.Task):
             
             # TODO: camera manipulation
             # For dodecadron testing
+            '''
             point_to_translate = Mathbase.Vector3D(self.transx,\
                                 self.transy, self.transz)
             self.ogl.translate( point_to_translate)
             self.ogl.rotate(self.angle.x, Mathbase.Vector3D(1,0,0)) 
             self.ogl.rotate(self.angle.y, Mathbase.Vector3D(0,1,0)) 
             self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1))
-
+            '''
             #for light in self._lights:
             #    light.draw()
             

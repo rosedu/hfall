@@ -233,7 +233,7 @@ def engine_get(symbol,modifiers):
 		else:
 			global_UI.load_full_2DUI()
 	elif symbol==window.key.A:
-		global_render.ogl.translate(Mathbase.Vector3D(0,-1,-1))
+		global_render.camera.translate(0,-1,-1)
         elif symbol==window.key.QUOTELEFT:
                 global_UI.switch_focus()
   	elif symbol==window.key.M:
@@ -260,16 +260,23 @@ def check_keyboard(keyboard):
   	if global_UI.input_handler=="Engine":
         	if keyboard[key.W]:
                 	global_render.transz+=1
+                	global_render.camera.translate(0, 0, 1)
         	elif keyboard[key.S]:
                 	global_render.transz-=1
+                	global_render.camera.translate(0, 0, -1)
         	elif keyboard[key.A]:
                 	global_render.transx+=1
+                	global_render.camera.translate(1, 0, 0)
         	elif keyboard[key.D]:
                 	global_render.transx-=1
+                	global_render.camera.translate(-1, 0, 0)
    		elif keyboard[key.Q]:
    			global_render.transy+=1
+                	global_render.camera.translate(0, 1, 0)
    		elif keyboard[key.E]:
    			global_render.transy-=1
+                	global_render.camera.translate(0, -1, 0)
+ 	        
    	if global_UI.input_handler=="Console":
    		global_UI.console.read_hold(keyboard)
 class UI(Task):
