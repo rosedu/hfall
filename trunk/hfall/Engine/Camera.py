@@ -65,8 +65,13 @@ class Camera(Object):
         glMatrixMode(GL_MODELVIEW)
         glLoadMatrix(self.modelView)
         '''
-        glTranslatef(-self.position.x, -self.position.y,-self.position.z)
-        glRotatef(angle, vx, vy, vz)
+        glMatrixMode(GL_MODELVIEW)
+        print self.modelView
+        # glTranslatef(self.position.x, self.position.y, self.position.z)
         glTranslatef(self.position.x, self.position.y, self.position.z)
+        glRotatef(angle, vx, vy, vz)
+        glTranslatef(-self.position.x, -self.position.y,-self.position.z)
+        # glTranslatef(-self.position.x, -self.position.y,-self.position.z)
         self.modelView = glGetMatrix(GL_MODELVIEW_MATRIX)
+        print self.modelView
 
