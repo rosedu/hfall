@@ -81,6 +81,11 @@ class Spotlight(Light):
 	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
 	glLightf(self.lightSource, GL_SPOT_EXPONENT, 0.0);
 
+    def LPosition(self):
+        glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
+        glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
+        
+
 ##    def LEnable(self):
 ##        # glMatrixMode(GL_MODELVIEW)
 ##        glPushMatrix()
