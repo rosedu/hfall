@@ -12,7 +12,7 @@ class Camera(Object):
     For Camera control.
     
     """
-    def __init__(self, posx, posy, posz):
+    def __init__(self, posx = 0, posy = 0, posz = 0):
         self.modelView = Matrix4()
         self.position = Vector3(posx, posy, posz)
         self.modelView[0][3] = -posx
@@ -24,7 +24,7 @@ class Camera(Object):
         self.modelView[3][3] = 1
         self.enabled = False
         self.pitch = self.yaw = self.roll = 0;
-
+        
     def enable(self):
         self.enabled = True
         glMatrixMode(GL_MODELVIEW)
@@ -92,3 +92,23 @@ class Camera(Object):
         if (self.enabled):
             glMatrixMode(GL_MODELVIEW)
             glLoadMatrix(self.modelView)
+
+    def setPosition(self, px, py, pz):
+    	self.position.x = px
+	self.position.y = py
+	self.position.z = pz
+	self.modelView[0][3] = -px*self.modelView[0][0] - py*self.modelView[0][1] - pz*self.modelView[0][2]
+	self.modelView[1][3] = -px*self.modelView[1][0] - py*self.modelView[1][1] - pz*self.modelView[1][2]
+	self.modelView[2][3] = -px*self.modelView[2][0] - py*self.modelView[2][1] - pz*self.modelView[2][2]
+        if (self.enabled):
+            glMatrixMode(GL_MODELVIEW)
+            glLoadMatrix(self.modelView)
+
+    def upVector(self):
+	return Vector3(self.modelView[0][1], self.modelView[1][1], self.modelView[2][1])
+	
+    def viewVector(self):
+	return Vector3(-self.modelView[0][2], -self.modelView[1][2], -self.modelView[2][2])
+
+    def rightVector(self):
+	return Vector3(self.modelView[0][0], self.modelView[1][0], self.modelView[2][0])
