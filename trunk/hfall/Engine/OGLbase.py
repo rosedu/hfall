@@ -19,6 +19,7 @@ from pyglet.gl import *
 from glcalls import *
 from Vector import *
 from Matrix import *
+from Camera import *
 
 class GLInfo:
     def __init__(self):
@@ -192,21 +193,15 @@ class OGL:
             glTexCoordPointer(2, GL_FLOAT, 0, texels)
             glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 
-    def createShadowMap(self, models, light):
+    def createShadowMap(self, models, light, camera):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glMatrixMode(GL_PROJECTION)
-        glPushMatrix()
-        glLoadIdentity()
-	gluPerspective(60.0, 1.0, 2.0, 100.0)
-	lightProjectionMatrix = glGetMatrix(GL_PROJECTION_MATRIX)
-	
-	glMatrixMode(GL_MODELVIEW)
-	glPushMatrix()
-	lightPos = (GLfloat * 4)(*[])
-	glGetLightfv( GL_LIGHT0 + light, GL_POSITION, lightPos)
-	glLoadIdentity()
-	gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+        camera.disable()
+        
+        lcamera = Camera(light.LightPosition[0], light.LightPosition[1], light.LightPosition[2])
+        lcamera.lookAt(light.LightPosition[0] + light.spotDirection[0], light.LightPosition[1] + light.spotDirection[1], light.LightPosition[2] + light.spotDirection[2])
+        lcamera.enable()
 	lightViewMatrix = glGetMatrix(GL_MODELVIEW_MATRIX)
+	lightProjectionMatrix = glGetMatrix(GL_PROJECTION_MATRIX)
 	
 	glViewport(0, 0, self.shadowMap.width, self.shadowMap.height)
 	glEnable(GL_CULL_FACE)
@@ -227,14 +222,11 @@ class OGL:
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 	glViewport(0, 0, self.w.width, self.w.height)
 
-        glMatrixMode(GL_PROJECTION)
-        glPopMatrix()
-        glMatrixMode(GL_MODELVIEW)
-        glPopMatrix()
+        camera.enable()
 	return lightProjectionMatrix*lightViewMatrix
 
-    def enableShadows(self, models):
-        lightMVP = self.createShadowMap(models, 1)
+    def enableShadows(self, models, lights, camera):
+        lightMVP = self.createShadowMap(models, lights[0], camera)
         self.configureShadowMap(2, lightMVP, self.shadowMap)
 
     def configureShadowMap(self, unit, lightMVP, shadowMap):
