@@ -69,9 +69,9 @@ class Light(Object):
 class Spotlight(Light):
 
     def __init__(self, lightSource, rLightSpecular, rLightAmbient,\
-                 rLightDiffuse, rLightPosition):
+                 rLightDiffuse, rLightPosition, ca = 1.0, la = 0.0, qa = 0.0):
         Light.__init__(self, lightSource, rLightSpecular, rLightAmbient,\
-               rLightDiffuse, rLightPosition)
+               rLightDiffuse, rLightPosition, ca, la, qa)
         self.type = "Spotlight"
 	spot_direction = [-self.LightPosition[0], -self.LightPosition[1],\
                           -self.LightPosition[2]]

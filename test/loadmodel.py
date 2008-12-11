@@ -51,7 +51,8 @@ class drawer(base.Task):
                     rLightSpecular = [1.0, 1.0, 1.0, 1.0],\
                     rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
                     rLightDiffuse = [1.0, 0.0, 0.0, 1.0],\
-                    rLightPosition = [0.0, 20, 0.0, 1.0])
+                    rLightPosition = [0.0, 20, 0.0, 1.0],\
+                                  ca = 1.0, la = 0.01, qa = 0.0)
         light1.enableAttenuation()
         render.addLight(light1)
         '''
