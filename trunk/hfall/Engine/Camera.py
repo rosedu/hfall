@@ -22,9 +22,16 @@ class Camera(Object):
         self.modelView[1][1] = 1
         self.modelView[2][2] = -1
         self.modelView[3][3] = 1
+        self.enabled = False
         self.pitch = self.yaw = self.roll = 0;
+
+    def enable(self):
+        self.enabled = True
         glMatrixMode(GL_MODELVIEW)
         glLoadMatrix(self.modelView)
+
+    def disable(self):
+        self.enabled = False
 
     def translate(self, tranx, trany, tranz):
        	self.modelView[0][3] -= tranx
@@ -34,8 +41,9 @@ class Camera(Object):
 	self.position.y = -self.modelView[0][1]*self.modelView[0][3] - self.modelView[1][1]*self.modelView[1][3] - self.modelView[2][1]*self.modelView[2][3]
 	self.position.z = -self.modelView[0][2]*self.modelView[0][3] - self.modelView[1][2]*self.modelView[1][3] - self.modelView[2][2]*self.modelView[2][3]
 
-        glMatrixMode(GL_MODELVIEW)
-        glLoadMatrix(self.modelView)
+        if (self.enabled):
+            glMatrixMode(GL_MODELVIEW)
+            glLoadMatrix(self.modelView)
 
     def rotate(self, vx, vy, vz, angle):
         self.yaw += vy*angle;
@@ -72,5 +80,15 @@ class Camera(Object):
         self.modelView[1][3] = -self.position.x*self.modelView[1][0] - self.position.y*self.modelView[1][1] - self.position.z*self.modelView[1][2];
         self.modelView[2][3] = -self.position.x*self.modelView[2][0] - self.position.y*self.modelView[2][1] - self.position.z*self.modelView[2][2];
 
-        glMatrixMode(GL_MODELVIEW)
-        glLoadMatrix(self.modelView)
+        if (self.enabled):
+            glMatrixMode(GL_MODELVIEW)
+            glLoadMatrix(self.modelView)
+
+    def lookAt(self, vx, vy, vz):
+        f = Vector3(vx,vy,vz) - self.position
+        f.normalize()
+        self.pitch = self.yaw = 0
+        self.rotate(asin(f.y), atan2(f.x, f.z), 0, 1)
+        if (self.enabled):
+            glMatrixMode(GL_MODELVIEW)
+            glLoadMatrix(self.modelView)

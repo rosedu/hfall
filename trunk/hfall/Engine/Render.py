@@ -79,7 +79,10 @@ class Render(base.Task):
         self.ogl = OGLbase.OGL(self.w, width, height, near, far, fov, clearcolor)
         self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
         self.ogl.activate_perspective(self.w.width,self.w.height)
-        self.camera = Camera.Camera(posx,posy,posz);
+        self.camera = Camera.Camera(posx,posy,posz)
+        self.camera.enable()
+        #self.camera.lookAt(0,100,0)
+        
         
     def start(self, kernel):
         """Starting the rendering module"""

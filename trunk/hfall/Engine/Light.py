@@ -12,7 +12,7 @@ class Light(Object):
     
     """
     def __init__(self, lightSource, rLightSpecular , rLightAmbient,\
-                 rLightDiffuse, rLightPosition):
+                 rLightDiffuse, rLightPosition, ca = 1.0, la = 0.0, qa = 0.0):
         self.lightSource = lightSource
         self.modelView = Matrix4();
         self.modelView[0][3] = rLightPosition[0]
@@ -28,6 +28,9 @@ class Light(Object):
       	self.LightSpecular = (GLfloat * 4)(*rLightSpecular)
 	self.LightDiffuse = (GLfloat * 4)(*rLightDiffuse)
 	self.LightPosition = (GLfloat * 4)(*rLightPosition)
+	self.constantAttenuation = (GLfloat)( ca)
+        self.linearAttenuation = (GLfloat)( la)
+        self.quadraticAttenuation = (GLfloat)( qa )
         glLightfv(self.lightSource, GL_AMBIENT, self.LightAmbient)
         glLightfv(self.lightSource, GL_DIFFUSE, self.LightDiffuse)
         glLightfv(self.lightSource, GL_SPECULAR, self.LightSpecular)
@@ -37,7 +40,12 @@ class Light(Object):
 
     def __del__(self):
         gluDeleteQuadric(self.q)
-    
+
+    def enableAttenuation(self):
+        glLightfv(self.lightSource, GL_CONSTANT_ATTENUATION, self.constantAttenuation)
+        glLightfv(self.lightSource, GL_LINEAR_ATTENUATION, self.linearAttenuation)
+        glLightfv(self.lightSource, GL_QUADRATIC_ATTENUATION, self.quadraticAttenuation)
+        
     def draw(self):
         glPushMatrix()
         glColor3f(self.LightDiffuse[0], self.LightDiffuse[1], self.LightDiffuse[2])
@@ -47,18 +55,10 @@ class Light(Object):
         #until here - replace in draw with pass
         
     def LEnable(self):
-##        glPushMatrix()
-##        glLoadIdentity()
-##        glMultMatrix(self.modelView)
-##        # glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
-        # matrix = glGetMatrix(GL_MODELVIEW_MATRIX)
-        # invmodel = matrix.inverse()
-        # glPushMatrix()
-        # glMultMatrix(invmodel)
-        #glLoadIdentity()
+
         self.LPosition()
         glEnable(self.lightSource)
-        # glPopMatrix()
+
 
     def LDisable(self):
         glDisable(self.lightSource)
@@ -86,15 +86,4 @@ class Spotlight(Light):
         glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
         
 
-##    def LEnable(self):
-##        # glMatrixMode(GL_MODELVIEW)
-##        glPushMatrix()
-##        glLoadIdentity()
-##        glMultMatrix(self.modelView)
-##        model = glGetMatrix(GL_MODELVIEW_MATRIX)
-##        #print model
-##        glLightfv(self.lightSource, GL_POSITION, self.LightPosition)
-##	glLightfv(self.lightSource, GL_SPOT_DIRECTION, self.spotDirection)
-##        glEnable(self.lightSource)
-##        glPopMatrix()
 
