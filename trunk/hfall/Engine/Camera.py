@@ -15,63 +15,62 @@ class Camera(Object):
     def __init__(self, posx, posy, posz):
         self.modelView = Matrix4()
         self.position = Vector3(posx, posy, posz)
-        self.modelView[0][3] = posx
+        self.modelView[0][3] = -posx
         self.modelView[1][3] = -posy
         self.modelView[2][3] = posz
-        self.modelView[0][0] = -1
+        self.modelView[0][0] = 1
         self.modelView[1][1] = 1
         self.modelView[2][2] = -1
         self.modelView[3][3] = 1
+        self.pitch = self.yaw = self.roll = 0;
         glMatrixMode(GL_MODELVIEW)
         glLoadMatrix(self.modelView)
 
     def translate(self, tranx, trany, tranz):
-        self.position += Vector3(tranx, trany, tranz)
-        m = Matrix4([1, 0, 0, -tranx, \
-            			   0, 1, 0, -trany, \
-        			   0, 0, 1, -tranz, \
-        			   0, 0, 0, 1]);
+       	self.modelView[0][3] -= tranx
+       	self.modelView[1][3] -= trany
+       	self.modelView[2][3] += tranz
+	self.position.x = -self.modelView[0][0]*self.modelView[0][3] - self.modelView[1][0]*self.modelView[1][3] - self.modelView[2][0]*self.modelView[2][3]
+	self.position.y = -self.modelView[0][1]*self.modelView[0][3] - self.modelView[1][1]*self.modelView[1][3] - self.modelView[2][1]*self.modelView[2][3]
+	self.position.z = -self.modelView[0][2]*self.modelView[0][3] - self.modelView[1][2]*self.modelView[1][3] - self.modelView[2][2]*self.modelView[2][3]
+
         glMatrixMode(GL_MODELVIEW)
-        self.modelView *= m;
         glLoadMatrix(self.modelView)
 
     def rotate(self, vx, vy, vz, angle):
-        '''
-        v = Vector3(vx, vy, vz)
-        print v
-        v.normalize()
-        c = cos(angle)
-        s = sin(angle)
-        r = 12 * [0]
-        r[0] = v.x*v.x*(1-c) + c
-        r[1] = v.y*v.x*(1-c) + v.z*s
-        r[2] = v.x*v.z*(1-c) - v.y*s
-        r[3] = r[0] * self.position.x + r[1] * self.position.y + r[2]*self.position.z - self.position.x
+        self.yaw += vy*angle;
+        self.roll += vz*angle;
+        self.pitch += vx*angle;
 
-        r[4] = v.x*v.y*(1-c) - v.z*s
-        r[5] = v.y*v.y*(1-c) + c
-        r[6] = v.y*v.z*(1-c) + v.x*s
-        r[7] = r[4] * self.position.x + r[5] * self.position.y + r[6]*self.position.z - self.position.y
+        c1 = cos(self.pitch);
+        s1 = sin(self.pitch);
+        c2 = cos(-self.yaw);
+        s2 = sin(-self.yaw);
+        c3 = cos(self.roll);
+        s3 = sin(self.roll);
+                        
+        X = Matrix4([1,  0,  0,  0, \
+                    0,  c1, s1, 0, \
+                    0, -s1, c1, 0, \
+                    0,  0,  0,  1])
+        Y = Matrix4([c2, 0, -s2, 0, \
+                    0,  1,  0,  0, \
+                    s2, 0,  c2, 0, \
+                    0,  0,  0,  1])
+        Z = Matrix4([c3, s3, 0, 0, \
+                    -s3, c3, 0, 0, \
+                    0,	0, 1, 0, \
+                    0,	0, 0, 1])
+        I = Matrix4 ([1, 0,  0, 0, \
+                    0, 1,  0, 0, \
+                    0, 0, -1, 0, 
+                    0, 0,  0, 1])
+                           
+        self.modelView = X*Y*Z*I;
 
-        r[8] = v.x*v.z*(1-c) + v.y*s
-        r[9] = v.y*v.z*(1-c) - v.x*s
-        r[10] = v.z*v.z*(1-c) + c
-        r[11] = r[8] * self.position.x + r[9] * self.position.y + r[10]*self.position.z - self.position.z
-        m = Matrix4([r[0], r[1], r[2],  r[3],  \
-			   r[4], r[5], r[6],  r[7],  \
-			   r[8], r[9], r[10], r[11], \
-			   0,	 0,	   0,	  1]);
-        self.modelView *= m;
+        self.modelView[0][3] = -self.position.x*self.modelView[0][0] - self.position.y*self.modelView[0][1] - self.position.z*self.modelView[0][2];
+        self.modelView[1][3] = -self.position.x*self.modelView[1][0] - self.position.y*self.modelView[1][1] - self.position.z*self.modelView[1][2];
+        self.modelView[2][3] = -self.position.x*self.modelView[2][0] - self.position.y*self.modelView[2][1] - self.position.z*self.modelView[2][2];
+
         glMatrixMode(GL_MODELVIEW)
         glLoadMatrix(self.modelView)
-        '''
-        glMatrixMode(GL_MODELVIEW)
-        print self.modelView
-        # glTranslatef(self.position.x, self.position.y, self.position.z)
-        glTranslatef(self.position.x, self.position.y, self.position.z)
-        glRotatef(angle, vx, vy, vz)
-        glTranslatef(-self.position.x, -self.position.y,-self.position.z)
-        # glTranslatef(-self.position.x, -self.position.y,-self.position.z)
-        self.modelView = glGetMatrix(GL_MODELVIEW_MATRIX)
-        print self.modelView
-

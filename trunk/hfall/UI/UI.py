@@ -32,12 +32,12 @@ global_render = None
 global_UI = None
 
 def on_mouse_drag(x,y,dx,dy,buttons,modifiers):
-  	factor=3
+  	factor = 0.001
   	if global_UI.mouse_enabled==True and buttons==window.mouse.RIGHT:
 		global_render.camera.rotate(0,0,dx,factor)
   		pass
 	if global_UI.mouse_enabled==True and buttons==window.mouse.LEFT:
-	  	global_render.camera.rotate(-dy,dx,0,factor)
+	  	global_render.camera.rotate(dy,dx,0,factor)
 
 
 def on_mouse_motion(x,y,dx,dy):
@@ -266,11 +266,11 @@ def check_keyboard(keyboard):
                 	global_render.transz-=1
                 	global_render.camera.translate(0, 0, -1)
         	elif keyboard[key.A]:
-                	global_render.transx+=1
-                	global_render.camera.translate(1, 0, 0)
-        	elif keyboard[key.D]:
                 	global_render.transx-=1
                 	global_render.camera.translate(-1, 0, 0)
+        	elif keyboard[key.D]:
+                	global_render.transx+=1
+                	global_render.camera.translate(1, 0, 0)
    		elif keyboard[key.Q]:
    			global_render.transy+=1
                 	global_render.camera.translate(0, 1, 0)
