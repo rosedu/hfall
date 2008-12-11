@@ -51,16 +51,16 @@ class drawer(base.Task):
                     rLightSpecular = [1.0, 1.0, 1.0, 1.0],\
                     rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
                     rLightDiffuse = [1.0, 0.0, 0.0, 1.0],\
-                    rLightPosition = [0.0, 40, 0.0, 1.0])
+                    rLightPosition = [0.0, 20, 0.0, 1.0])
         render.addLight(light1)
-        """
-        light2 = Light.Light( GL_LIGHT2, \
+        
+        light2 = Light.Spotlight( GL_LIGHT2, \
                     rLightSpecular = [1.0, 1.0, 1.0, 1.0],\
                     rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
                     rLightDiffuse = [0.0, 0.0, 1.0, 1.0],\
-                    rLightPosition = [0.0, 50, -20.0, 1.0])
+                    rLightPosition = [0.0, 30, -10.0, 1.0])
         render.addLight(light2)
-        """
+        
         #This is an example of terrain rendering
         AddModel.add_model("models/machinegun/3dm-q3machinegun.3ds", [0, 10, 10])
         terrain = Terrain.Terrain()
