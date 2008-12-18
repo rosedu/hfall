@@ -46,35 +46,22 @@ class Camera(Object):
             glLoadMatrix(self.modelView)
 
     def rotate(self, vx, vy, vz, angle):
-        self.yaw += vy*angle;
-        self.roll += vz*angle;
-        self.pitch += vx*angle;
+        self.yaw += vy*angle
+        self.roll += vz*angle
+        self.pitch += vx*angle
 
-        c1 = cos(self.pitch);
-        s1 = sin(self.pitch);
-        c2 = cos(-self.yaw);
-        s2 = sin(-self.yaw);
-        c3 = cos(self.roll);
-        s3 = sin(self.roll);
-                        
-        X = Matrix4([1,  0,  0,  0, \
-                    0,  c1, s1, 0, \
-                    0, -s1, c1, 0, \
-                    0,  0,  0,  1])
-        Y = Matrix4([c2, 0, -s2, 0, \
-                    0,  1,  0,  0, \
-                    s2, 0,  c2, 0, \
-                    0,  0,  0,  1])
-        Z = Matrix4([c3, s3, 0, 0, \
-                    -s3, c3, 0, 0, \
-                    0,	0, 1, 0, \
-                    0,	0, 0, 1])
-        I = Matrix4 ([1, 0,  0, 0, \
-                    0, 1,  0, 0, \
-                    0, 0, -1, 0, 
-                    0, 0,  0, 1])
+        c1 = cos(self.pitch)
+        s1 = sin(self.pitch)
+        c2 = cos(-self.yaw)
+        s2 = sin(-self.yaw)
+        c3 = cos(self.roll)
+        s3 = sin(self.roll)
                            
-        self.modelView = X*Y*Z*I;
+        #self.modelView = X*Y*Z*I;
+        self.modelView = Matrix4([c2 * c3, c2 * s3, s2, 0,\
+                                  s1 * s2 * c3 - c1 * s3, s1 * s2 * s3 + c1 * c3, -s1 * c2, 0,\
+                                  c1 * s2 * c3 + s1 * s3, c1 * s2 * s3 - s1 * c3, -c1 * c2, 0,\
+                                  0, 0, 0, 1])
 
         self.modelView[0][3] = -self.position.x*self.modelView[0][0] - self.position.y*self.modelView[0][1] - self.position.z*self.modelView[0][2];
         self.modelView[1][3] = -self.position.x*self.modelView[1][0] - self.position.y*self.modelView[1][1] - self.position.z*self.modelView[1][2];
