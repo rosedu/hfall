@@ -13,7 +13,7 @@ void main()
 	
 	for(int i = 1; i < gl_MaxLights; i++)
 	{
-		if(i <= 1)
+		if(i <= numLights)
 		{
 			vec3 L = normalize(gl_LightSource[i].position.xyz - v); 
 			

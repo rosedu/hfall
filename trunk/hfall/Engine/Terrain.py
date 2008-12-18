@@ -131,6 +131,7 @@ class TerrainPatch:
         glPopMatrix()
 
     def preparebuffers(self):
+        #deprecated
         self.list = glGenLists(1)
         glDisable(GL_CULL_FACE)
         glNewList(self.list, GL_COMPILE)
@@ -166,6 +167,7 @@ class TerrainPatch:
             glPopMatrix()
 
     def render(self):
+        #deprecated
         glPushMatrix()
         glTranslatef(self.x, self.y, 0)
         glCallList(self.list)

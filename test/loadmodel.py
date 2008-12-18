@@ -49,21 +49,21 @@ class drawer(base.Task):
 
         light1 = Light.Spotlight( GL_LIGHT1, \
                     rLightSpecular = [1.0, 1.0, 1.0, 1.0],\
-                    rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
-                    rLightDiffuse = [1.0, 1.0, 1.0, 1.0],\
+                    rLightAmbient = [.9, .9, .9, 1.0],\
+                    rLightDiffuse = [1.0, 0.0, 0.0, 1.0],\
                     rLightPosition = [0.0, 38, -10.0, 1.0],\
                                   ca = 1.0, la = 0.01, qa = 0.0)
         light1.enableAttenuation()
         render.addLight(light1)
-        '''
-        light2 = Light.Spotlight( GL_LIGHT2, \
+        
+        light2 = Light.Light( GL_LIGHT2, \
                     rLightSpecular = [1.0, 1.0, 1.0, 1.0],\
                     rLightAmbient = [1.9, 1.9, 1.9, 1.9],\
                     rLightDiffuse = [0.0, 0.0, 1.0, 1.0],\
                     rLightPosition = [0.0, 30, -10.0, 1.0])
         light2.enableAttenuation()
         render.addLight(light2)
-        '''
+        #'''
         #This is an example of terrain rendering
         AddModel.add_model("models/machinegun/3dm-q3machinegun.3ds", [0, 10, 10])
         terrain = Terrain.Terrain()
@@ -99,7 +99,7 @@ class drawer(base.Task):
     def name(self):
         return "drawer"
 
-render = Render.Render(800, 600, posx = 0, posy = 0, posz = -100, far = 10000)
+render = Render.Render(800, 600, posx = 0, posy = 0, posz = 0, far = 10000)
 hfk.insert(drawer())
 hfk.insert(render)
 hfk.insert(UI(render))
