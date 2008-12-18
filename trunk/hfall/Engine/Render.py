@@ -17,6 +17,8 @@ from pyglet.gl import *
 from pyglet import window
 from pyglet import clock
 from pyglet import font
+from Shader import *
+from Vector import *
 
 import Mathbase
 import OGLbase
@@ -81,6 +83,17 @@ class Render(base.Task):
         self.ogl.activate_perspective(self.w.width,self.w.height)
         self.camera = Camera.Camera(posx,posy,posz)
         self.camera.enable()
+
+        v = Shader(None, GL_VERTEX_SHADER)
+        v.loadShader("vertex.vs")
+        print v.getInfoLog()
+
+        f = Shader(None, GL_FRAGMENT_SHADER)
+        f.loadShader("fragment.fs")
+        print f.getInfoLog()
+
+        self.program = ShaderProgram([v, f])
+        print self.program.getInfoLog()
         
     def start(self, kernel):
         """Starting the rendering module"""
@@ -131,6 +144,7 @@ class Render(base.Task):
             #    light.draw()
             
             self.ogl.enableShadows(self._3dlist, self._lights, self.camera)
+            
             glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)
             for light in self._lights:
@@ -139,6 +153,10 @@ class Render(base.Task):
                 #print light.name, light.type #, light.spotDirection[:]
                 # delete the following line after debugging
                 light.draw()
+
+            self.program.enable()
+            self.program.setUniform("numLights", len(self._lights))
+            
             # TODO: 3D model drawing
             glActiveTexture(GL_TEXTURE0)
             glPushMatrix()
@@ -148,10 +166,22 @@ class Render(base.Task):
             glPopMatrix()
             # TODO: special effects here
             # TODO: save openGL state here
+
+            ambient = (GLfloat * 4)(*[0.3,0.3,0.3,1.0])
+            diffuse = (GLfloat * 4)(*[1.0,0.0,0.0,1.0])
+            specular = (GLfloat * 4)(*[1.0,1.0,1.0,1.0])
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient)
+            glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse)
+            glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular)
+            glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 30.0)
+            q = gluNewQuadric()
+            gluSphere(q, 1, 100, 100)
             
             #drawing terrain
             if self.terrain is not None:
                 self.terrain.render()
+
+            self.program.disable()
                 
             glDisable(GL_TEXTURE_2D)
   	    glDisable(GL_LIGHTING)
