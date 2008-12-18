@@ -32,7 +32,7 @@ global_render = None
 global_UI = None
 
 def on_mouse_drag(x,y,dx,dy,buttons,modifiers):
-  	factor = 0.001
+  	factor = 0.005
   	if global_UI.mouse_enabled==True and buttons==window.mouse.RIGHT:
 		global_render.camera.rotate(0,0,dx,factor)
   		pass

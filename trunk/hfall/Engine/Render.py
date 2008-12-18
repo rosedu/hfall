@@ -143,7 +143,7 @@ class Render(base.Task):
             #for light in self._lights:
             #    light.draw()
             
-            self.ogl.enableShadows(self._3dlist, self._lights, self.camera)
+            #self.ogl.enableShadows(self._3dlist, self._lights, self.camera)
             
             glEnable(GL_LIGHTING)
             glDisable(GL_LIGHT0)

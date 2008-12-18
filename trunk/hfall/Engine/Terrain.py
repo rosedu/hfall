@@ -78,8 +78,7 @@ class TerrainPatch:
     def opreparebuffers(self):
         vsize = self.size + 1
         vsize = 3 * (vsize ** 2)
-        colors = vsize * [0.5] #gray color for now
-        #colors = [0.5, 0.5, 0.5]
+        colors = vsize * [0] #space for colors
         vsize = self.size + 1
         vertices = [0, self._hf.vert[0][0], 0]
         indices = []
@@ -97,6 +96,8 @@ class TerrainPatch:
                 indices.extend([index, index - vsize - 1, index - vsize,\
                                 index, index - 1, index - vsize - 1])
                 index += 1
+        for i in range(3 * (vsize ** 2)):
+            colors[i] = 0.5 #gray color now
         buffSize = (len(vertices) + len(colors)) * sizeof(GLfloat)
         vbuff = VertexBuffer(buffSize)
         self.verts = VBOArray(len(vertices), GLfloat, vertices, vbuff)
