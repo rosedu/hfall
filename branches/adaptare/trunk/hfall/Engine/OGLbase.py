@@ -29,7 +29,7 @@ class OGL:
 
     """
 
-    def __init__(self, w, width, height, near=0.1, far=100.0, fov = 60.0,\
+    def __init__(self, render, width, height, near=0.1, far=100.0, fov = 60.0,\
                  clearcolor=(0.0, 0.0, 0.0, 0.0)):
         """
         OpenGL and pyglet initialization.
@@ -49,7 +49,8 @@ class OGL:
 	self.near = near
 	self.fov = fov
 
-        self.w=w
+        self.render = render
+        self.w = render.w
         @self.w.event
         def on_resize(width, height):
             glViewport(0, 0, width, height)
@@ -59,7 +60,7 @@ class OGL:
                 height = 1
             gluPerspective(fov, width / float(height), near, far)
             glMatrixMode(GL_MODELVIEW)
-            glLoadIdentity()
+            OGL.setModelViewMatrix(render.camera.modelView)
             return pyglet.event.EVENT_HANDLED
 
         # finalizing the initialization
@@ -71,10 +72,10 @@ class OGL:
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
         hfk.log.msg('Open GL started')
 
-    def prepareframe(self, render):
+    def prepareframe(self):
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        OGL.setModelViewMatrix(render.camera.modelView)
-        
+        OGL.setModelViewMatrix(self.render.camera.modelView)
+
     def drawAxes(self):
         pyglet.graphics.draw_indexed(12, GL_LINES, range(12),\
                         ('v3f', ( 0, 0, 0,\
@@ -106,7 +107,6 @@ class OGL:
     def setModelViewMatrix(matrix):
         glMatrixMode(GL_MODELVIEW)
         OGL.oglLoadMatrix(matrix)
-        matrix = OGL.oglGetMatrix(GL_MODELVIEW_MATRIX)
 
     @staticmethod
     def oglVertex(vector):
@@ -262,3 +262,19 @@ class OGL:
             glDisable(GL_TEXTURE_CUBE_MAP_ARB)
         if glInfo.have_extension("GL_EXT_texture_rectangle"):
             glDisable(GL_TEXTURE_RECTANGLE_ARB)
+
+    def activateOrtho(self):
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glLoadIdentity()
+        glOrtho(0, self.w.width, self.w.height, 0, -1, 1)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+        glDisable(GL_DEPTH_TEST)
+
+    @staticmethod
+    def activatePerspective():
+        glMatrixMode(GL_PROJECTION)
+        glPopMatrix()
+        glMatrixMode(GL_MODELVIEW)
+        glEnable(GL_DEPTH_TEST)

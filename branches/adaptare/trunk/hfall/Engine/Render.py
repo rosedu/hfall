@@ -50,6 +50,7 @@ class Render(base.Task):
         """
         self.enableAxes = True
         self._dfcts = [] # a list of drawing functions - affected by perspective
+        self._dofcts = [] # ortho drawing functions
         try:
             # Try to create a window with antialising
             # TODO: add other possible config via another parameter
@@ -61,7 +62,7 @@ class Render(base.Task):
             self.w = window.Window(resizable = True, fullscreen = False,\
                                    visible = False)
 
-        self.ogl = OGLbase.OGL(self.w, width, height, near, far, fov,\
+        self.ogl = OGLbase.OGL(self, width, height, near, far, fov,\
                                clearcolor)
         self.camera = Camera.Camera(posx,posy,posz)
         self.camera.enable()
@@ -107,13 +108,18 @@ class Render(base.Task):
             # NO OPENGL CALLS ARE ALLOWED
             # OUTSIDE OF OGLbase MODULE!!!
             #BEHAVE ACCORDINGLY!!!
-            self.ogl.prepareframe(self) #this will set the viewport to be
+            self.ogl.prepareframe() #this will set the viewport to be
                                         # identical to the camera's one
             if self.enableAxes:
                 self.ogl.drawAxes()
 
             for drawingfunction in self._dfcts:
                 drawingfunction()
+
+            self.ogl.activateOrtho()
+            for drawingfunction in self._dofcts:
+                drawingfunction()
+            self.ogl.activatePerspective()
 
             self.w.flip()
 
@@ -136,3 +142,17 @@ class Render(base.Task):
             kernel.log.msg('Rendering function ' + f.func_name + \
                            ' was removed from the rendering functions list. ('\
                            + str(len(self._dfcts)) + ')')
+
+    def addOrthoRenderingFunction(self, kernel, f):
+        self._dofcts.insert(0, f)
+        kernel.log.msg('Orthographic rendering function ' + f.func_name + \
+                       ' was added to the front of the rendering functions' +\
+                       ' list. (' + str(len(self._dofcts)) + ')')
+
+    def removeOrthoRenderingFunction(self, kernel, f):
+        if f in self._dfcts:
+            self._dofcts.remove(f)
+            kernel.log.msg('Orthographic rendering function ' + f.func_name + \
+                           ' was removed from the rendering functions list. ('\
+                           + str(len(self._dofcts)) + ')')
+

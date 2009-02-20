@@ -30,13 +30,15 @@ import base
 from base import kernel as hfk
 import Render
 import Listener
+import Console
 import Terrain
 
-class hammer(base.Task):
-    def __init__(self, render, listener):
+class Hammer(base.Task):
+    def __init__(self, render, listener, console):
         self.render = render #to be used when passing parameters and options to
                              # the renderer
         self.listener = listener #used for handling keyboard and mouse events
+        self.console = console #different commands
         self.tp = 0 #just for demo purposes
         pass
 
@@ -98,11 +100,14 @@ class hammer(base.Task):
     def name(self):
         return "Hammer"
 
-render = Render.Render(800, 600, posx = 50, posy = 2, posz = -30,\
+render = Render.Render(800, 600, posx = 2, posy = 2, posz = -30,\
                          near = 0.0001, far = 10000)
 listener = Listener.Listener(render)
+console = Console.Console(hfk, render, listener,\
+                          activationKey = pyglet.window.key.QUOTELEFT)
 hfk.insert(listener)#don't forget to insert this if you wish mouse and keyboard
                     #for best results insert the listener first
-hfk.insert(hammer(render, listener))
+hfk.insert(console) #also, insert a console, just after the listener
+hfk.insert(Hammer(render, listener, console))
 hfk.insert(render) #this should be ALWAYS the LAST task inserted at the start
 hfk.run()

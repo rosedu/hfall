@@ -211,6 +211,7 @@ class Kernel:
         self._task_list = []
         self._task_map = {}
         self.log.msg('Kernel shutdown')
+        self.log.sys.write('\n\n')
         sys.exit()
 
     def run(self):
