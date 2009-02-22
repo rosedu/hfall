@@ -1,19 +1,20 @@
 """
 Hammerfall Terrain class.
 
+WARNING: This module has OpenGL calls which will be removed in the future.
+
 """
 
-__version__ = '0.4'
+__version__ = '0.7'
 __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
-import sys
-sys.path.insert(0, "..")
-sys.path.insert(0, "../Parser")
-from VertexBuffer import *
-import pyglet
-from pyglet.gl import *
 import array
 import itertools
+
+import pyglet
+from pyglet.gl import *
+
+import base
 
 class HeightField:
     """
@@ -22,6 +23,10 @@ class HeightField:
 
     """
     def __init__(self, size = 64):
+        """
+        size represents the height field resolution
+        
+        """
         self.size = size + 1
         self.vert = [array.array('f', \
                                  itertools.repeat(0.0,\
@@ -31,17 +36,33 @@ class HeightField:
         self.max = 0
 
     def raiseHeight(self, x, y, delta):
+        """
+        Use this to modifiy the height of the terrain in a specific point
+        
+        """
         raise NotImplementedError("not implemented yet")
 
     def lowerHeight(self, x, y, delta):
+        """
+        Use this to modify the height of the terrain in a specific point
+        
+        """
         raise NotImplementedError("not implemented yet")
 
     def setHeight(self, x, y, height):
+        """
+        Use this to modify the height of the terrain in a specific point
+        
+        """
         x = x % self.size
         y = y % self.size
         self.vert[x][y] = height
 
     def bounds(self):
+        """
+        Use this to find the extremes of this height field
+        
+        """
         m = min(self.vert[0])
         for i in range(1, self.size):
             m = min(self.vert[i], m)
@@ -58,147 +79,101 @@ class TerrainPatch:
     
     """
 
-    def __init__(self, size = 64, width = 64, hfield = HeightField(size=64),\
+    def __init__(self, width = 100, hfield = HeightField(size=64),\
                  x_origin = 0, y_origin = 0):
         """
         size - the width of the patch, in tiles (heightfield resolution)
         width - the width of the patch, in real units
+        hfield - the height field of the patch
 
         """
-        self.size = size
+        self.size = hfield.size - 1
         self.width = width
         self._hf = hfield
         self.x = x_origin
         self.y = y_origin
-        self.stride = float(self.width) / size
-        self.visible = False
-        self.renderable = False
-        self.list = 0;
+        self.stride = float(self.width) / self.size
+        self.visible = True
+        self.vertexList = pyglet.graphics.vertex_list_indexed((self.size + 1)\
+                                                              ** 2,\
+                                TerrainPatch.buildList(self.size +1),\
+                                ('v3f/static', TerrainPatch.buildVert(\
+                                    self._hf, self.size + 1, self.stride)),
+                                ('c3B/static', ((128, 128, 128) * \
+                                                ((self.size + 1) ** 2))))
+        
+    @staticmethod
+    def buildList(size):
+        l = []
+        for i in range(size + 1, size ** 2):
+            if i % size != 0:
+                l.extend([i, i - size - 1, i - size, i, i - 1, i - size - 1])
+        return l
 
-    def opreparebuffers(self):
-        vsize = self.size + 1
-        vsize = 3 * (vsize ** 2)
-        colors = vsize * [0] #space for colors
-        vsize = self.size + 1
-        vertices = [0, self._hf.vert[0][0], 0]
-        indices = []
-        index = 1
-        for x in range(1, vsize):
-            vertices.extend([x * self.stride, self._hf.vert[x][0], 0])
-            #colors.extend([0.5, 0.5, 0.5])
-            index += 1
-        for y in range(1, vsize):
-            vertices.extend([0, self._hf.vert[0][y], y * self.stride])
-            index += 1
-            for x in range(1, vsize):
-                vertices.extend([x * self.stride, self._hf.vert[x][y], y * self.stride])
-                #colors.extend([0.5, 0.5, 0.5])
-                indices.extend([index, index - vsize - 1, index - vsize,\
-                                index, index - 1, index - vsize - 1])
-                index += 1
-        for i in range(3 * (vsize ** 2)):
-            colors[i] = 0.5 #gray color now
-        buffSize = (len(vertices) + len(colors)) * sizeof(GLfloat)
-        vbuff = VertexBuffer(buffSize)
-        self.verts = VBOArray(len(vertices), GLfloat, vertices, vbuff)
-        self.cols = VBOArray(len(colors), GLfloat, colors, vbuff)
-        buffSize = len(indices) * sizeof(GLuint)
-        self.fbuff = VertexBuffer(buffSize, target = VertexBuffer.ELEMENT_ARRAY_BUFFER)
-        self.vbo = VBOArray(len(indices), GLuint, indices, self.fbuff)
-        self.ilength = len(indices)
-        self.imin = min(indices)
-        self.imax = max(indices)
-        self.renderable = True
-
-    def makelist(self):
-        glPushMatrix()
-        width = self.width
-        glTranslatef(-width/2, -width/2, 0)
-        glBegin(GL_TRIANGLES)
-        glColor3f(0.5, 0.5, 0.5)
-        vlen = self.stride
-        vert = self._hf.vert
-        size = self.size
-        for y in range(1, size):
-            for x in range(1, size):
-                glVertex3f(x * vlen, y * vlen, vert[x][y])
-                glVertex3f((x-1) * vlen, (y-1) * vlen, vert[x-1][y-1])
-                glVertex3f(x * vlen, (y-1) * vlen, vert[x][y-1])
-
-                glVertex3f(x * vlen, y * vlen, vert[x][y])
-                glVertex3f((x-1) * vlen, y * vlen, vert[x-1][y])
-                glVertex3f((x-1) * vlen, (y-1) * vlen, vert[x-1][y-1])
-        glEnd()
-        glPopMatrix()
-
-    def preparebuffers(self):
-        #deprecated
-        self.list = glGenLists(1)
-        glDisable(GL_CULL_FACE)
-        glNewList(self.list, GL_COMPILE)
-        self.makelist()
-        glEndList()
-        glEnable(GL_CULL_FACE)
-        print self.list
-        self.renderable = True
-
-    def makeVisible(self):
-        if self.renderable == False:
-            raise Exception("this terrain patch is not renderable yet, call preparebuffers")
-        else:
-            self.Visible = True
-
-    def makeInvisible(self):
-        self.Visible = False
-
-    def orender(self):
-	if self.Visible == True:
-            glPushMatrix()
-            glTranslatef(self.x, self.y, 0)
-            self.verts.buffer.enable()
-            glColorPointer(3, GL_FLOAT, 0, self.cols.pointer())
-            glVertexPointer(3, GL_FLOAT, 0, self.verts.pointer())
-            self.fbuff.enable()
-            glDisableClientState(GL_NORMAL_ARRAY)
-            glDisable(GL_NORMAL_ARRAY)
-            glDrawRangeElements(GL_TRIANGLES, self.imin, self.imax,\
-                                self.ilength, GL_UNSIGNED_INT, self.vbo.pointer())
-	    self.verts.buffer.disable()
-            self.fbuff.disable()
-            glPopMatrix()
+    @staticmethod
+    def buildVert(hf, size, stride):
+        l = []
+        for y in range(size):
+            for x in range (size):
+                l.extend([x * stride, hf.vert[x][y], y * stride])
+        return tuple(l)
 
     def render(self):
-        #deprecated
-        glPushMatrix()
-        glTranslatef(self.x, self.y, 0)
-        glCallList(self.list)
-        glPopMatrix()
+##        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        if self.visible == True:
+            glPushMatrix()
+            glTranslatef(self.x, 0, self.y)
+            self.vertexList.draw(GL_TRIANGLES)
+            glPopMatrix()
 
-class Terrain:
+class Terrain (base.Task):
     """
-    This class is used for terrain rendering.
+    We will represent the terrain as another task for debugging purposes and
+    more.
     
     """
-    def __init__(self):
+    def __init__(self, render):
+        self.render = render
         self._patch = []
         self.enabled = False
+
+    def start(self, kernel):
+        """Starting the Terrain module"""
+        kernel.log.msg('Ground for action set.')
+        self.enabled = True
+        def terrainRender():
+            if self.enabled == True:
+                for tpatch in self._patch:
+                    tpatch.render()
+                    pass
+        self.render.addRenderingFunction(kernel, terrainRender)
+
+    def stop(self, kernel):
+        """Stoping the Terrain module"""
+        kernel.log.msg('No more ground.')
+
+    def pause(self, kernel):
+        """Pausing the Terrain module"""
+        self.enabled = False
+
+    def resume(self, kernel):
+        """Resuming the Terrain module"""
+        self.enabled = True
+
+    def run(self, kernel):
+        """Running the Terrain module - rendering the Terrain"""
+        pass
+    
+    def name(self):
+        """Name of the Terrain module"""
+        return 'Terrain'
 
     def cullPatches(self):
         raise NotImplementedError("culling not implemented")
 
-    def Enable(self):
-        self.enabled = True
-
-    def Disable(self):
-        self.enabled = False
-
-    def render(self):
-        if self.enabled == True:
-            for tpatch in self._patch:
-                tpatch.orender()
-
-    def addPatch(self, patch):
+    def addPatch(self, kernel, patch):
         if isinstance(patch, TerrainPatch):
             self._patch.append(patch)
+            kernel.log.msg('Patch ' + str(len(self._patch)) + ' added.')
         else:
             raise TypeError("Invalid terrain patch submitted")

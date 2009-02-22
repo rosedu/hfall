@@ -1,35 +1,29 @@
 """
 Hamerfall Render class. All drawings to the screen should be done using
 this class. This class also provides a context surface where drawings
-could take place via OpenGL or any other rendering API.
+could take place via OpenGL or any other rendering API. Thus, this module
+MUST not contain (and will NOT contain) any OpenGL call (excluding the call
+which constructs the OpenGL renderer).
+
+This class must be informed of every instance to be drawn on the screen. Any
+2D or 3D object, any model or any point, any modifications of the camera, etc.
+must be done using ONLY this class. There are helper classes around but their
+instances should not exist outside of the Render.
 
 """
 
-__version__ = '0.3'
+__version__ = '0.7'
 __authors__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)' ,\
               'Andrei Buhaiu (andreibuhaiu@gmail.com)'
-import math
 import pyglet
-import sys
-sys.path.insert(0, "..")
-sys.path.insert(0, "../UI")
 from pyglet.gl import *
 from pyglet import window
 from pyglet import clock
 from pyglet import font
-from Shader import *
-from Vector import *
 
-import Mathbase
-import OGLbase
-import Light
-import Fog
-import Camera
-import Terrain
 import base
-import Wires
-from base import kernel as hfk
-
+import OGLbase
+import Camera
 
 class Render(base.Task):
     """
@@ -54,50 +48,34 @@ class Render(base.Task):
                     is drawn over the entire window.
 
         """
-        self._3dlist = []
-        self._2dlist = []
-        self._lights = []
-	self._textlist = []
-	self.transx = posx;
-	self.transy = posy;
-        self.transz = posz;
-	self.width = width
-	self.height = height
-  	self.angle = Mathbase.Vector3D(0,0,0)
-  	self.enableaxis = True
-	self.line_manager = Wires.LineManager()
-  	self.fps = "0"
-  	self.terrain = None
-  	self.counter = 0 
+        self.enableAxes = True
+        self._dfcts = [] # a list of drawing functions - affected by perspective
         try:
             # Try to create a window with antialising
             # TODO: add other possible config via another parameter
             config = Config(sample_buffers = 1, samples = 4, depth_size = 16,\
                           double_buffer = True)
-            self.w = window.Window(resizable = True, fullscreen = True, config=config)
+            self.w = window.Window(resizable = True, fullscreen = False,\
+                                   config=config, visible = False)
         except window.NoSuchConfigException:
-            self.w = window.Window(resizable = True, fullscreen = True)
-        self.w.set_vsync(False)
-        self.ogl = OGLbase.OGL(self.w, width, height, near, far, fov, clearcolor)
-        self.ogl.activate_ortho(0,self.w.width,0,self.w.height)
-        self.ogl.activate_perspective(self.w.width,self.w.height)
+            self.w = window.Window(resizable = True, fullscreen = False,\
+                                   visible = False)
+
+        self.ogl = OGLbase.OGL(self.w, width, height, near, far, fov,\
+                               clearcolor)
         self.camera = Camera.Camera(posx,posy,posz)
         self.camera.enable()
 
-        v = Shader(None, GL_VERTEX_SHADER)
-        v.loadShader("vertex.vs")
-        print v.getInfoLog()
-
-        f = Shader(None, GL_FRAGMENT_SHADER)
-        f.loadShader("fragment.fs")
-        print f.getInfoLog()
-
-        self.program = ShaderProgram([v, f])
-        print self.program.getInfoLog()
-        
     def start(self, kernel):
         """Starting the rendering module"""
         kernel.log.msg('Rendering module started')
+        self.w.set_visible()
+
+##        @self.w.event
+##        def on_draw():
+##            self.run(kernel)
+##
+##        pyglet.app.run()
 
     def stop(self, kernel):
         """Stopping the rendering module"""
@@ -114,260 +92,30 @@ class Render(base.Task):
     def run(self, kernel):
         """
         The main part of the rendering module. It is used to render all 3D
-        game graphics.
+        game graphics. This function is also called at every redraw of the
+        application window.
         
         """
 
-        if self.w.has_exit:
-            # TODO: add a possibility to run kernel modules after the window
-            # is closed
+        if self.w.has_exit: # exiting totally
+            print 'ESC-ing'
+            kernel.log.msg('Application ending')
             kernel.shutdown()
         else:
-            dt=clock.tick()
             self.w.dispatch_events()
+            #REMEMBER!!!!:
+            # NO OPENGL CALLS ARE ALLOWED
+            # OUTSIDE OF OGLbase MODULE!!!
+            #BEHAVE ACCORDINGLY!!!
+            self.ogl.prepareframe(self) #this will set the viewport to be
+                                        # identical to the camera's one
+            if self.enableAxes:
+                self.ogl.drawAxes()
 
-            glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-            glEnable(GL_DEPTH_TEST)
-  	    self.ogl.activate_model()
-            
-            # TODO: camera manipulation
-            # For dodecadron testing
-            '''
-            point_to_translate = Mathbase.Vector3D(self.transx,\
-                                self.transy, self.transz)
-            self.ogl.translate( point_to_translate)
-            self.ogl.rotate(self.angle.x, Mathbase.Vector3D(1,0,0)) 
-            self.ogl.rotate(self.angle.y, Mathbase.Vector3D(0,1,0)) 
-            self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1))
-            '''
-            #for light in self._lights:
-            #    light.draw()
-            
-            #self.ogl.enableShadows(self._3dlist, self._lights, self.camera)
-            
-            glEnable(GL_LIGHTING)
-            glDisable(GL_LIGHT0)
-            for light in self._lights:
-                light.LEnable()
-                light.LPosition()
-                #print light.name, light.type #, light.spotDirection[:]
-                # delete the following line after debugging
-                light.draw()
+            for drawingfunction in self._dfcts:
+                drawingfunction()
 
-            self.program.enable()
-            self.program.setUniform("numLights", len(self._lights))
-            
-            # TODO: 3D model drawing
-            glActiveTexture(GL_TEXTURE0)
-            glPushMatrix()
-            for model in self._3dlist:
-                model.render(self.ogl)
-            glActiveTexture(GL_TEXTURE0)
-            glPopMatrix()
-            # TODO: special effects here
-            # TODO: save openGL state here
-
-            ambient = (GLfloat * 4)(*[0.3,0.3,0.3,1.0])
-            diffuse = (GLfloat * 4)(*[1.0,0.0,0.0,1.0])
-            specular = (GLfloat * 4)(*[1.0,1.0,1.0,1.0])
-            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient)
-            glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse)
-            glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular)
-            glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 30.0)
-            q = gluNewQuadric()
-            gluSphere(q, 1, 100, 100)
-            
-            #drawing terrain
-            if self.terrain is not None:
-                self.terrain.render()
-
-            self.program.disable()
-                
-            glDisable(GL_TEXTURE_2D)
-  	    glDisable(GL_LIGHTING)
-
-            #drawing axis:
-  	    self.line_manager.draw()
-  	    self.counter += 1
-	    if self.counter % 200 == 0:
-	        self.line_manager.run_diag()
-  	    if self.enableaxis == True:
-                glBegin(GL_LINES)
-                glColor3f(1.0, 0.0, 0.0)
-                glVertex3i(0, 0, 0)
-                glVertex3i(100, 0, 0)
-                glColor3f(0.0, 1.0, 1.0)
-                glVertex3i(0, 0, 0)
-                glVertex3i(-100, 0, 0)
-                glColor3f(0.0, 1.0, 0.0)
-                glVertex3i(0, 0, 0)
-                glVertex3i(0, 100, 0)
-                glColor3f(1.0, 0.0, 1.0)
-                glVertex3i(0, 0, 0)
-                glVertex3i(0, -100, 0)
-                glColor3f(0.0, 0.0, 1.0)
-                glVertex3i(0, 0, 0)
-                glVertex3i(0, 0, 100)
-                glColor3f(1.0, 1.0, 0.0)
-                glVertex3i(0, 0, 0)
-                glVertex3i(0, 0, -100)
-                glEnd()
-                
-  	    
-  	    glDisable(GL_DEPTH_TEST)
-            glMatrixMode(GL_PROJECTION)
-            self.perspective_matrix = (GLdouble * 16)()
-            glGetDoublev(GL_PROJECTION_MATRIX,self.perspective_matrix)
-            glPopMatrix()
-  	    
-  	    #self.ogl.activate_model()
-	    #just to make it work
-
-            for model in self._2dlist:
-                self.Render2D(model)
-
-  	    for text in self._textlist:
-	        text.draw()
-
-	    glMatrixMode(GL_PROJECTION)
-	    glPushMatrix()
-	    glLoadMatrixd(self.perspective_matrix)
-            
             self.w.flip()
-            self.fps=clock.get_fps()
-            #print self.fps
-            "To be deleted later on, examples"
-            #self._angle += 0.5
-            # if self._xpos > 3 :
-            #    self._xpos = -3
-            # self._xpos += 0.05
-            self.firstframe = False
-
-    def DrawTargets(self):
-        """
-        This function is used for rendering only the selectable parts
-        """
-  	self.ogl.activate_model()
-        point_to_translate = Mathbase.Vector3D(self.transx,\
-                                self.transy, self.transz)
-        self.ogl.translate( point_to_translate)
-        self.ogl.rotate(self.angle.x, Mathbase.Vector3D(1,0,0)) 
-        self.ogl.rotate(self.angle.y, Mathbase.Vector3D(0,1,0)) 
-        self.ogl.rotate(self.angle.z, Mathbase.Vector3D(0,0,1))
-        glDisable(GL_LIGHT0)
-        for light in self._lights:
-            # delete the following line after debugging
-            glLoadName(self._lights.index(light) + 2000) # 2000 must be changed
-            light.draw()
-        glPushMatrix()
-        for model in self._3dlist:
-            glLoadName(self._3dlist.index(model))
-            model.render(self.ogl, textured = False)
-        glPopMatrix()
-        glPushMatrix()
-	glLoadMatrixd(self.perspective_matrix)
-        glEnable(GL_LIGHT0)
-
-    def RenderSelectable(self, x, y):
-        """
-        This function SHOULD be used ONLY for rendering the selectable
-        models of the scene.
-
-        Please make sure that this function is a subset of the previous
-        one: include all lines that are used for drawing
-        """
-        sbuffer = (GLuint * 512)(*[])#TODO: change the size
-        mat_view = (GLint* 4)()
-        glGetIntegerv(GL_VIEWPORT,mat_view)
-        glSelectBuffer(512, sbuffer)
-
-        glRenderMode(GL_SELECT)
-
-        glInitNames()
-        glPushName(0)
-
-        glMatrixMode(GL_PROJECTION)
-        glPushMatrix()
-        glLoadIdentity()
-
-        gluPickMatrix(x, y, 1.0, 1.0, mat_view)
-        r = float(mat_view[2] - mat_view[0])/\
-                           (mat_view[3] - mat_view[1])
-        gluPerspective(45.0, r, 0.1, 1000000.0)#TODO: change them
-        glMatrixMode(GL_MODELVIEW)        
-        self.DrawTargets()
-        glMatrixMode(GL_PROJECTION)
-        glPopMatrix()
-        glMatrixMode(GL_MODELVIEW)
-        hits = glRenderMode(GL_RENDER)
-        print hits
-        if hits > 0:
-            choose = sbuffer[3]
-            depth = sbuffer[1]
-            if choose < 2000:
-                print "Chosen (model): ", choose
-                print "name: ", self._3dlist[choose].name
-                print "buffer: ", sbuffer[0], sbuffer[1], sbuffer[2], sbuffer[3]
-            else:
-                print "Light: ", choose
-            print "buffer content: "
-            for i in range(hits):
-                print "Chosen (model): ", sbuffer[4*i + 3]
-                print "name: ", self._3dlist[sbuffer[4*i+3]].name
-                print "\nnext element:"
-            print " "
-            return 1
-        return 0
-
-    def Render2D(self, model):
-        """
-        This function is used to render any 2D graphic, mainly used for
-        rendering the user interface.
-            x - the x position of the 2D rendered element
-            y - the y position of the 2D rendered element
-            color - the color of the rendered element. It is possible to
-                    use alpha blending.
-
-        """
-	self.ogl.activate_model()
-        #glTranslatef(0.0,0.0,-6.0);
-	glActiveTextureARB(GL_TEXTURE0_ARB)
-        glClientActiveTextureARB(GL_TEXTURE0_ARB)
-  	if model.is_textured==True:
-		glBindTexture(GL_TEXTURE_2D,model.texture_ids[0])
-  		glTexImage2D(GL_TEXTURE_2D,0,4,model.pixelwidth,\
-		    model.pixelheight,0,GL_RGBA,GL_UNSIGNED_BYTE,model.data)
- 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR)
- 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR)
-        	glBegin(GL_QUADS)
-  		glTexCoord2f(0.0,0.0)
-        	glVertex2f(model.x, model.y)
-  		glTexCoord2f(1.0,0.0)
-        	glVertex2f(model.xx, model.y)
-  		glTexCoord2f(1.0,1.0)
-        	glVertex2f(model.xx, model.yy)
-  		glTexCoord2f(0.0,1.0)
-        	glVertex2f(model.x, model.yy)
-  		glEnd()
-  	else:
-		glBegin(GL_QUADS)
-        	if len(model.color) == 3:
-            		glColor3f(model.color[0], model.color[1], model.color[2])
-        	else:
-            		glColor4f(model.color[0], model.color[1], model.color[2], \
-              	        	model.color[3])
-		glVertex2f(model.x, model.y)
-  		glVertex2f(model.xx,model.y)
-  		glVertex2f(model.xx, model.yy)
-  		glVertex2f(model.x, model.yy)
-        	glEnd()      
-
-            
-    def rotate(self,angle,x,y,z):
-         dir_to_rotate = Mathbase.Vector3D(x,y,z)
-  	 dir_to_rotate.Norm3D()
-	 dir_to_rotate.__multiply_scalar__(angle)
-	 self.angle.__add__(dir_to_rotate)
 
     def name(self):
         """
@@ -376,78 +124,15 @@ class Render(base.Task):
         """
         return 'Render'
 
-    def add2D(self, model):
-        """
-        This function is used to add a 2D object to the list of the models
-        to be drawn. This list keeps the models sorted by the insertion
-        order. This way the last inserted object will be drawn on top of
-        the others.
-            model - the two dimensional object to be added
-        
-        """
-        self._2dlist.append(model)
+    def addRenderingFunction(self, kernel, f):
+        self._dfcts.insert(0, f)
+        kernel.log.msg('Rendering function ' + f.func_name + ' was added to ' +\
+                       'the front of the rendering functions list. (' +\
+                       str(len(self._dfcts)) + ')')
 
-    def add3D(self, model):
-        """
-        This function is used to add a 3D model to the list of the
-        models to be drawn. This function sorts the list of 3D models
-        in a way that lets all model with the same texture to be grouped.
-        
-        """
-        self._3dlist.append(model)
-    def addLight(self, light):
-        """
-        This function is used to add a 3D model to the list of the
-        models to be drawn. This function sorts the list of 3D models
-        in a way that lets all model with the same texture to be grouped.
-        
-        """
-        self._lights.append(light)
-
-    def addtext(self,text):
-        self._textlist.append(text)
-
-    def remtext(self,x):
-        self._textlist.remove(x)
-        pass
-
-    def cleartext(self):
-        self._textlist = []
-
-    def rem3D(self,x):
-        """
-        This function is used to remove a 3D object from the drawing list.
-        
-        """
-	self._3dlist.pop(x)
-        pass
-
-    def remLight(self,x):
-        """
-        This function is used to remove a 3D object from the drawing list.
-        
-        """
-	self._lights.pop(x)
-        pass
-
-    def rem2D(self,x):
-        """
-        This function is used to remove a 2D object from the drawing list.
-        
-        """
-	self._2dlist.remove(x)
-        pass
-
-    def clear3D(self):
-        """
-        A faster way to clear the 3D models list.
-        
-        """
-        self._3dlist=[]
-
-    def clear2D(self):
-        """
-        A faster way to clear the 2D models list.
-        
-        """
-        self._2dlist=[]
+    def removeRenderingFunction(self, kernel, f):
+        if f in self._dfcts:
+            self._dfcts.remove(f)
+            kernel.log.msg('Rendering function ' + f.func_name + \
+                           ' was removed from the rendering functions list. ('\
+                           + str(len(self._dfcts)) + ')')

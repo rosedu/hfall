@@ -1,6 +1,6 @@
 import sys
-sys.path.insert(0, "../Engine")
-sys.path.insert(0, "..")
+sys.path.insert(0, "../Parser/")
+##sys.path.insert(0, "..")
 
 from Vector import Vector3
 import ModelLoader

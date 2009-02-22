@@ -6,7 +6,6 @@ from Vector import Vector3
 from Matrix import Matrix4
 from math import *
 from pyglet.gl import *
-from glcalls import *
 
 def invMatrix(m):
     inv = Matrix4()

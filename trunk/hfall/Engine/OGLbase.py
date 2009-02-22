@@ -3,65 +3,28 @@ Hamerfall OpenGL class. This class initializes the OpenGL interface and
 then draws vertices and lines to the screen, after changing properly the
 state of the OpenGL finite-state machine.
 
+WARNING: the following files are reported to have OpenGL calls in them:
+    * ./VertexBuffer.py
+
 """
 
-__version__ = '0.2'
-__author__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)' ,\
-              'Andrei Buhaiu (andreibuhaiu@gmail.com)'
-
+__version__ = '0.7'
+__authors__ = 'Maruseac Mihai (mihai.maruseac@gmail.com)' ,\
+              'Andrei Buhaiu (andreibuhaiu@gmail.com)' ,\
+              'Valentin Priescu (vali_shooter@yahoo.com)'
 import sys
 sys.path.insert(0, "..")
 
-from TextureFormat import TextureFormat
+import pyglet
+
 from base import kernel as hfk
-from Texture import Texture
-from pyglet.gl import *
-from glcalls import *
-from Vector import *
+from Coordinate import Coordinate
 from Matrix import *
-from Camera import *
-
-class GLInfo:
-    def __init__(self):
-        self.info = gl_info.GLInfo()
-        self.info.set_active_context()
-        self.numTextureUnits = (GLint)(*[])
-        self.maxTextures = (GLint)(*[])
-        self.maxTextureSize = (GLint)(*[])
-        self.maxLights = (GLint)(*[])
-        # get video card info
-        self.vendor = cast(glGetString(GL_VENDOR), c_char_p).value
-        self.renderer = cast(glGetString(GL_RENDERER), c_char_p).value
-        self.version = cast(glGetString(GL_VERSION), c_char_p).value
-        self.supportedExtensions = cast(glGetString(GL_EXTENSIONS), c_char_p).value
-        # get textures and lights info
-        if self.info.have_extension("GL_ARB_multitexture"):
-            glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, self.numTextureUnits)
-            self.numTextureUnits = self.numTextureUnits.value
-        else: self.numTextureUnits = 1
-        if self.info.have_extension("GL_NV_fragment_program"):
-            glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_NV, self.maxTextures)
-            self.maxTextures = self.maxTextures.value
-        else: self.maxTextures = self.numTextureUnits
-        glGetIntegerv(GL_MAX_TEXTURE_SIZE, self.maxTextureSize)
-        self.maxTextureSize = self.maxTextureSize.value
-        glGetIntegerv(GL_MAX_LIGHTS, self.maxLights)
-        self.maxLights = self.maxLights.value        
-
-    def __str__(self):
-        return "Vendor: " + self.vendor + "\n" + \
-               "Renderer: " + self.renderer + "\n" + \
-               "OpenGL version: " + self.version + "\n\n" + \
-               "Max. Lights: " + str(self.maxLights) + "\n" + \
-               "Max. Textures: " + str(self.maxTextures) + "\n" + \
-               "Texture units: " + str(self.numTextureUnits) + "\n" + \
-               "Max. Texture size: " + str(self.maxTextureSize) + "\n"
-               
-               
+from Vector import *
 
 class OGL:
     """
-    This is the class that encapsulates all OpenGL API calls. All acces
+    This is the class that encapsulates all OpenGL API calls. All access
     to the OpenGL interface should be done using this class.
 
     """
@@ -82,15 +45,10 @@ class OGL:
                          is drawn over the entire window.
                     
         """
-        self.glInfo = GLInfo()
 	self.far = far
 	self.near = near
 	self.fov = fov
 
-        self.shadowMap = Texture.create("shadows", 0, 512, 512, GL_TEXTURE_2D, \
-                                        TextureFormat.fromString("DEPTH"), \
-                                        Texture.Parameters.shadow(), Texture.Settings())
-        
         self.w=w
         @self.w.event
         def on_resize(width, height):
@@ -100,208 +58,207 @@ class OGL:
             if height == 0:
                 height = 1
             gluPerspective(fov, width / float(height), near, far)
-            #glMatrixMode(GL_MODELVIEW)
+            glMatrixMode(GL_MODELVIEW)
+            glLoadIdentity()
+            return pyglet.event.EVENT_HANDLED
 
         # finalizing the initialization
         glClearColor(clearcolor[0], clearcolor[1], clearcolor[2], \
                      clearcolor[3])
-        glShadeModel(GL_SMOOTH)
         glClearDepth(1.0)
         glEnable(GL_DEPTH_TEST)
-  	
-  	#glDepthFunc(GL_LEQUAL)
-  	#glBlendFunc(GL_SRC_ALPHA, GL_ONE)
-  	#glEnable(GL_BLEND)
-  	#glAlphaFunc(GL_GREATER,0.1)
-  	#glEnable(GL_ALPHA_TEST)
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glEnableClientState(GL_COLOR_ARRAY)
-        glEnableClientState(GL_NORMAL_ARRAY)
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+ 	glDepthFunc(GL_LEQUAL)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
         hfk.log.msg('Open GL started')
 
-    # Perspective switches - used for correct 2D/3D rendering
-    def activate_perspective(self,width,height):
-        glMatrixMode(GL_PROJECTION)
-        glPushMatrix()
-        glLoadIdentity()
-	gluPerspective(self.fov, 1.0*width/height, 0.1, 1000.0)
+    def prepareframe(self, render):
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        OGL.setModelViewMatrix(render.camera.modelView)
+        
+    def drawAxes(self):
+        pyglet.graphics.draw_indexed(12, GL_LINES, range(12),\
+                        ('v3f', ( 0, 0, 0,\
+                                100, 0, 0,\
+                                  0, 0, 0,\
+                                -100, 0, 0,\
+                                  0, 0, 0,\
+                                  0, 100, 0,\
+                                  0, 0, 0,\
+                                  0, -100, 0,\
+                                  0, 0, 0,\
+                                  0, 0, 100,\
+                                  0, 0, 0,\
+                                  0, 0, -100)),\
+                        ('c3B', (255, 0, 0,\
+                                 255, 0, 0,\
+                                 0, 255, 255,\
+                                 0, 255, 255,\
+                                 0, 255, 0,\
+                                 0, 255, 0,\
+                                 255, 0, 255,\
+                                 255, 0, 255,\
+                                 0, 0, 255,\
+                                 0, 0, 255,\
+                                 255, 255, 0,\
+                                 255, 255, 0)))
 
-    def activate_ortho(self,left,right,bottom,top,\
-	near=-1, far=1):
-        glMatrixMode(GL_PROJECTION)
-        glPushMatrix()
-	glLoadIdentity()
-	glOrtho(left,right,bottom,top,near,far)
-	       
-    def activate_model(self):
-  	glMatrixMode(GL_MODELVIEW)
-  	# glLoadIdentity()
-  	# self.light1.LPosition()
-
-    # here we should define different functions to change OpenGL state
-    # machine status. We should built functions to incrementally change
-    # the status (like translate) or that change from the start the
-    # status (translate to). Also we will need functions to save a state
-    # and revert to it after a given period of time.
-    # TODO: those functions, after we done 2 and while working on 3
-    
-    def translate_to(self, position):
-        """
-        Translates all points with the position vector, starting from
-        the identity position - the position that OpenGL state machine
-        starts with.
-
-        """
-        glLoadIdentity()
-        glTranslatef(position.x, position.y, position.z)
-
-    def translate(self, position):
-        """
-        Does an incremental translation. Translates the current axes by
-        the position vector.
-
-        """
-        glTranslatef(position.x, position.y, position.z)
-
-    def rotate(self, angle, direction):
-        """
-        Does a basic rotation based on a given angle and direction
-        """
-        # Used if we only want to rotate the model
+    @staticmethod
+    def setModelViewMatrix(matrix):
         glMatrixMode(GL_MODELVIEW)
-        glRotatef(angle, direction.x, direction.y, direction.z)
-    
+        OGL.oglLoadMatrix(matrix)
+        matrix = OGL.oglGetMatrix(GL_MODELVIEW_MATRIX)
 
-    def supports(self, extensionName):
-        return self.glInfo.info.have_extension(extensionName)
+    @staticmethod
+    def oglVertex(vector):
+        if isinstance(vector, Vector2):
+            glVertex2f(vector[0], vector[1])
+        elif isinstance(vector, Vector3):
+            glVertex3f(vector[0], vector[1], vector[2])
+        elif isinstance(vector, Vector4):
+            glVertex4f(vector[0], vector[1], vector[2], vector[4])
+        elif isinstance(vector, list):
+            if len(vector) == 2:
+                glVertex2fv((GLfloat*2)(*vector))
+            elif len(vector) == 3:
+                glVertex3fv((GLfloat*3)(*vector))
+            elif len(vector) == 4:
+                glVertex4fv((GLfloat*4)(*vector))
 
-    def colorPointer(self, color):
-        glColorPointer(3, GL_FLOAT, 0, color)
+    @staticmethod
+    def oglColor(color):
+        if isinstance(color, Vector3):
+            glColor3f(color[0], color[1], color[2])
+        elif isinstance(color, Vector4):
+            glColor4f(color[0], color[1], color[2], color[3])
+        elif isinstance(color, list):
+            if len(color) == 3:
+                glColor3fv((GLfloat*3)(*color))
+            elif len(color) == 4:
+                glColor4fv((GLfloat*4)(*color))
 
-    def vertexPointer(self, vertices):
-        glVertexPointer(3, GL_FLOAT, 0, vertices)
+    @staticmethod
+    def oglNormal(normal):
+        if isinstance(normal, Vector3):
+            glNormal3f(normal[0], normal[1], normal[2])
+        elif isinstance(normal, list):
+            if len(normal) == 3:
+               glNormal3fv((GLfloat*3)(*normal))
 
-    def normalPointer(self, normals):
-        glNormalPointer(GL_FLOAT, 0, normals)
+    @staticmethod
+    def oglTexCoord(tex):
+        if isinstance(tex, Vector2):
+            glTexCoord2f(tex[0], tex[1])
+        if isinstance(tex, Vector2):
+            glTexCoord3f(tex[0], tex[1], tex[2])
+        if isinstance(tex, Vector2):
+            glTexCoord4f(tex[0], tex[1], tex[2], tex[3])
+        elif isinstance(tex, list):
+            if len(tex) == 2:
+                glTexCoord2fv((GLfloat*2)(*tex))
+            if len(tex) == 2:
+                glTexCoord3fv((GLfloat*3)(*tex))
+            if len(tex) == 2:
+                glTexCoord4fv((GLfloat*4)(*tex))
 
-    def texCoordPointer(self, texels, units):
-        for i in units:    
-            glActiveTextureARB(GL_TEXTURE0_ARB + i)
-            glClientActiveTextureARB(GL_TEXTURE0_ARB + i)
-            glTexCoordPointer(2, GL_FLOAT, 0, texels)
-            glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+    @staticmethod
+    def oglMultiTexCoord(unit, tex):
+        if isinstance(tex, Vector2):
+            glMultiTexCoord2fARB(unit, tex[0], tex[1])
+        if isinstance(tex, Vector2):
+            glMultiTexCoord3fARB(unit, tex[0], tex[1], tex[2])
+        if isinstance(tex, Vector2):
+            glMultiTexCoord4fARB(unit, tex[0], tex[1], tex[2], tex[3])
+        elif isinstance(tex, list):
+            if len(tex) == 2:
+                glMultiTexCoord2fvARB(unit, (GLfloat*2)(*tex))
+            if len(tex) == 3:
+                glMultiTexCoord3fvARB(unit, (GLfloat*3)(*tex))
+            if len(tex) == 4:
+                glMultiTexCoord4fvARB(unit, (GLfloat*4)(*tex))
 
-    def createShadowMap(self, models, light, camera):
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        camera.disable()
+    @staticmethod
+    def oglGetVector2(name):
+        v = (GLfloat*4)(*[])
+        glGetFloatv(name, v)
+        return Vector2(v[0], v[1])
+
+    @staticmethod
+    def oglGetVector3(name):
+        v = (GLfloat*4)(*[])
+        glGetFloatv(name, v)
+        return Vector3(v[0], v[1], v[2])
+
+    @staticmethod
+    def oglGetVector4(name):
+        v = (GLfloat*4)(*[])
+        glGetFloatv(name, v)
+        return Vector4(v[0], v[1], v[2], v[3])
+
+    @staticmethod
+    def oglGetMatrix(name):
+        m = (GLfloat*16)(*[])
+        glGetFloatv(name, m)
+        return Matrix4(m).transpose()
+
+    @staticmethod
+    def oglLoadMatrix(matrix4):
+        m = matrix4
+        if isinstance(matrix4, Coordinate):
+            m = matrix4.matrix()
+        elif isinstance(matrix4, list):
+            m = Matrix4(matrix4)
+        if isinstance(m, Matrix4):
+            transp = (GLfloat * 16)(*[])
+            for i in range(4):
+                for j in range(4):
+                    transp[4*i+j] = m[j][i]
+            m = transp
+        glLoadMatrixf(m)
+
+    @staticmethod
+    def oglMultMatrix(matrix4):
+        m = matrix4
+        if isinstance(matrix4, Coordinate):
+            m = matrix4.matrix()
+        elif isinstance(matrix4, list):
+            m = Matrix4(matrix4)
+        if isinstance(m, Matrix4):
+            transp = (GLfloat * 16)(*[])
+            for i in range(4):
+                for j in range(4):
+                    transp[4*i+j] = m[j][i]
+            m = transp
+        glMultMatrixf(m)
+
+    @staticmethod
+    def oglLoadInvMatrix(matrix4):
+        if isinstance(matrix4, Matrix4):
+            inverse = matrix4.inverse()
+        if isinstance(matrix4, Coordinate):
+            inverse = matrix4.inverseMatrix()
+        else: inverse = matrix4
+        glLoadMatrix(inverse)
+
+    @staticmethod
+    def oglMultInvMatrix(matrix4):
+        if isinstance(matrix4, Matrix4):
+            inverse = matrix4.inverse()
+        if isinstance(matrix4, Coordinate):
+            inverse = matrix4.inverseMatrix()
+        else: inverse = matrix4
+        glMultMatrix(inverse)
+
+    @staticmethod
+    def oglDisableAllTextures():
+        if not glInfo:
+            glInfo = gl_info.GLInfo()
+            glInfo.set_active_context()
         
-        lcamera = Camera(light.LightPosition[0], light.LightPosition[1], light.LightPosition[2])
-        lcamera.lookAt(light.LightPosition[0] + light.spotDirection[0], light.LightPosition[1] + light.spotDirection[1], light.LightPosition[2] + light.spotDirection[2])
-        lcamera.enable()
-	lightViewMatrix = glGetMatrix(GL_MODELVIEW_MATRIX)
-	lightProjectionMatrix = glGetMatrix(GL_PROJECTION_MATRIX)
-	
-	glViewport(0, 0, self.shadowMap.width, self.shadowMap.height)
-	glEnable(GL_CULL_FACE)
-	glCullFace(GL_FRONT)
-
-	glShadeModel(GL_FLAT)
-	glColorMask(0, 0, 0, 0)
-	
-	for model in models:
-            model.render(self, False)
-	
-	glBindTexture(GL_TEXTURE_2D, self.shadowMap.glID)
-	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, self.shadowMap.width, self.shadowMap.height)
-
-        glDisable(GL_CULL_FACE)
-	glShadeModel(GL_SMOOTH)
-	glColorMask(1, 1, 1, 1)
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-	glViewport(0, 0, self.w.width, self.w.height)
-
-        camera.enable()
-	return lightProjectionMatrix*lightViewMatrix
-
-    def enableShadows(self, models, lights, camera):
-        lightMVP = self.createShadowMap(models, lights[0], camera)
-        self.configureShadowMap(2, lightMVP, self.shadowMap)
-
-    def configureShadowMap(self, unit, lightMVP, shadowMap):
-        glMatrixMode(GL_MODELVIEW)
-        glPushMatrix()
-        #glLoadMatrix(cameraToWorldMatrixInverse)
-        #glLoadInvMatrix(glGetMatrix(GL_MODELVIEW_MATRIX))
-
-        glActiveTextureARB(GL_TEXTURE0_ARB + unit)
-        glBindTexture(shadowMap.target, shadowMap.glID)
-        glEnable(shadowMap.target)
-
-        bias = Matrix4([0.5, 0.0, 0.0, 0.5,
-                        0.0, 0.5, 0.0, 0.5,
-                        0.0, 0.0, 0.5, 0.5 - .000001,
-                        0.0, 0.0, 0.0, 1.0])
-        
-        textureMatrix = glGetMatrix(GL_TEXTURE_MATRIX)
-        textureProjectionMatrix = textureMatrix * bias * lightMVP
-
-        glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
-        glTexGenfv(GL_S, GL_EYE_PLANE, (GLfloat*4)(*textureProjectionMatrix[0]))
-        glEnable(GL_TEXTURE_GEN_S)
-        glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
-        glTexGenfv(GL_T, GL_EYE_PLANE, (GLfloat*4)(*textureProjectionMatrix[1]))
-        glEnable(GL_TEXTURE_GEN_T)
-        glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
-        glTexGenfv(GL_R, GL_EYE_PLANE, (GLfloat*4)(*textureProjectionMatrix[2]))
-        glEnable(GL_TEXTURE_GEN_R)
-        glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
-        glTexGenfv(GL_Q, GL_EYE_PLANE, (GLfloat*4)(*textureProjectionMatrix[3]))
-        glEnable(GL_TEXTURE_GEN_Q)
-
-        glMatrixMode(GL_MODELVIEW)
-        glPopMatrix()
-
-    def configureNormalMap(self, colorUnit, normalUnit, colorTexture, normalTexture):
-        glActiveTexture(GL_TEXTURE0)
-        glBindTexture(normalTexture.target, normalTexture.glID)
-        glEnable(normalTexture.target)
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
-        glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_DOT3_RGB_EXT)
-        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE)
-        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)
-        glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_PRIMARY_COLOR_EXT)
-        glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR)
-        
-        if colorTexture:
-            glActiveTexture(GL_TEXTURE1)
-            glBindTexture(colorTexture.target, colorTexture.glID)
-            glEnable(colorTexture.target)
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT)
-            glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_MODULATE)
-            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_PREVIOUS_EXT)
-            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR)            
-            glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_TEXTURE)
-            glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR)
-
-    def configureMaterial(self, material):
-        # Materials initialization and activation
-	#glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, material.ambient)
-        #glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, material.diffuse)
-        #glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, material.specular)
-        #glMaterialfv (GL_FRONT_AND_BACK, GL_SHININESS, material.shininess)
-        
-        if material.bump:
-            self.configureNormalMap(1, 0, material.texture, material.bump)
-        elif material.texture:
-            glActiveTexture(GL_TEXTURE0)
-            glBindTexture(material.texture.target, material.texture.glID)
-            glEnable(material.texture.target)
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
-            
-        
-    def drawRangeElements(self, mode, tri):
-        glDrawRangeElements(mode, tri.start, tri.end, tri.size, GL_UNSIGNED_INT, tri.faces.pointer())
-
-        
+        glDisable(GL_TEXTURE_1D)
+        glDisable(GL_TEXTURE_2D)
+        if glInfo.have_extension("GL_EXT_texture3D"):
+            glDisable(GL_TEXTURE_3D)
+        if glInfo.have_extension("GL_EXT_texture_cube_map"):
+            glDisable(GL_TEXTURE_CUBE_MAP_ARB)
+        if glInfo.have_extension("GL_EXT_texture_rectangle"):
+            glDisable(GL_TEXTURE_RECTANGLE_ARB)

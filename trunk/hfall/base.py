@@ -139,7 +139,7 @@ class Kernel:
         if task.name() in self._task_map: return False
 
         # Add the task in the list
-        self._task_map[task.anme()] = task
+        self._task_map[task.name()] = task
         self._task_list.insert(0, task)
         self.log.msg('Task `' + task.name() + '` added to the beginning of the'\
                       + 'task list')
@@ -154,7 +154,7 @@ class Kernel:
             task    Task class instance - the new task
 
         """
-        if name not in self._task.map: return False
+        if name not in self._task_map: return False
         if task.name() in self._task_map: return False
 
         # Add the task in the list
