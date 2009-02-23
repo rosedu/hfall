@@ -66,6 +66,7 @@ class Render(base.Task):
                                clearcolor)
         self.camera = Camera.Camera(posx,posy,posz)
         self.camera.enable()
+        self.batch = pyglet.graphics.Batch()
 
     def start(self, kernel):
         """Starting the rendering module"""
@@ -119,6 +120,7 @@ class Render(base.Task):
             self.ogl.activateOrtho()
             for drawingfunction in self._dofcts:
                 drawingfunction()
+            self.batch.draw()
             self.ogl.activatePerspective()
 
             self.w.flip()

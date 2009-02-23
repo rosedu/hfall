@@ -32,6 +32,7 @@ import Render
 import Listener
 import Console
 import Terrain
+import GUI
 
 class Hammer(base.Task):
     def __init__(self, render, listener, console):
@@ -84,6 +85,8 @@ class Hammer(base.Task):
         kernel.insert(terrain) # we can insert other modules anywhere we want
                                # after we entered the run or start phase of
                                # another one
+
+        panel1 = GUI.HPanel(self.render.batch, 25, 25, 50, 50)
         
     def stop(self, kernel):
         kernel.log.msg("Hammer stopped falling")
