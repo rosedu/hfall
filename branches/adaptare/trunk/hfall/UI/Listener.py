@@ -34,6 +34,7 @@ class Listener(base.Task):
         self._mouseDragBindings = []
         self._mouseMotionBindings = [] # mouse events
         self.render = render #used for passing commands to the render
+        self.enabled = False
 
         def on_key_press(symbol, modifiers):
             self.on_key_press(symbol, modifiers)
@@ -56,15 +57,19 @@ class Listener(base.Task):
 
     def start(self, kernel):
         kernel.log.msg("Listening to all events...")
+        self.enabled = True
 
     def stop(self, kernel):
         kernel.log.msg("Not listening anymore.")
+        self.enabled = False
 
     def pause(self, kernel):
         kernel.log.msg("Listeners taking a break")
+        self.enabled = False
 
     def resume(self, kernel):
         kernel.log.msg("Listeners returning from break.")
+        self.enabled = True
 
     def run(self, kernel):
         self.check_keyboard(self.keyboard)
@@ -104,11 +109,12 @@ class Listener(base.Task):
                            str(len(self._dinamicBindings)) + ")")
 
     def on_key_press(self, symbol, modifiers):
-        if symbol in self._staticBindings:
-            action_list = self._staticBindings[symbol]
-            for action in action_list:
-                if action(symbol, modifiers) == HANDLED:
-                    break
+        if self.enabled:
+            if symbol in self._staticBindings:
+                action_list = self._staticBindings[symbol]
+                for action in action_list:
+                    if action(symbol, modifiers) == HANDLED:
+                        break
         return pyglet.event.EVENT_HANDLED
 
     def mouseBind(self, kernel, action, bindingType):
@@ -146,21 +152,24 @@ class Listener(base.Task):
                             ")")
 
     def on_mouse_press(self, X, Y, buttons, modifiers):
-        for action in self._mousePressBindings:
-            if action(X, Y, buttons, modifiers) == HANDLED:
-                break;
+        if self.enabled:
+            for action in self._mousePressBindings:
+                if action(X, Y, buttons, modifiers) == HANDLED:
+                    break;
         return pyglet.event.EVENT_HANDLED
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        for action in self._mouseDragBindings:
-            if action(x, y, dx, dy, buttons, modifiers) == HANDLED:
-                break;
+        if self.enabled:
+            for action in self._mouseDragBindings:
+                if action(x, y, dx, dy, buttons, modifiers) == HANDLED:
+                    break;
         return pyglet.event.EVENT_HANDLED
 
     def on_mouse_motion(self, x, y, dx, dy):
-        for action in self._mouseMotionBindings:
-            if action(x, y, dx, dy) == HANDLED:
-                break;
+        if self.enabled:
+            for action in self._mouseMotionBindings:
+                if action(x, y, dx, dy) == HANDLED:
+                    break;
         return pyglet.event.EVENT_HANDLED
 
     def check_keyboard(self, keyboard):

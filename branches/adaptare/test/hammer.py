@@ -105,7 +105,7 @@ render = Render.Render(800, 600, posx = 2, posy = 2, posz = -30,\
 listener = Listener.Listener(render)
 console = Console.Console(hfk, render, listener,\
                           activationKey = pyglet.window.key.QUOTELEFT)
-hfk.insert(listener)#don't forget to insert this if you wish mouse and keyboard
+#hfk.insert(listener)#don't forget to insert this if you wish mouse and keyboard
                     #for best results insert the listener first
 hfk.insert(console) #also, insert a console, just after the listener
 hfk.insert(Hammer(render, listener, console))
