@@ -267,7 +267,7 @@ class OGL:
         glMatrixMode(GL_PROJECTION)
         glPushMatrix()
         glLoadIdentity()
-        glOrtho(0, self.w.width, self.w.height, 0, -1, 1)
+        glOrtho(0, self.w.width, 0, self.w.height, -1, 1)
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
         glDisable(GL_DEPTH_TEST)
