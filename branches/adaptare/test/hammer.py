@@ -87,7 +87,8 @@ class Hammer(base.Task):
                                # another one
 
         #panel1 = GUI.HPanel(self.render.batch, 25, 25, 50, 50)
-        label1 = GUI.HLabel(self.render.batch, 25, 25, 150, 50)
+        self.label1 = GUI.HLabel(self.render.batch, 5, 5, 42, 20,\
+                            text = "A")
         
     def stop(self, kernel):
         kernel.log.msg("Hammer stopped falling")

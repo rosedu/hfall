@@ -35,11 +35,27 @@ class HLabel(HPanel):
     
     """
     def __init__(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),\
-                 fcolor = (0, 0, 0, 255), text = 'HLabel', pad = 5, \
-                 multiline = False):
+                 fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False,\
+                 halign = 'center'):
         HPanel.__init__(self, batch, x, y, w, h, bcolor)
-        self.text = text
-        self.label = pyglet.text.Label(text, x = x + 2 * pad, y = y + 2 * pad,\
-                                       color = fcolor, batch = batch, \
-                                       multiline = multiline, anchor_y='bottom')
-        
+        self._text = text
+        self._label = pyglet.text.Label(text, x = x, y = y,\
+                                        color = fcolor, batch = batch,\
+                                        multiline = multiline, width = w,\
+                                        height = h, halign = halign)
+        c_w = self._label.content_width
+        font = self._label.document.get_font()
+        c_h = font.ascent + font.descent
+        self._label.x += (w - c_w) / 2
+        self._label.y = y + (h - c_h) / 2
+##        self.setText(")))")
+
+    def setText(self, text):
+        self._label.begin_update()
+        self._label.text = text
+        c_w = self._label.content_width
+        font = self._label.document.get_font()
+        c_h = font.ascent + font.descent
+        self._label.x = self.x + (self.w - c_w) / 2
+        self._label.y = self.y + (self.h - c_h) / 2
+        self._label.end_update()
