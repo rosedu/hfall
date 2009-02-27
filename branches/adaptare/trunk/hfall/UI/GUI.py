@@ -58,3 +58,14 @@ class HLabel(HPanel):
         self._label.text = text
         self._set_position()
         self._label.end_update()
+
+class HTextField(HPanel):
+    """
+    The HPanel class will hold the implementation details for the Hammerfall
+    TextField.
+
+    """
+    def __init__(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
+                 fcolor = (0, 0, 0, 255), tboxcolor = (220, 220, 220, 255),
+                 border = 1, text = 'HLabel', multiline = False):
+        HPanel.__init__(self, batch, x, y, w, h, bcolor)
