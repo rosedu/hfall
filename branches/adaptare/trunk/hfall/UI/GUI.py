@@ -34,28 +34,27 @@ class HLabel(HPanel):
     Label.
     
     """
-    def __init__(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),\
-                 fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False,\
-                 halign = 'center'):
+    def __init__(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
+                 fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False):
         HPanel.__init__(self, batch, x, y, w, h, bcolor)
         self._text = text
         self._label = pyglet.text.Label(text, x = x, y = y,\
                                         color = fcolor, batch = batch,\
                                         multiline = multiline, width = w,\
-                                        height = h, halign = halign)
-        c_w = self._label.content_width
+                                        height = h)
+        self._set_position()
+
+    def _set_position(self):
+        c_w = self._label.content_width #content width
         font = self._label.document.get_font()
-        c_h = font.ascent + font.descent
-        self._label.x += (w - c_w) / 2
-        self._label.y = y + (h - c_h) / 2
-##        self.setText(")))")
+        lt_h = font.ascent - font.descent #line of text height
+        c_h = self._label.content_height #content height
+        n_l = c_h / lt_h #number of lines
+        self._label.x = self.x + (self.w - c_w) / 2
+        self._label.y = self.y + (self.h + c_h) / 2 - font.ascent
 
     def setText(self, text):
         self._label.begin_update()
         self._label.text = text
-        c_w = self._label.content_width
-        font = self._label.document.get_font()
-        c_h = font.ascent + font.descent
-        self._label.x = self.x + (self.w - c_w) / 2
-        self._label.y = self.y + (self.h - c_h) / 2
+        self._set_position()
         self._label.end_update()
