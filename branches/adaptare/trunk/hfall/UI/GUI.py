@@ -66,6 +66,14 @@ class HTextField(HPanel):
 
     """
     def __init__(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
-                 fcolor = (0, 0, 0, 255), tboxcolor = (220, 220, 220, 255),
-                 border = 1, text = 'HLabel', multiline = False):
+                 fcolor = (0, 0, 0, 255), border = 1, text = 'HTextField',
+                 multiline = False):
         HPanel.__init__(self, batch, x, y, w, h, bcolor)
+        self._document = pyglet.text.document.UnformattedDocument(text)
+        self._document.set_style(0, len(self._document.text),
+                                 dict(color = fcolor))
+        self._layout = pyglet.text.layout.IncrementalTextLayout(self._document,
+                                w, h, multiline = multiline, batch = batch)
+        self._caret = pyglet.text.caret.Caret(self._layout)
+        self._layout.x = x + border
+        self._layout.y = y + border

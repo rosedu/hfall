@@ -89,7 +89,8 @@ class Hammer(base.Task):
         #panel1 = GUI.HPanel(self.render.batch, 25, 25, 50, 50)
 ##        self.label1 = GUI.HLabel(self.render.batch, 50, 50, 142, 120,\
 ##                            text = "A\nb\nc", multiline = True)
-        self.tf1 = GUI.HTextField(self.render.batch, 25, 25, 150, 20)
+        self.tf1 = GUI.HTextField(self.render.batch, 25, 25, 150, 20,
+                                  text = ">")
         
     def stop(self, kernel):
         kernel.log.msg("Hammer stopped falling")
