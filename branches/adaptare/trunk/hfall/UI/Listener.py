@@ -283,6 +283,7 @@ class Listener(base.Task):
 
     def on_text(self, text):
         if self.focus:
+            print text
             self.focus.caret.on_text(text)
             self.focus.caret.position = max(self.focus.caret.position,\
                                             self.focus.specialStartPosition)
