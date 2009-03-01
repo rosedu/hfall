@@ -42,9 +42,9 @@ class HLabel(HPanel):
                                         color = fcolor, batch = batch,\
                                         multiline = multiline, width = w,\
                                         height = h)
-        self._set_position()
+        self._set_text_position()
 
-    def _set_position(self):
+    def _set_text_position(self):
         c_w = self._label.content_width #content width
         font = self._label.document.get_font()
         lt_h = font.ascent - font.descent #line of text height
@@ -67,13 +67,18 @@ class HTextField(HPanel):
     """
     def __init__(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
                  fcolor = (0, 0, 0, 255), border = 1, text = 'HTextField',
-                 multiline = False):
+                 multiline = False, startPos = 0):
         HPanel.__init__(self, batch, x, y, w, h, bcolor)
-        self._document = pyglet.text.document.UnformattedDocument(text)
-        self._document.set_style(0, len(self._document.text),
+        self.document = pyglet.text.document.UnformattedDocument(text)
+        self.document.set_style(0, len(self.document.text),
                                  dict(color = fcolor))
-        self._layout = pyglet.text.layout.IncrementalTextLayout(self._document,
+        self._layout = pyglet.text.layout.IncrementalTextLayout(self.document,
                                 w, h, multiline = multiline, batch = batch)
-        self._caret = pyglet.text.caret.Caret(self._layout)
+        self.caret = pyglet.text.caret.Caret(self._layout)
         self._layout.x = x + border
         self._layout.y = y + border
+        self.specialStartPosition = startPos
+
+    def hit_test(self, x, y):
+        return (0 < x - self._layout.x < self._layout.width) and\
+               (0 < y - self._layout.y < self._layout.height)

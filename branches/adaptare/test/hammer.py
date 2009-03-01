@@ -90,7 +90,11 @@ class Hammer(base.Task):
 ##        self.label1 = GUI.HLabel(self.render.batch, 50, 50, 142, 120,\
 ##                            text = "A\nb\nc", multiline = True)
         self.tf1 = GUI.HTextField(self.render.batch, 25, 25, 150, 20,
-                                  text = ">")
+                                  text = "> ", startPos = 2)
+        self.listener.addWidget(self.tf1) # to have mouse interaction with it
+        self.tf2 = GUI.HTextField(self.render.batch, 125, 125, 150, 20,
+                                  text = ">> ", startPos = 3)
+        self.listener.addWidget(self.tf2) # to have mouse interaction with it
         
     def stop(self, kernel):
         kernel.log.msg("Hammer stopped falling")

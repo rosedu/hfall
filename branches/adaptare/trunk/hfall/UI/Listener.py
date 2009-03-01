@@ -34,11 +34,26 @@ class Listener(base.Task):
         self._mouseDragBindings = []
         self._mouseMotionBindings = [] # mouse events
         self.render = render #used for passing commands to the render
+        self.widgets = [] #list of 2D widgets - only for focus setup
+        self.text_cursor = self.render.w.get_system_mouse_cursor("text")
+        self.focus = None
         self.enabled = False
 
         def on_key_press(symbol, modifiers):
             self.on_key_press(symbol, modifiers)
         render.w.push_handlers(on_key_press)
+
+        def on_text(text):
+            self.on_text(text)
+        render.w.push_handlers(on_text)
+
+        def on_text_motion(motion):
+            self.on_text_motion(motion)
+        render.w.push_handlers(on_text_motion)
+
+        def on_text_motion_select(motion):
+            self.on_text_motion_select(motion)
+        render.w.push_handlers(on_text_motion_select)
 
         def on_mouse_press(X, Y, button, modifiers):
             self.on_mouse_press(X, Y, button, modifiers)
@@ -109,7 +124,21 @@ class Listener(base.Task):
                            str(len(self._dinamicBindings)) + ")")
 
     def on_key_press(self, symbol, modifiers):
-        if self.enabled:
+        if symbol == pyglet.window.key.TAB:
+            if modifiers & pyglet.window.key.MOD_SHIFT:
+                dir = -1
+            else:
+                dir = 1
+
+            if self.focus in self.widgets:
+                i = self.widgets.index(self.focus)
+            else:
+                i = 0
+                dir = 0
+
+            self.set_focus(self.widgets[(i + dir) % len(self.widgets)])
+        
+        if self.enabled and not self.focus:
             if symbol in self._staticBindings:
                 action_list = self._staticBindings[symbol]
                 for action in action_list:
@@ -152,30 +181,51 @@ class Listener(base.Task):
                             ")")
 
     def on_mouse_press(self, X, Y, buttons, modifiers):
-        if self.enabled:
+        for widget in self.widgets:
+            if widget.hit_test(X, Y):
+                self.set_focus(widget)
+                break
+        else:
+            self.set_focus(None)
+
+        if self.focus:
+            self.focus.caret.on_mouse_press(X, Y, buttons, modifiers)
+
+        if self.enabled and not self.focus:
             for action in self._mousePressBindings:
                 if action(X, Y, buttons, modifiers) == HANDLED:
                     break;
         return pyglet.event.EVENT_HANDLED
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        if self.enabled:
+        if self.focus:
+            self.focus.caret.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
+
+        if self.enabled and not self.focus:
             for action in self._mouseDragBindings:
                 if action(x, y, dx, dy, buttons, modifiers) == HANDLED:
                     break;
         return pyglet.event.EVENT_HANDLED
 
     def on_mouse_motion(self, x, y, dx, dy):
-        if self.enabled:
+        for widget in self.widgets:
+            if widget.hit_test(x, y):
+                self.render.w.set_mouse_cursor(self.text_cursor)
+                break
+        else:
+            self.render.w.set_mouse_cursor(None)
+
+        if self.enabled and not self.focus:
             for action in self._mouseMotionBindings:
                 if action(x, y, dx, dy) == HANDLED:
                     break;
         return pyglet.event.EVENT_HANDLED
 
     def check_keyboard(self, keyboard):
-        for action in self._dinamicBindings:
-            if action(keyboard) == HANDLED:
-                break;
+        if self.enabled and not self.focus:
+            for action in self._dinamicBindings:
+                if action(keyboard) == HANDLED:
+                    break;
         return pyglet.event.EVENT_HANDLED
 
     def setDefaultBindings(self, kernel):
@@ -215,3 +265,30 @@ class Listener(base.Task):
             if symbol == key.X:
                 self.render.enableAxes = not self.render.enableAxes
         self.staticBind(kernel, key.X, changeAxesState)
+
+    def addWidget(self, widget):
+        self.widgets.append(widget)
+        self.set_focus(widget)
+
+    def set_focus(self, focus):
+        if self.focus:
+            self.focus.caret.visible = False
+            self.focus.caret.mark = self.focus.caret.position = 0
+
+        self.focus = focus
+        if self.focus:
+            self.focus.caret.visible = True
+            self.focus.caret.mark = self.focus.specialStartPosition
+            self.focus.caret.position = len(self.focus.document.text)
+
+    def on_text(self, text):
+        if self.focus:
+            self.focus.caret.on_text(text)
+
+    def on_text_motion(self, motion):
+        if self.focus:
+            self.focus.caret.on_text_motion(motion)
+      
+    def on_text_motion_select(self, motion):
+        if self.focus:
+            self.focus.caret.on_text_motion_select(motion)
