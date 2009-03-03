@@ -283,7 +283,7 @@ class Listener(base.Task):
 
     def on_text(self, text):
         if self.focus:
-            print text
+            if text == '\r': return
             self.focus.caret.on_text(text)
             self.focus.caret.position = max(self.focus.caret.position,\
                                             self.focus.specialStartPosition)
@@ -292,11 +292,11 @@ class Listener(base.Task):
         if self.focus:
             if motion == pyglet.window.key.MOTION_BACKSPACE and\
                self.focus.caret.position == self.focus.specialStartPosition:
-                pass
-            else:
-                self.focus.caret.on_text_motion(motion)
-                self.focus.caret.position = max(self.focus.caret.position,\
-                                                self.focus.specialStartPosition)
+                if self.focus.caret.mark is None:
+                    return
+            self.focus.caret.on_text_motion(motion)
+            self.focus.caret.position = max(self.focus.caret.position,\
+                                            self.focus.specialStartPosition)
       
     def on_text_motion_select(self, motion):
         if self.focus:

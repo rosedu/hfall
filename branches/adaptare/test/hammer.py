@@ -86,15 +86,19 @@ class Hammer(base.Task):
                                # after we entered the run or start phase of
                                # another one
 
-        #panel1 = GUI.HPanel(self.render.batch, 25, 25, 50, 50)
+##        panel1 = GUI.HPanel(self.render.batch, 25, 25, 500, 500)
 ##        self.label1 = GUI.HLabel(self.render.batch, 50, 50, 142, 120,\
 ##                            text = "A\nb\nc", multiline = True)
-        self.tf1 = GUI.HTextField(self.render.batch, 25, 25, 150, 20,
-                                  text = "> ", startPos = 2)
-        self.listener.addWidget(self.tf1) # to have mouse interaction with it
-        self.tf2 = GUI.HTextField(self.render.batch, 125, 125, 150, 20,
-                                  text = ">> ", startPos = 3)
-        self.listener.addWidget(self.tf2) # to have mouse interaction with it
+##        self.tf1 = GUI.HTextField(self.render.batch, 25, 25, 150, 20,
+##                                  text = "> ", startPos = 2)
+##        self.listener.addWidget(self.tf1) # to have mouse interaction with it
+##        self.tf2 = GUI.HTextField(self.render.batch, 125, 125, 150, 20,
+##                                  text = ">> ", startPos = 3)
+##        self.listener.addWidget(self.tf2) # to have mouse interaction with it
+
+        self.memo = GUI.HMemo(self.render.batch, 50, 50, 142, 120,\
+                            text = "")
+        self.frame = 0
         
     def stop(self, kernel):
         kernel.log.msg("Hammer stopped falling")
@@ -106,6 +110,14 @@ class Hammer(base.Task):
         pass
 
     def run(self, kernel):
+        self.frame += 1
+        if self.frame % 100 == 0:
+            self.memo.addLine(str(self.frame))
+            print "adding", self.frame
+            if self.frame > 1000:
+                print self.memo.getText()
+                self.memo.clearText()
+                self.frame = 0
         pass
 
     def name(self):

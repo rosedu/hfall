@@ -76,9 +76,50 @@ class HTextField(HPanel):
                                 w, h, multiline = multiline, batch = batch)
         self.caret = pyglet.text.caret.Caret(self._layout)
         self._layout.x = x + border
-        self._layout.y = y + border
+        self._layout.y = y - border # - because the alignment is top
         self.specialStartPosition = startPos
 
     def hit_test(self, x, y):
         return (0 < x - self._layout.x < self._layout.width) and\
                (0 < y - self._layout.y < self._layout.height)
+
+
+class HMemo(HPanel):
+    """
+    This class will hold the implementation for a textbox in which the text will
+    scroll from bottom to top.
+
+    """
+    def __init__(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
+                 fcolor = (0, 0, 0, 255), border = 0, text = 'HTextField'):
+        HPanel.__init__(self, batch, x, y, w, h, bcolor)
+        self._text = text
+        self._document = pyglet.text.document.UnformattedDocument(text)
+        self._document.set_style(0, len(self._document.text),
+                                 dict(color = fcolor))
+        self._layout = pyglet.text.layout.IncrementalTextLayout(self._document,
+                                w, h, multiline = True, batch = batch)
+        self._layout.content_valign = 'bottom'
+        self._layout.x = x + border
+        self._layout.y = y + border #+ because the alignment is bottom
+        self._layout.view_y = self._layout.height - self._layout.content_height
+
+    def addLine(self, line):
+        self._text = self._text + "\n" + line
+        self._layout.begin_update()
+        self._layout.document.text = self._text
+        self._layout.end_update()
+        self._layout.view_y = self._layout.height - self._layout.content_height
+
+    def getText(self):
+        return self._text
+
+    def setText(self, text):
+        self._text = text
+        self._layout.begin_update()
+        self._layout.document.text = self._text
+        self._layout.end_update()
+        self._layout.view_y = self._layout.height - self._layout.content_height
+
+    def clearText(self):
+        self.setText("")
