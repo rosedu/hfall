@@ -14,7 +14,7 @@ from pyglet.window import *
 
 import base
 
-HANDLED = 42 #dummy number
+HANDLED = pyglet.event.EVENT_HANDLED
 MOUSE_PRESS = 142
 MOUSE_DRAG = 143
 MOUSE_MOTION = 144
@@ -38,10 +38,7 @@ class Listener(base.Task):
         self.text_cursor = self.render.w.get_system_mouse_cursor("text")
         self.focus = None
         self.enabled = False
-
-        def on_key_press(symbol, modifiers):
-            self.on_key_press(symbol, modifiers)
-        render.w.push_handlers(on_key_press)
+        self.CAK = None #key for console activation
 
         def on_text(text):
             self.on_text(text)
@@ -66,6 +63,10 @@ class Listener(base.Task):
         def on_mouse_motion(x, y, dx, dy):
             self.on_mouse_motion(x, y, dx, dy)
         render.w.push_handlers(on_mouse_motion)
+
+        def on_key_press(symbol, modifiers):
+            self.on_key_press(symbol, modifiers)
+        render.w.push_handlers(on_key_press)
 
         self.keyboard = key.KeyStateHandler()
         render.w.push_handlers(self.keyboard)
@@ -137,6 +138,9 @@ class Listener(base.Task):
                 dir = 0
 
             self.set_focus(self.widgets[(i + dir) % len(self.widgets)])
+
+        if symbol == self.CAK:
+            self.focus = None
         
         if self.enabled and not self.focus:
             if symbol in self._staticBindings:
@@ -270,6 +274,18 @@ class Listener(base.Task):
         self.widgets.append(widget)
         self.set_focus(widget)
 
+    def removeWidget(self, widget):
+        self.widgets.remove(widget)
+        self.set_focus(None)
+
+    def clearWidget(self, widget):
+        t = widget.document.text
+        widget.caret.position = widget.specialStartPosition - 1
+        tt = ""
+        for i in range(0, widget.specialStartPosition):
+            tt += t[i]
+        widget.document.text = tt
+
     def set_focus(self, focus):
         if self.focus:
             self.focus.caret.visible = False
@@ -284,6 +300,10 @@ class Listener(base.Task):
     def on_text(self, text):
         if self.focus:
             if text == '\r': return
+            if self.focus.caret.position < self.focus.specialStartPosition:
+                self.focus.caret.position = self.focus.specialStartPosition
+                self.focus.caret.mark = self.focus.specialStartPosition + 1
+                return
             self.focus.caret.on_text(text)
             self.focus.caret.position = max(self.focus.caret.position,\
                                             self.focus.specialStartPosition)

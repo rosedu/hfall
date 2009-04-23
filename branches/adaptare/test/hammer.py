@@ -96,8 +96,8 @@ class Hammer(base.Task):
 ##                                  text = ">> ", startPos = 3)
 ##        self.listener.addWidget(self.tf2) # to have mouse interaction with it
 
-        self.memo = GUI.HMemo(self.render.batch, 50, 50, 142, 120,\
-                            text = "")
+##        self.memo = GUI.HMemo(self.render.batch, 50, 50, 142, 120,\
+##                            text = "")
         self.frame = 0
         
     def stop(self, kernel):
@@ -110,14 +110,14 @@ class Hammer(base.Task):
         pass
 
     def run(self, kernel):
-        self.frame += 1
-        if self.frame % 100 == 0:
-            self.memo.addLine(str(self.frame))
-            print "adding", self.frame
-            if self.frame > 1000:
-                print self.memo.getText()
-                self.memo.clearText()
-                self.frame = 0
+##        self.frame += 1
+##        if self.frame % 100 == 0:
+##            self.memo.addLine(str(self.frame))
+##            print "adding", self.frame
+##            if self.frame > 1000:
+##                print self.memo.getText()
+##                self.memo.clearText()
+##                self.frame = 0
         pass
 
     def name(self):

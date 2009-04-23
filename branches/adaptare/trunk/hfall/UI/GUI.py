@@ -10,10 +10,12 @@ __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
 import pyglet
 
-class HPanel:
+import base
+
+class HComponent:
     """
-    The HPanel class will hold the implementation details for the Hammerfall
-    Panel.
+    The HComponent class will hold the implementation details for the
+    Hammerfall GUI Component.
     
     """
     def __init__(self, batch, x, y, w, h, color = (200, 200, 200, 255)):
@@ -23,20 +25,52 @@ class HPanel:
         self.w = w
         self.h = h
         self.vertex_list = batch.add(4, pyglet.gl.GL_QUADS, None,
-            ('v2i', [x, y, x + w, y, x + w, y + h, x, y + h]),
-            ('c4B', color * 4)
-        )
+                ('v2i', [x, y, x + w, y, x + w, y + h, x, y + h]),
+                ('c4B', color * 4)
+            )
 
+class HPanel(HComponent):
+    """
+    The HPanel class will hold the implementation details for the Hammerfall
+    Panel.
+    
+    """
+    def __init__(self, batch, x, y, w, h, color = (200, 200, 200, 255)):
+        HComponent.__init__(self, batch, x, y, w, h, color)
+        self.componentlist = []
 
-class HLabel(HPanel):
+    def addMemo(self, x, y, w, h, bcolor = (200, 200, 200, 255),
+                fcolor = (0, 0, 0, 255), text = 'HMemo', border = 0):
+        x = self.x + x
+        y = self.y + self.h - y - h
+        self.componentlist.append(HMemo(self.batch, x, y, w, h,
+                                            bcolor, fcolor, border, text))
+
+    def addLabel(self, x, y, w, h, bcolor = (200, 200, 200, 255),
+                 fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False):
+        x = self.x + x
+        y = self.y + self.h - y - h
+        self.componentlist.append(HMemo(self.batch, x, y, w, h, bcolor,
+                                        fcolor, text, multiline))
+    def addTextField(self, x, y, w, h, bcolor = (200, 200, 200, 255),
+                     fcolor = (0, 0, 0, 255), text = 'Text Field',
+                     border = 0, multiline = False, startPos = 0):
+        x = self.x + x
+        y = self.y + self.h - y - h
+        tf = HTextField(self.batch, x, y, w, h, bcolor,
+                        fcolor, border, text, multiline, startPos)
+        self.componentlist.append(tf)
+        return tf
+
+class HLabel(HComponent):
     """
     The HLabel class will hold the implementation details for the Hammerfall
     Label.
     
     """
     def __init__(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
-                 fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False):
-        HPanel.__init__(self, batch, x, y, w, h, bcolor)
+                 fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False,):
+        HComponent.__init__(self, batch, x, y, w, h, bcolor)
         self._text = text
         self._label = pyglet.text.Label(text, x = x, y = y,\
                                         color = fcolor, batch = batch,\
@@ -59,7 +93,7 @@ class HLabel(HPanel):
         self._set_position()
         self._label.end_update()
 
-class HTextField(HPanel):
+class HTextField(HComponent):
     """
     The HPanel class will hold the implementation details for the Hammerfall
     TextField.
@@ -68,7 +102,7 @@ class HTextField(HPanel):
     def __init__(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
                  fcolor = (0, 0, 0, 255), border = 1, text = 'HTextField',
                  multiline = False, startPos = 0):
-        HPanel.__init__(self, batch, x, y, w, h, bcolor)
+        HComponent.__init__(self, batch, x, y, w, h, bcolor)
         self.document = pyglet.text.document.UnformattedDocument(text)
         self.document.set_style(0, len(self.document.text),
                                  dict(color = fcolor))
@@ -84,7 +118,7 @@ class HTextField(HPanel):
                (0 < y - self._layout.y < self._layout.height)
 
 
-class HMemo(HPanel):
+class HMemo(HComponent):
     """
     This class will hold the implementation for a textbox in which the text will
     scroll from bottom to top.
@@ -92,7 +126,7 @@ class HMemo(HPanel):
     """
     def __init__(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
                  fcolor = (0, 0, 0, 255), border = 0, text = 'HTextField'):
-        HPanel.__init__(self, batch, x, y, w, h, bcolor)
+        HComponent.__init__(self, batch, x, y, w, h, bcolor)
         self._text = text
         self._document = pyglet.text.document.UnformattedDocument(text)
         self._document.set_style(0, len(self._document.text),
@@ -123,3 +157,75 @@ class HMemo(HPanel):
 
     def clearText(self):
         self.setText("")
+
+class GUIManager(base.Task):
+    def __init__(self, render):
+        self.widgets = []
+        self.batches = {}
+        self.enables = []
+        self.render = render
+        self.localbatch = pyglet.graphics.Batch()
+        self.batches['local'] = localbatch
+
+        def GUIRender():
+            for batchenable in self.enables:
+                if batchenable[1]:
+                    self.batches[batchenable[0]].draw()
+        self.render.addOrthoRenderingFunction(kernel, consoleRender)
+
+    def start(self, kernel):
+        kernel.log.msg("GUI")
+
+    def stop(self, kernel):
+        kernel.log.msg("No GUI")
+
+    def pause(self, kernel):
+        pass
+
+    def resume(self, kernel):
+        pass
+
+    def run(self, kernel):
+        pass
+
+    def name(self):
+        return "GUI"
+
+    def addMemo(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
+                fcolor = (0, 0, 0, 255), text = 'HMemo', border = 0):
+        if batch == None:
+            batch = 'local'
+        if batch not in self.batches.keys():
+            self.batches[batch] = pyglet.graphics.Batch()
+            self.enables.append((batch, True))
+        self.widgets.append(HMemo(self.batch, x, y, w, h,
+                                            bcolor, fcolor, border, text))
+
+    def addLabel(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
+                 fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False):
+        if batch == None:
+            batch = 'local'
+        if batch not in self.batches.keys():
+            self.batches[batch] = pyglet.graphics.Batch()
+            self.enables.append((batch, True))
+        self.widgets.append(HMemo(self.batch, x, y, w, h, bcolor,
+                                        fcolor, text, multiline))
+    def addTextField(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
+                     fcolor = (0, 0, 0, 255), text = 'Text Field',
+                     border = 0, multiline = False, startPos = 0):
+        if batch == None:
+            batch = 'local'
+        if batch not in self.batches.keys():
+            self.batches[batch] = pyglet.graphics.Batch()
+            self.enables.append((batch, True))
+        self.widgets.append(HTextField(self.batch, x, y, w, h, bcolor,
+                                             fcolor, border, text, multiline,
+                                             startPos))
+
+    def addPanel(self, batch, x, y, w, h, color = (200, 200, 200, 255)):
+        if batch == None:
+            batch = 'local'
+        if batch not in self.batches.keys():
+            self.batches[batch] = pyglet.graphics.Batch()
+            self.enables.append((batch, True))
+        self.widgets.append(HPanel(batch, x, y, w, h, color))
