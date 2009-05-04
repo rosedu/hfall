@@ -13,7 +13,7 @@ import base
 import GUI
 import Listener
 
-CPH = 25
+CPH = 55
 
 class Console(base.Task):
     """

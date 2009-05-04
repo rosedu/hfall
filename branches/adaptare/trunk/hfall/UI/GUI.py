@@ -69,7 +69,7 @@ class HLabel(HComponent):
     
     """
     def __init__(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
-                 fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False,):
+                 fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False):
         HComponent.__init__(self, batch, x, y, w, h, bcolor)
         self._text = text
         self._label = pyglet.text.Label(text, x = x, y = y,\
@@ -157,75 +157,3 @@ class HMemo(HComponent):
 
     def clearText(self):
         self.setText("")
-
-class GUIManager(base.Task):
-    def __init__(self, render):
-        self.widgets = []
-        self.batches = {}
-        self.enables = []
-        self.render = render
-        self.localbatch = pyglet.graphics.Batch()
-        self.batches['local'] = localbatch
-
-        def GUIRender():
-            for batchenable in self.enables:
-                if batchenable[1]:
-                    self.batches[batchenable[0]].draw()
-        self.render.addOrthoRenderingFunction(kernel, consoleRender)
-
-    def start(self, kernel):
-        kernel.log.msg("GUI")
-
-    def stop(self, kernel):
-        kernel.log.msg("No GUI")
-
-    def pause(self, kernel):
-        pass
-
-    def resume(self, kernel):
-        pass
-
-    def run(self, kernel):
-        pass
-
-    def name(self):
-        return "GUI"
-
-    def addMemo(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
-                fcolor = (0, 0, 0, 255), text = 'HMemo', border = 0):
-        if batch == None:
-            batch = 'local'
-        if batch not in self.batches.keys():
-            self.batches[batch] = pyglet.graphics.Batch()
-            self.enables.append((batch, True))
-        self.widgets.append(HMemo(self.batch, x, y, w, h,
-                                            bcolor, fcolor, border, text))
-
-    def addLabel(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
-                 fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False):
-        if batch == None:
-            batch = 'local'
-        if batch not in self.batches.keys():
-            self.batches[batch] = pyglet.graphics.Batch()
-            self.enables.append((batch, True))
-        self.widgets.append(HMemo(self.batch, x, y, w, h, bcolor,
-                                        fcolor, text, multiline))
-    def addTextField(self, batch, x, y, w, h, bcolor = (200, 200, 200, 255),
-                     fcolor = (0, 0, 0, 255), text = 'Text Field',
-                     border = 0, multiline = False, startPos = 0):
-        if batch == None:
-            batch = 'local'
-        if batch not in self.batches.keys():
-            self.batches[batch] = pyglet.graphics.Batch()
-            self.enables.append((batch, True))
-        self.widgets.append(HTextField(self.batch, x, y, w, h, bcolor,
-                                             fcolor, border, text, multiline,
-                                             startPos))
-
-    def addPanel(self, batch, x, y, w, h, color = (200, 200, 200, 255)):
-        if batch == None:
-            batch = 'local'
-        if batch not in self.batches.keys():
-            self.batches[batch] = pyglet.graphics.Batch()
-            self.enables.append((batch, True))
-        self.widgets.append(HPanel(batch, x, y, w, h, color))

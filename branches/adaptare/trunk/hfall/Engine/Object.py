@@ -36,7 +36,7 @@ class Object:
     def setModelView(self):
         glLoadMatrix(self.modelView)
 
-    def setProjectio(self):
+    def setProjection(self):
         glMatrixMode(GL_PROJECTION)
         glLoadMatrix(self.projection)
         glMatrixMode(GL_MODELVIEW)
