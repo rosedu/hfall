@@ -35,6 +35,7 @@ class Listener(base.Task):
         self._mouseMotionBindings = [] # mouse events
         self.render = render #used for passing commands to the render
         self.widgets = [] #list of 2D widgets - only for focus setup
+        self.scrollableWidgets = [] 
         self.text_cursor = self.render.w.get_system_mouse_cursor("text")
         self.focus = None
         self.enabled = False
@@ -62,7 +63,17 @@ class Listener(base.Task):
         def on_mouse_motion(x, y, dx, dy):
             self.on_mouse_motion(x, y, dx, dy)
         render.w.push_handlers(on_mouse_motion)
-
+        
+        def on_mouse_enter(x, y):
+            pass
+            
+        def on_mouse_leave(x, y):
+            pass
+            
+        def on_mouse_scroll(x, y, scroll_x, scroll_y):
+            self.on_mouse_scroll(x, y, scroll_x, scroll_y)
+        render.w.push_handlers(on_mouse_scroll)
+            
         def on_key_press(symbol, modifiers):
             self.on_key_press(symbol, modifiers)
         render.w.push_handlers(on_key_press)
@@ -223,6 +234,12 @@ class Listener(base.Task):
                 if action(x, y, dx, dy) == HANDLED:
                     break;
         return pyglet.event.EVENT_HANDLED
+        
+    def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
+        for widget in self.scrollableWidgets:
+            if widget.hit_test(x, y):
+                widget.scroll(scroll_x, scroll_y)
+            
 
     def check_keyboard(self, keyboard):
         if self.enabled and not self.focus:
@@ -276,6 +293,12 @@ class Listener(base.Task):
     def removeWidget(self, widget):
         self.widgets.remove(widget)
         self.set_focus(None)
+        
+    def addScrollableWidget(self, widget):
+        self.scrollableWidgets.append(widget)
+
+    def removeScrollableWidget(self, widget):
+        self.scrollableWidgets.remove(widget)
 
     def clearWidget(self, widget):
         t = widget.document.text

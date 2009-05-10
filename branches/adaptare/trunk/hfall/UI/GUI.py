@@ -173,3 +173,10 @@ class HMemo(HComponent):
 
     def clearText(self):
         self.setText("")
+        
+    def hit_test(self, x, y):
+        return (0 < x - self._layout.x < self._layout.width) and\
+               (0 < y - self._layout.y < self._layout.height)
+               
+    def scroll (self, dx, dy):
+        pass

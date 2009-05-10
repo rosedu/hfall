@@ -45,9 +45,11 @@ class Console(base.Task):
             self.active = not self.active
             if self.active:
                 self.listener.addWidget(self.tf)
+                self.listener.addScrollableWidget(self.memo)
                 self.listener.clearWidget(self.tf)
             else:
                 self.listener.removeWidget(self.tf)
+                self.listener.removeScrollableWidget(self.memo)
                 self.listener.focus = None
             return pyglet.event.EVENT_HANDLED
         listener.staticBind(kernel, activationKey, consoleActivationChange)
