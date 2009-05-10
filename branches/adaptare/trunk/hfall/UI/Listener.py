@@ -38,7 +38,6 @@ class Listener(base.Task):
         self.text_cursor = self.render.w.get_system_mouse_cursor("text")
         self.focus = None
         self.enabled = False
-        #self.CAK = None #key for console activation
 
         def on_text(text):
             self.on_text(text)
@@ -138,10 +137,9 @@ class Listener(base.Task):
                 dir = 0
 
             self.set_focus(self.widgets[(i + dir) % len(self.widgets)])
-        print symbol
 
         if self.focus:
-            self.focus.parseforAction(symbol)
+            if self.focus.parseforAction(symbol): return
         
         if self.enabled and not self.focus:
             if symbol in self._staticBindings:
@@ -300,8 +298,8 @@ class Listener(base.Task):
 
     def on_text(self, text):
         if self.focus:
-            print 'asdf', self.focus.parseforAction(text)
             if self.focus.parseforAction(text): return
+            print text
             if self.focus.caret.position < self.focus.specialStartPosition:
                 self.focus.caret.position = self.focus.specialStartPosition
                 self.focus.caret.mark = self.focus.specialStartPosition + 1

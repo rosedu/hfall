@@ -42,7 +42,6 @@ class Console(base.Task):
                                        multiline = True)
         
         def consoleActivationChange(symbol, modifier):
-            print 'changing activation'
             self.active = not self.active
             if self.active:
                 self.listener.addWidget(self.tf)
@@ -58,15 +57,14 @@ class Console(base.Task):
                 self.batch.draw()
         self.render.addOrthoRenderingFunction(kernel, consoleRender)
 
-##        def consoleGetMsg():
-##            print "msg got"
-##        self.tf.addActionChar()
+        def consoleGetMsg():
+            print "msg got", self.tf.document.text
+            self.listener.clearWidget(self.tf)
+        self.tf.addActionChar(pyglet.window.key.ENTER, consoleGetMsg)
 
         def consoleDeactivation():
-            print self.active
             if self.active:
                 consoleActivationChange(None, None)
-            print self.active
         self.tf.addActionChar(activationKey, consoleDeactivation)
 
     def start(self, kernel):

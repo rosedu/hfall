@@ -124,7 +124,6 @@ class HTextField(HComponent):
         self.actions[char] = action
 
     def parseforAction(self, char):
-        print char, '<--'
         if char in self.actions.keys():
             self.actions[char]()
             return Listener.HANDLED
