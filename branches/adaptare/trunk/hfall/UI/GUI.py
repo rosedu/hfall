@@ -11,6 +11,7 @@ __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 import pyglet
 
 import base
+import Listener
 
 class HComponent:
     """
@@ -52,6 +53,7 @@ class HPanel(HComponent):
         y = self.y + self.h - y - h
         self.componentlist.append(HMemo(self.batch, x, y, w, h, bcolor,
                                         fcolor, text, multiline))
+        
     def addTextField(self, x, y, w, h, bcolor = (200, 200, 200, 255),
                      fcolor = (0, 0, 0, 255), text = 'Text Field',
                      border = 0, multiline = False, startPos = 0):
@@ -103,6 +105,7 @@ class HTextField(HComponent):
                  fcolor = (0, 0, 0, 255), border = 1, text = 'HTextField',
                  multiline = False, startPos = 0):
         HComponent.__init__(self, batch, x, y, w, h, bcolor)
+        self.actions = {}
         self.document = pyglet.text.document.UnformattedDocument(text)
         self.document.set_style(0, len(self.document.text),
                                  dict(color = fcolor))
@@ -116,6 +119,16 @@ class HTextField(HComponent):
     def hit_test(self, x, y):
         return (0 < x - self._layout.x < self._layout.width) and\
                (0 < y - self._layout.y < self._layout.height)
+
+    def addActionChar(self, char, action):
+        self.actions[char] = action
+
+    def parseforAction(self, char):
+        print char, '<--'
+        if char in self.actions.keys():
+            self.actions[char]()
+            return Listener.HANDLED
+        return None
 
 
 class HMemo(HComponent):

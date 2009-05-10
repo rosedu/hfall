@@ -13,7 +13,7 @@ import base
 import GUI
 import Listener
 
-CPH = 55
+CPH = 25
 
 class Console(base.Task):
     """
@@ -24,7 +24,7 @@ class Console(base.Task):
     def __init__(self, kernel, render, listener, activationKey):
         self.render = render
         self.listener = listener
-        self.listener.CAK = activationKey
+        #self.listener.CAK = activationKey
         self.active = False
         self.percent = 0.5
         self.text = "Hammerfall Graphics Engine \n"
@@ -42,12 +42,14 @@ class Console(base.Task):
                                        multiline = True)
         
         def consoleActivationChange(symbol, modifier):
+            print 'changing activation'
             self.active = not self.active
             if self.active:
                 self.listener.addWidget(self.tf)
                 self.listener.clearWidget(self.tf)
             else:
                 self.listener.removeWidget(self.tf)
+                self.listener.focus = None
             return pyglet.event.EVENT_HANDLED
         listener.staticBind(kernel, activationKey, consoleActivationChange)
 
@@ -55,6 +57,17 @@ class Console(base.Task):
             if self.active:
                 self.batch.draw()
         self.render.addOrthoRenderingFunction(kernel, consoleRender)
+
+##        def consoleGetMsg():
+##            print "msg got"
+##        self.tf.addActionChar()
+
+        def consoleDeactivation():
+            print self.active
+            if self.active:
+                consoleActivationChange(None, None)
+            print self.active
+        self.tf.addActionChar(activationKey, consoleDeactivation)
 
     def start(self, kernel):
         kernel.log.msg("Console up and listening to commands")

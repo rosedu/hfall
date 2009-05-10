@@ -123,6 +123,7 @@ class Hammer(base.Task):
     def name(self):
         return "Hammer"
 
+print "a"
 render = Render.Render(800, 600, posx = 2, posy = 2, posz = -30,\
                          near = 0.0001, far = 10000)
 listener = Listener.Listener(render)
