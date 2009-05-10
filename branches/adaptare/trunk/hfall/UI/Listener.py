@@ -299,7 +299,6 @@ class Listener(base.Task):
     def on_text(self, text):
         if self.focus:
             if self.focus.parseforAction(text): return
-            print text
             if self.focus.caret.position < self.focus.specialStartPosition:
                 self.focus.caret.position = self.focus.specialStartPosition
                 self.focus.caret.mark = self.focus.specialStartPosition + 1

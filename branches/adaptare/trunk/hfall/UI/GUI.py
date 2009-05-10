@@ -44,8 +44,12 @@ class HPanel(HComponent):
                 fcolor = (0, 0, 0, 255), text = 'HMemo', border = 0):
         x = self.x + x
         y = self.y + self.h - y - h
-        self.componentlist.append(HMemo(self.batch, x, y, w, h,
-                                            bcolor, fcolor, border, text))
+       # self.componentlist.append(HMemo(self.batch, x, y, w, h,
+        #                                    bcolor, fcolor, border, text))
+        memo = HMemo(self.batch, x, y, w, h,
+                                            bcolor, fcolor, border, text)
+        self.componentlist.append(memo)
+        return memo
 
     def addLabel(self, x, y, w, h, bcolor = (200, 200, 200, 255),
                  fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False):

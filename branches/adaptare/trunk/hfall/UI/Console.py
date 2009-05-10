@@ -13,7 +13,7 @@ import base
 import GUI
 import Listener
 
-CPH = 25
+CPH = 22
 
 class Console(base.Task):
     """
@@ -34,10 +34,10 @@ class Console(base.Task):
         self.batch = pyglet.graphics.Batch()
         self.consolePanel = GUI.HPanel(self.batch, 0, self.top - self.h,
                                        self.w, self.h)
-        self.consolePanel.addMemo(0, 0, self.w, self.h - CPH,
+        self.memo = self.consolePanel.addMemo(0, 0, self.w, self.h - CPH,
                                   bcolor = (150, 150, 150, 255),
                                   text = "Welcome to Hammerfall engine!\n")
-        self.tf = self.consolePanel.addTextField(0, self.h - CPH, self.w, CPH,
+        self.tf = self.consolePanel.addTextField(0, self.h - CPH + 5, self.w, CPH,
                                        text = '> ', startPos = 2,
                                        multiline = True)
         
@@ -58,10 +58,12 @@ class Console(base.Task):
         self.render.addOrthoRenderingFunction(kernel, consoleRender)
 
         def consoleGetMsg():
-            print "msg got", self.tf.document.text
+            #print "msg got", self.tf.document.text
+            self.parseMessage()
             self.listener.clearWidget(self.tf)
         self.tf.addActionChar(pyglet.window.key.ENTER, consoleGetMsg)
-
+        
+        
         def consoleDeactivation():
             if self.active:
                 consoleActivationChange(None, None)
@@ -84,3 +86,13 @@ class Console(base.Task):
 
     def name(self):
         return "Console"
+        
+    def parseMessage(self):
+        if self.tf.document.text:
+            text = self.tf.document.text[1:]
+            text = text.lstrip()
+            textTuple = text.partition(" ")
+            command = textTuple[0]
+            args = textTuple[2]
+            self.memo.addLine(command)
+            self.memo.addLine(args)
