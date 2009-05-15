@@ -179,4 +179,6 @@ class HMemo(HComponent):
                (0 < y - self._layout.y < self._layout.height)
                
     def scroll (self, dx, dy):
-        pass
+        self._layout.begin_update()
+        self._layout.view_y = self._layout.view_y + dy * len(self._document.text)
+        self._layout.end_update()
