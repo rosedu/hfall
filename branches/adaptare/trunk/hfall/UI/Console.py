@@ -40,6 +40,17 @@ class Console(base.Task):
         self.tf = self.consolePanel.addTextField(0, self.h - CPH + 5, self.w, CPH,
                                        text = '> ', startPos = 2,
                                        multiline = True)
+        """
+        A dictionary representing the Hammerfall commands. help and set are
+        in by default. Use addCommand to add new Commands.
+        """
+        self.commands = {"help": Command("help", "<help command> for \
+information about the command", self.help),
+                         "clear": Command("clear", "<clear> to clear the text\
+ on the Console.", self.clear),
+                         "set": Command("set", "<set parameter_name\
+ parameter_value> to set a parameter with a given value. This command is not\
+ implemented yet.", None)} #the function SHOULD BE ADDED LATER
         
         def consoleActivationChange(symbol, modifier):
             self.active = not self.active
@@ -65,7 +76,6 @@ class Console(base.Task):
             self.listener.clearWidget(self.tf)
         self.tf.addActionChar(pyglet.window.key.ENTER, consoleGetMsg)
         
-        
         def consoleDeactivation():
             if self.active:
                 consoleActivationChange(None, None)
@@ -89,6 +99,10 @@ class Console(base.Task):
     def name(self):
         return "Console"
         
+    def addLine(self, line):
+        if line != None:
+            self.memo.addLine(line)
+        
     def parseMessage(self):
         if self.tf.document.text:
             text = self.tf.document.text[1:]
@@ -96,5 +110,81 @@ class Console(base.Task):
             textTuple = text.partition(" ")
             command = textTuple[0]
             args = textTuple[2]
-            self.memo.addLine(command)
-            self.memo.addLine(args)
+            commandFound = 0
+            for commandNameIter in self.commands:
+                if commandNameIter == command:
+                    commandFound = 1
+                    break
+            if commandFound == 1:
+                self.addLine("> " + command + " " + args)
+                if args:
+                    self.launchCommand(command, args)
+                else:
+                    self.launchCommand(command)
+            else:
+                self.addLine("> " + command + " " + args)
+                self.help(command)
+        
+    def addCommand(self, commandName, commandHelp, commandFunction):
+        self.commands[commandName] = Command(commandName, commandHelp, 
+                                            commandFunction)
+                                            
+    def deleteCommand(self, commandName):
+        del self.commands[commandName]
+        
+    def launchCommand(self, *parameters):
+        """
+        parameters[0] represents the actual command.
+        """
+        for commandNameIter in self.commands:
+            if commandNameIter == parameters[0]:
+                if self.commands[parameters[0]].function():
+                    self.commands[parameters[0]].function()(*parameters)
+            
+        
+    def help(self, *command):
+        """
+        Hammerfall default help command.
+        Prints out the help for a given command. If no command is given then
+        the help command help message is printed.
+        """
+        if len(command) == 1 and command[0] == "help":
+            self.addLine(self.commands["help"].help())
+            return True
+        elif len(command) > 1:
+            for commandNameIter in self.commands:
+                if commandNameIter == command[1]:
+                    self.addLine(self.commands[commandNameIter].help())
+                    return True
+        self.addLine("Command not found. Use help to find information about a \
+specific command.\n" + self.commands["help"].help())
+        return False
+    
+    def clear(self, *command):
+        """
+        Hammerfall default clear function.
+        Clears the text on the screen.
+        """
+        self.memo.clearText()
+        self.addLine("Welcome to Hammerfall engine!\n")
+
+
+class Command():
+
+    def __init__(self, commandName, commandHelp, commandFunction):
+        """
+        The Command class implements the commands of the Hammerfal Console.
+        """
+        self._name = commandName
+        self._help = commandHelp
+        self._function = commandFunction
+        
+    def name(self):
+        return self._name
+        
+    def help(self):
+        return self._name + " command details:\n" + self._help
+        
+    def function(self):
+        return self._function
+        

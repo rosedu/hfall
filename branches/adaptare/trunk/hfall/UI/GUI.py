@@ -34,7 +34,6 @@ class HPanel(HComponent):
     """
     The HPanel class will hold the implementation details for the Hammerfall
     Panel.
-    
     """
     def __init__(self, batch, x, y, w, h, color = (200, 200, 200, 255)):
         HComponent.__init__(self, batch, x, y, w, h, color)
