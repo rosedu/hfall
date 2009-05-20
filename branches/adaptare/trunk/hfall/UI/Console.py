@@ -23,6 +23,7 @@ class Console(base.Task):
     """
     def __init__(self, kernel, render, listener, activationKey):
         self.render = render
+        self.kernel = kernel
         self.listener = listener
         #self.listener.CAK = activationKey
         self.active = False
@@ -48,6 +49,8 @@ class Console(base.Task):
 information about the command", self.help),
                          "clear": Command("clear", "<clear> to clear the text\
  on the Console.", self.clear),
+                         "quit": Command("quit", "<quit> to quit Hammerfall",\
+ self.quit),
                          "set": Command("set", "<set parameter_name\
  parameter_value> to set a parameter with a given value. This command is not\
  implemented yet.", None)} #the function SHOULD BE ADDED LATER
@@ -167,6 +170,15 @@ specific command.\n" + self.commands["help"].help())
         """
         self.memo.clearText()
         self.addLine("Welcome to Hammerfall engine!\n")
+        
+    def quit(self, *command):
+        """
+        Hammerfall default quit function.
+        """
+        print 'ESC-ing'
+        self.kernel.log.msg('Application ending')
+        self.kernel.shutdown()
+        
 
 
 class Command():
