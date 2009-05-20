@@ -179,6 +179,9 @@ class HMemo(HComponent):
                (0 < y - self._layout.y < self._layout.height)
                
     def scroll (self, dx, dy):
+        font = self._layout.document.get_font()
+        lt_h = font.ascent - font.descent
         self._layout.begin_update()
-        self._layout.view_y = self._layout.view_y + dy * len(self._document.text)
+        print 
+        self._layout.view_y = self._layout.view_y + dy * lt_h
         self._layout.end_update()
