@@ -182,6 +182,5 @@ class HMemo(HComponent):
         font = self._layout.document.get_font()
         lt_h = font.ascent - font.descent
         self._layout.begin_update()
-        print 
         self._layout.view_y = self._layout.view_y + dy * lt_h
         self._layout.end_update()
