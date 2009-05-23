@@ -23,9 +23,15 @@ class Console(base.Task):
     """
     def __init__(self, kernel, render, listener, activationKey):
         try:
-           self.hFile = open("./logs/console.log", 'w')
+            self.hFile = open("./logs/console.log", 'r')
         except IOError:
-           self.hFile = None
+            self.hFile = None
+        self.history = [""]
+        self.readHistory()
+        try:
+            self.hFile = open("./logs/console.log", 'w')
+        except IOError:
+            self.hFile = None
         self.render = render
         self.kernel = kernel
         self.listener = listener
@@ -33,7 +39,6 @@ class Console(base.Task):
         self.active = False
         self.percent = 0.5
         self.text = "Hammerfall Graphics Engine \n"
-        self.history = [""]
         self.w = render.w.width
         self.h = int(render.w.height * self.percent)
         self.top = render.w.height
@@ -146,7 +151,16 @@ information about the command", self.help),
         self.history[0:]=self.history[:hSize]
         if self.hFile is not None:
             for message in self.history:
-                self.hFile.write(message + "\n")
+                self.hFile.write(message + '\n')
+
+    def readHistory(self):
+        if self.hFile is not None:
+            self.history = self.hFile.readlines()
+            self.hFile.close()
+        for i in range(len(self.history)):
+            self.history[i] = self.history[i][:-1]
+        if (len(self.history) == 0):
+            self.history = [""]
 
     def addCommand(self, commandName, commandHelp, commandFunction):
         self.commands[commandName] = Command(commandName, commandHelp, 
