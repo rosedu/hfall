@@ -22,6 +22,10 @@ class Console(base.Task):
 
     """
     def __init__(self, kernel, render, listener, activationKey):
+        try:
+           self.hFile = open("./logs/console.log", 'w')
+        except IOError:
+           self.hFile = None
         self.render = render
         self.kernel = kernel
         self.listener = listener
@@ -29,6 +33,7 @@ class Console(base.Task):
         self.active = False
         self.percent = 0.5
         self.text = "Hammerfall Graphics Engine \n"
+        self.history = [""]
         self.w = render.w.width
         self.h = int(render.w.height * self.percent)
         self.top = render.w.height
@@ -88,6 +93,7 @@ information about the command", self.help),
         kernel.log.msg("Console up and listening to commands")
 
     def stop(self, kernel):
+        self.writeHistory(10)
         kernel.log.msg("Console down")
 
     def pause(self, kernel):
@@ -105,7 +111,10 @@ information about the command", self.help),
     def addLine(self, line):
         if line != None:
             self.memo.addLine(line)
-        
+    def getLine(self):
+        line=self.memo.getText()
+        return line
+
     def parseMessage(self):
         if self.tf.document.text:
             text = self.tf.document.text[1:]
@@ -114,6 +123,10 @@ information about the command", self.help),
             command = textTuple[0]
             args = textTuple[2]
             commandFound = 0
+            currentCommand = command + " " + args
+            if self.history[0] != currentCommand:
+                self.history[1:] = self.history[0:]
+                self.history[0] = command + " " + args
             for commandNameIter in self.commands:
                 if commandNameIter == command:
                     commandFound = 1
@@ -127,7 +140,14 @@ information about the command", self.help),
             else:
                 self.addLine("> " + command + " " + args)
                 self.help(command)
-        
+    
+    def writeHistory(self,hSize):
+        #log last n console commands
+        self.history[0:]=self.history[:hSize]
+        if self.hFile is not None:
+            for message in self.history:
+                self.hFile.write(message + "\n")
+
     def addCommand(self, commandName, commandHelp, commandFunction):
         self.commands[commandName] = Command(commandName, commandHelp, 
                                             commandFunction)
@@ -179,7 +199,6 @@ specific command.\n" + self.commands["help"].help())
         self.kernel.log.msg('Application ending')
         self.kernel.shutdown()
         
-
 
 class Command():
 
