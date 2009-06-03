@@ -33,6 +33,7 @@ class Console(base.Task):
         except IOError:
             self.hFile = None
         self.render = render
+        self.window = self.render.w
         self.kernel = kernel
         self.listener = listener
         #self.listener.CAK = activationKey
@@ -52,8 +53,8 @@ class Console(base.Task):
                                        text = '> ', startPos = 2,
                                        multiline = True)
         """
-        A dictionary representing the Hammerfall commands. help and set are
-        in by default. Use addCommand to add new Commands.
+        A dictionary representing the Hammerfall commands. help, clear, quit
+        and set are in by default. Use addCommand to add new Commands.
         """
         self.commands = {"help": Command("help", "<help command> for \
 information about the command", self.help),
@@ -93,6 +94,20 @@ information about the command", self.help),
             if self.active:
                 consoleActivationChange(None, None)
         self.tf.addActionChar(activationKey, consoleDeactivation)
+        
+        @self.window.event
+        def on_resize(width, height):
+            """
+            When the window is resized the console coordinates and dimension 
+            are updated. This means updating the HPanel, HMemo and HTextField 
+            components of the console.
+            """
+            self.w = self.window.width
+            self.h = int(self.window.height * self.percent)
+            self.top = self.window.height
+            self.consolePanel.redraw(0, self.top - self.h, self.w, self.h)
+            self.memo.redraw(0, self.top - self.h + CPH, self.w, self.h - CPH)
+            self.tf.redraw(0, self.top - self.h - 5, self.w, CPH)
 
     def start(self, kernel):
         kernel.log.msg("Console up and listening to commands")

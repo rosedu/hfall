@@ -29,6 +29,12 @@ class HComponent:
                 ('v2i', [x, y, x + w, y, x + w, y + h, x, y + h]),
                 ('c4B', color * 4)
             )
+            
+    def setVertices(self, x, y, w, h):
+        """
+        This function will set new coordinates for a HComponent.
+        """
+        self.vertex_list.vertices = [x, y, x + w, y, x + w, y + h, x, y + h];
 
 class HPanel(HComponent):
     """
@@ -38,6 +44,13 @@ class HPanel(HComponent):
     def __init__(self, batch, x, y, w, h, color = (200, 200, 200, 255)):
         HComponent.__init__(self, batch, x, y, w, h, color)
         self.componentlist = []
+        
+    def redraw(self, x, y, w, h):
+        self.setVertices(x, y, w, h);
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
 
     def addMemo(self, x, y, w, h, bcolor = (200, 200, 200, 255),
                 fcolor = (0, 0, 0, 255), text = 'HMemo', border = 0):
@@ -82,6 +95,14 @@ class HLabel(HComponent):
                                         multiline = multiline, width = w,\
                                         height = h)
         self._set_text_position()
+        
+    def redraw(self, x, y, w, h):
+        #Note: This is not fully tested.
+        self.setVertices(x, y, w, h)
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
 
     def _set_text_position(self):
         c_w = self._label.content_width #content width
@@ -109,6 +130,7 @@ class HTextField(HComponent):
                  multiline = False, startPos = 0):
         HComponent.__init__(self, batch, x, y, w, h, bcolor)
         self.actions = {}
+        self._border = border
         self.document = pyglet.text.document.UnformattedDocument(text)
         self.document.set_style(0, len(self.document.text),
                                  dict(color = fcolor))
@@ -118,6 +140,22 @@ class HTextField(HComponent):
         self._layout.x = x + border
         self._layout.y = y - border # - because the alignment is top
         self.specialStartPosition = startPos
+        
+    def redraw(self, x, y, w, h):
+        """
+        Redraws a HTextField object.
+        """
+        #Note: This is not fully tested.
+        self.setVertices(x, y, w, h)
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self._layout.begin_update()
+        self._layout.x = x + self._border
+        self._layout.y = y - self._border
+        self._layout.height = self.h
+        self._layout.end_update()
 
     def hit_test(self, x, y):
         return (0 < x - self._layout.x < self._layout.width) and\
@@ -143,6 +181,7 @@ class HMemo(HComponent):
                  fcolor = (0, 0, 0, 255), border = 0, text = 'HTextField'):
         HComponent.__init__(self, batch, x, y, w, h, bcolor)
         self._text = text
+        self._border = border
         self._document = pyglet.text.document.UnformattedDocument(text)
         self._document.set_style(0, len(self._document.text),
                                  dict(color = fcolor))
@@ -152,6 +191,22 @@ class HMemo(HComponent):
         self._layout.x = x + border
         self._layout.y = y + border #+ because the alignment is bottom
         self._layout.view_y = self._layout.height - self._layout.content_height
+        
+    def redraw(self, x, y, w, h):
+        """
+        Redraws a HMemo object.
+        """
+        #Note: This is not fully tested.
+        self.setVertices(x, y, w, h)
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self._layout.begin_update()
+        self._layout.x = x + self._border
+        self._layout.y = y + self._border
+        self._layout.height = self.h - self._border
+        self._layout.end_update()
 
     def addLine(self, line):
         self._text = self._text + "\n" + line
