@@ -1,10 +1,11 @@
 """
-Hammerfall Console class. This class will be used to implement a real time
-debugging console.
-
+Hammerfall Console and Command class. This class will be used to implement a 
+real time debugging console. 
+Version 0.8 has a working command logging system (in logs/console.log) and 4 
+commands already implemented (quit, set, clear and help). 
 """
 
-__version__ = '0.7'
+__version__ = '0.8'
 __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
 import pyglet
