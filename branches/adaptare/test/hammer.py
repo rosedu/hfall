@@ -79,7 +79,7 @@ class Hammer(base.Task):
         hf = Terrain.HeightField(size=64)
         for i in range(65):
             for j in range(65):
-                hf.setHeight(i, j, (1-math.exp(math.sin((i+j/2.1)/13.0))))
+                hf.setHeight(i, j, (1-math.exp(math.sin((i+j/2.1)/42.0))))
         patch = Terrain.TerrainPatch(x_origin = -100, hfield = hf)
         terrain.addPatch(kernel, patch)
         kernel.insert(terrain) # we can insert other modules anywhere we want
@@ -123,7 +123,7 @@ class Hammer(base.Task):
     def name(self):
         return "Hammer"
 
-render = Render.Render(800, 600, posx = 2, posy = 2, posz = -30,\
+render = Render.Render(800, 600, posx = 0, posy = 0, posz = 0,\
                          near = 0.0001, far = 10000)
 listener = Listener.Listener(render)
 console = Console.Console(hfk, render, listener,\
