@@ -1,6 +1,6 @@
 """
 Hammerfall Resource Manager class. 
-Note: The classes in these files are NOT tested yet.
+Note: The classes in this file are NOT tested yet.
 """
 
 __version__ = '0.1'

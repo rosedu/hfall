@@ -36,6 +36,7 @@ import Listener
 import Console
 import Terrain
 import GUI
+from pyglet.gl import *
 
 class Hammer(base.Task):
     def __init__(self, render, listener, console):
@@ -75,7 +76,37 @@ class Hammer(base.Task):
             if modifiers & pyglet.window.key.LSHIFT:
                 self.render.camera.rotate(1, 0, 0, math.pi)
         self.listener.mouseBind(kernel, f4, Listener.MOUSE_PRESS)
-
+        
+        def drawCube():
+            glPushMatrix()
+            glTranslatef(30.0, 30.0, 30.0)
+            pyglet.graphics.draw_indexed(12, GL_TRIANGLES, range(12), 
+                                        ('v3f', (0.0, 30.0, 0.0,\
+                                  -30.0, -30.0, 30.0,\
+                                30.0, -30.0, 30.0,\
+                                  0.0, 30.0, 0.0,\
+                                  30.0, -30.0, 30.0,\
+                                  30.0, -30.0, 30.0,\
+                                  0.0, 30.0, 0.0,\
+                                  30.0, -30.0, -30.0,\
+                                  -30.0, -30.0, -30.0,\
+                                  0.0, 30.0, 0.0,\
+                                  -30.0, -30.0, -30.0,\
+                                  -30.0, -30.0, 30.0)),\
+                        ('c3B', (255, 0, 0,\
+                                 255, 0, 0,\
+                                 0, 255, 255,\
+                                 0, 255, 255,\
+                                 0, 255, 0,\
+                                 0, 255, 0,\
+                                 255, 0, 255,\
+                                 255, 0, 255,\
+                                 0, 0, 255,\
+                                 0, 0, 255,\
+                                 255, 255, 0,\
+                                 255, 255, 0)))
+            glPopMatrix()
+        self.render.addRenderingFunction(kernel, drawCube)
         terrain = Terrain.Terrain(self.render)
         patch = Terrain.TerrainPatch()
         terrain.addPatch(kernel, patch)
@@ -126,7 +157,8 @@ class Hammer(base.Task):
     def name(self):
         return "Hammer"
 
-render = Render.Render(800, 600, posx = -2, posy = 6, posz = -30,\
+    
+render = Render.Render(800, 600, posx = -10, posy = 30, posz = -30,\
                          near = 0.0001, far = 10000)
 listener = Listener.Listener(render)
 console = Console.Console(hfk, render, listener,\
