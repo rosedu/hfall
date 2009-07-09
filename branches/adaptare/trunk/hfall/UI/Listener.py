@@ -136,18 +136,19 @@ class Listener(base.Task):
 
     def on_key_press(self, symbol, modifiers):
         if symbol == pyglet.window.key.TAB:
-            if modifiers & pyglet.window.key.MOD_SHIFT:
-                dir = -1
-            else:
-                dir = 1
+            if len(self.widgets) != 0:             
+                if modifiers & pyglet.window.key.MOD_SHIFT:
+                    dir = -1
+                else:
+                    dir = 1
 
-            if self.focus in self.widgets:
-                i = self.widgets.index(self.focus)
-            else:
-                i = 0
-                dir = 0
-
-            self.set_focus(self.widgets[(i + dir) % len(self.widgets)])
+                if self.focus in self.widgets:
+                    i = self.widgets.index(self.focus)
+                else:
+                    i = 0
+                    dir = 0
+                    
+                self.set_focus(self.widgets[(i + dir) % len(self.widgets)])
 
         if self.focus:
             if self.focus.parseforAction(symbol): return
