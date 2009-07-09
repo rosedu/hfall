@@ -19,6 +19,7 @@ __version__ = "0.7"
 __author__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
 import sys
+import os
 sys.path.insert(0, "../trunk/hfall")
 sys.path.insert(0, "../trunk/hfall/Engine")
 sys.path.insert(0, "../trunk/hfall/UI")
