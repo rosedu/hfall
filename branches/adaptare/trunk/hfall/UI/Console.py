@@ -58,22 +58,18 @@ class Console(base.Task):
         A dictionary representing the Hammerfall commands. help, clear, quit
         and set are in by default. Use addCommand to add new Commands.
         """
-        self.commands = {"help": Command("help", "<help command> for \
-                            information about the command", self.help),\
+        self.commands = {"help": Command("help", "<help command> for\
+information about the command""", self.help),
                          "clear": Command("clear", "<clear> to clear the\
-                            text on the Console.", self.clear), \
+text on the Console.", self.clear), 
                          "quit": Command("quit", "<quit> to quit Hammerfall",\
                              self.quit),\
                          "set": Command("set", "<set parameter_name\
-                                         parameter_value> to set a \
-                                         parameter with a given value.\
-                                         This command is not\
-                                         implemented yet.", None)}
-                            #the function SHOULD BE ADDED LATER
-        
-        listener.staticBind(kernel, pyglet.window.key.UP, self.browseHistory)
+parameter_value> to set a parameter with a given value. This command is not\
+implemented yet.", None)} #the function SHOULD BE ADDED LATER
 
         def consoleActivationChange(symbol, modifier):
+            print "i2n"
             self.active = not self.active
             if self.active:
                 self.listener.addWidget(self.tf)
@@ -101,6 +97,24 @@ class Console(base.Task):
             if self.active:
                 consoleActivationChange(None, None)
         self.tf.addActionChar(activationKey, consoleDeactivation)
+
+        def browseHistory(symbol):
+            print "in"
+            if self.active:
+                if symbol == pyglet.window.key.UP:
+                    print "UP"
+                else:
+                    print "DOWN"
+                    
+        def browseHistoryUp():
+            if self.active:
+                browseHistory(pyglet.window.key.UP)
+        self.tf.addActionChar(pyglet.window.key.UP, browseHistoryUp)
+
+        def browseHistoryDown():
+            if self.active:
+                browseHistory(pyglet.window.key.DOWN)
+        self.tf.addActionChar(pyglet.window.key.DOWN, browseHistoryUp)        
         
         @self.window.event
         def on_resize(width, height):
@@ -183,12 +197,6 @@ class Console(base.Task):
         if (len(self.history) == 0):
             self.history = [""]
 
-    def browseHistory(self,direction):
-        if self.active is not False:
-            if direction is pyglet.window.key.UP:
-                print "UP"
-            else:
-                print "DOWN"
     def addCommand(self, commandName, commandHelp, commandFunction):
         self.commands[commandName] = Command(commandName, commandHelp, 
                                             commandFunction)

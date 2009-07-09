@@ -333,6 +333,9 @@ class Listener(base.Task):
 
     def on_text_motion(self, motion):
         if self.focus:
+            #print self.focus
+            #if motion in self.focus.forbidden_motions:
+            #    self.focus.replacement(motion)
             if motion == pyglet.window.key.MOTION_BACKSPACE and\
                self.focus.caret.position == self.focus.specialStartPosition:
                 if self.focus.caret.mark is None:

@@ -169,6 +169,7 @@ class HTextField(HComponent):
             self.actions[char]()
             return Listener.HANDLED
         return None
+    
     def setText(self, text):
         self._text = text
         self._layout.begin_update()
