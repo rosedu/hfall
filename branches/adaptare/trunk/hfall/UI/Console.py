@@ -59,14 +59,17 @@ class Console(base.Task):
         and set are in by default. Use addCommand to add new Commands.
         """
         self.commands = {"help": Command("help", "<help command> for \
-information about the command", self.help),
-                         "clear": Command("clear", "<clear> to clear the text\
- on the Console.", self.clear),
+                            information about the command", self.help),\
+                         "clear": Command("clear", "<clear> to clear the\
+                            text on the Console.", self.clear), \
                          "quit": Command("quit", "<quit> to quit Hammerfall",\
- self.quit),
+                             self.quit),\
                          "set": Command("set", "<set parameter_name\
- parameter_value> to set a parameter with a given value. This command is not\
- implemented yet.", None)} #the function SHOULD BE ADDED LATER
+                                         parameter_value> to set a \
+                                         parameter with a given value.\
+                                         This command is not\
+                                         implemented yet.", None)}
+                            #the function SHOULD BE ADDED LATER
         
         listener.staticBind(kernel, pyglet.window.key.UP, self.browseHistory)
 

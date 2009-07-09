@@ -82,7 +82,7 @@ class Log:
     def __init__(self, sys_log='logs/system.log', error_log='logs/error.log'):
         """Log system initialization"""
         try:
-            if os.path.exists(logs) == 0:
+            if os.path.exists('logs') == 0:
                 os.mkdir('logs')
             self.sys = open(sys_log, 'a+')
             self.err = open(error_log, 'a+')
