@@ -169,7 +169,12 @@ class HTextField(HComponent):
             self.actions[char]()
             return Listener.HANDLED
         return None
-
+    def setText(self, text):
+        self._text = text
+        self._layout.begin_update()
+        self._layout.document.text = self._text
+        self._layout.end_update()
+        self._layout.view_y = self._layout.height - self._layout.content_height
 
 class HMemo(HComponent):
     """

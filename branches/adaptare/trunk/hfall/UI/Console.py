@@ -39,6 +39,7 @@ class Console(base.Task):
         self.listener = listener
         #self.listener.CAK = activationKey
         self.active = False
+        self.counter = 0
         self.percent = 0.5
         self.text = "Hammerfall Graphics Engine \n"
         self.w = render.w.width
@@ -67,6 +68,8 @@ information about the command", self.help),
  parameter_value> to set a parameter with a given value. This command is not\
  implemented yet.", None)} #the function SHOULD BE ADDED LATER
         
+        listener.staticBind(kernel, pyglet.window.key.UP, self.browseHistory)
+
         def consoleActivationChange(symbol, modifier):
             self.active = not self.active
             if self.active:
@@ -135,7 +138,6 @@ information about the command", self.help),
     def getLine(self):
         line=self.memo.getText()
         return line
-
     def parseMessage(self):
         if self.tf.document.text:
             text = self.tf.document.text[1:]
@@ -178,6 +180,12 @@ information about the command", self.help),
         if (len(self.history) == 0):
             self.history = [""]
 
+    def browseHistory(self,direction):
+        if self.active is not False:
+            if direction is pyglet.window.key.UP:
+                print "UP"
+            else:
+                print "DOWN"
     def addCommand(self, commandName, commandHelp, commandFunction):
         self.commands[commandName] = Command(commandName, commandHelp, 
                                             commandFunction)

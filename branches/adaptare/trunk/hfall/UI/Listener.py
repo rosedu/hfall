@@ -152,7 +152,6 @@ class Listener(base.Task):
 
         if self.focus:
             if self.focus.parseforAction(symbol): return
-        
         if self.enabled and not self.focus:
             if symbol in self._staticBindings:
                 action_list = self._staticBindings[symbol]
@@ -276,16 +275,17 @@ class Listener(base.Task):
             factor = 0.005
             if buttons == mouse.RIGHT:
 		self.render.camera.rotate(0,0,dx,factor)
-  		pass
+		pass
             if buttons == window.mouse.LEFT:
-	  	self.render.camera.rotate(dy,dx,0,factor)
+		self.render.camera.rotate(dy,dx,0,factor)
 	self.mouseBind(kernel, cameraDrag, MOUSE_DRAG)
 
         #axes bindings:
         def changeAxesState(symbol, modifiers):
             if symbol == key.X:
                 self.render.enableAxes = not self.render.enableAxes
-        self.staticBind(kernel, key.X, changeAxesState)
+			    
+		self.staticBind(kernel, key.X, changeAxesState)
 
     def addWidget(self, widget):
         self.widgets.append(widget)
