@@ -39,7 +39,7 @@ class Console(base.Task):
         self.listener = listener
         #self.listener.CAK = activationKey
         self.active = False
-        self.counter = 0
+        self.counter = -1
         self.percent = 0.5
         self.text = "Hammerfall Graphics Engine \n"
         self.w = render.w.width
@@ -69,7 +69,6 @@ parameter_value> to set a parameter with a given value. This command is not\
 implemented yet.", None)} #the function SHOULD BE ADDED LATER
 
         def consoleActivationChange(symbol, modifier):
-            print "i2n"
             self.active = not self.active
             if self.active:
                 self.listener.addWidget(self.tf)
@@ -99,13 +98,18 @@ implemented yet.", None)} #the function SHOULD BE ADDED LATER
         self.tf.addActionChar(activationKey, consoleDeactivation)
 
         def browseHistory(symbol):
-            print "in"
             if self.active:
                 if symbol == pyglet.window.key.UP:
-                    print "UP"
-                else:
-                    print "DOWN"
-                    
+                    if self.counter is not (len(self.history)-1):
+                        self.counter += 1 
+                        self.tf.setText("> " + self.history[self.counter])
+                elif symbol == pyglet.window.key.DOWN:
+                    if self.counter is not 0:                       
+                        self.counter = self.counter - 1    
+                        self.tf.setText("> " + self.history[self.counter])
+                    else:
+                        self.tf.setText("> ")
+        
         def browseHistoryUp():
             if self.active:
                 browseHistory(pyglet.window.key.UP)
@@ -114,7 +118,7 @@ implemented yet.", None)} #the function SHOULD BE ADDED LATER
         def browseHistoryDown():
             if self.active:
                 browseHistory(pyglet.window.key.DOWN)
-        self.tf.addActionChar(pyglet.window.key.DOWN, browseHistoryUp)        
+        self.tf.addActionChar(pyglet.window.key.DOWN, browseHistoryDown)        
         
         @self.window.event
         def on_resize(width, height):
@@ -157,6 +161,7 @@ implemented yet.", None)} #the function SHOULD BE ADDED LATER
         return line
     def parseMessage(self):
         if self.tf.document.text:
+            self.counter = -1
             text = self.tf.document.text[1:]
             text = text.lstrip()
             textTuple = text.partition(" ")
