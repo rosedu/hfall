@@ -12,6 +12,7 @@ __version__ = '0.2'
 __author__ = 'Savu Andrei (savu.andrei@gmail.com)'
 
 import time
+import os 
 import sys
 """import pygame"""
 
@@ -81,6 +82,7 @@ class Log:
     def __init__(self, sys_log='logs/system.log', error_log='logs/error.log'):
         """Log system initialization"""
         try:
+            os.mkdir('logs')
             self.sys = open(sys_log, 'a+')
             self.err = open(error_log, 'a+')
         except IOError:
