@@ -94,6 +94,7 @@ implemented yet.", None)} #the function SHOULD BE ADDED LATER
         
         def consoleDeactivation():
             if self.active:
+                self.counter = -1
                 consoleActivationChange(None, None)
         self.tf.addActionChar(activationKey, consoleDeactivation)
 
@@ -104,11 +105,13 @@ implemented yet.", None)} #the function SHOULD BE ADDED LATER
                         self.counter += 1 
                         self.tf.setText("> " + self.history[self.counter])
                 elif symbol == pyglet.window.key.DOWN:
-                    if self.counter is not 0:                       
+                    if self.counter > 0:                       
                         self.counter = self.counter - 1    
                         self.tf.setText("> " + self.history[self.counter])
                     else:
-                        self.tf.setText("> ")
+                        if self.counter is 0:
+                            self.tf.setText("> ")
+                            self.counter -= 1
         
         def browseHistoryUp():
             if self.active:
