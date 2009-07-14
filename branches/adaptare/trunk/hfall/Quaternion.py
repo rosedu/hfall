@@ -1,6 +1,11 @@
 """
 Quaternion math
 """
+
+__version__ = '0.1'
+__authors__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)' ,\
+              'Laura-Mihaela Vasilescu (vasilescu.laura@gmail.com)'
+
 import math
 from pyglet.gl import *
 
@@ -26,7 +31,7 @@ class Quaternion:
                 self.z = arg.z
                 self.w = arg.w
             elif isinstance(arg, Matrix.Matrix3):
-                raise NotImplemented("Not implemented yet")
+                raise NotImplemented("Not implemented yet")                    
             elif isinstance(arg, Matrix.Matrix4):
                 raise NotImplemented("Not implemented yet")
             else:
@@ -111,14 +116,92 @@ class Quaternion:
                ' ' + str(self.y) + \
                ' ' + str(self.z) + ')]'
 
-    def fromMatrix(self, matrix4or3):
-        pass
+    def fromMatrix(self, matrix4or3):       
+        trace = matrix4or3._m[0][0] + matrix4or3._m[1][1] +\ 
+                matrix4or3._m[2][2] + 1
+        if trace > 0:
+            S = 0.5 / sqrt(trace)
+            self.w = 0.25 / S
+            self.x = (matrix4or3._m[2][1] - matrix4or3._m[1][2]) * S
+            self.y = (matrix4or3._m[0][2] - matrix4or3._m[2][0]) * S
+            self.z = (matrix4or3._m[1][0] - matrix4or3._m[0][1]) * S
+        else
+            maxd = matrix4or3._m[0][0]
+            column = 0
+            if matrix4or3._m[1][1] > maxd:
+                maxd = matrix4or3._m[1][1]
+                column = 1
+            if matrix4or3._m[2][2] > maxd:
+                maxd = matrix4or3._m[2][2]
+                column = 2
+                
+            if column == 0:
+                S = sqrt(1.0 + matrix4or3._m[0][0] - matrix4or3._m[1][1] \
+                        - matrix4or3._m[2][2]) * 2
+                Qx = 0.5 / S
+                Qy = (matrix4or3._m[0][1] + matrix4or3._m[1][0]) / S
+                Qz = (matrix4or3._m[0][2] + matrix4or3._m[2][0]) / S
+                Qw = (matrix4or3._m[1][2] + matrix4or3._m[2][1]) / S
+                
+            if column == 1:
+                S = sqrt(1.0 - matrix4or3._m[0][0] + matrix4or3._m[1][1] \
+                        - matrix4or3._m[2][2]) * 2
+                Qy = 0.5 / S
+                Qx = (matrix4or3._m[0][1] + matrix4or3._m[1][0]) / S
+                Qw = (matrix4or3._m[0][2] + matrix4or3._m[2][0]) / S
+                Qz = (matrix4or3._m[1][2] + matrix4or3._m[2][1]) / S    
+                
+            if column == 2:
+                S = sqrt(1.0 - matrix4or3._m[0][0] - matrix4or3._m[1][1] \
+                        + matrix4or3._m[2][2]) * 2
+                Qz = 0.5 / S
+                Qw = (matrix4or3._m[0][1] + matrix4or3._m[1][0]) / S
+                Qx = (matrix4or3._m[0][2] + matrix4or3._m[2][0]) / S
+                Qy = (matrix4or3._m[1][2] + matrix4or3._m[2][1]) / S
+            
+            self.x = Qx
+            self.y = Qy
+            self.z = Qz
+            self.w = Qw
+            return self
+        
 
     def toMatrix3(self):
-        pass
-
+        m3 = Matrix.Matrix3()
+        x = self.x
+        y = self.y
+        z = self.z
+        w = self.w
+        m3._m[0][0] = 1 - 2 * y ** 2 - 2 * z ** 2
+        m3._m[0][1] = 2 * x * y - 2 * z * w
+        m3._m[0][2] = 2 * x * z + 2 * y * w
+        m3._m[1][0] = 2 * x * y + 2 * z * w
+        m3._m[1][1] = 1 - 2 * x ** 2 - 2 * z ** 2
+        m3._m[1][2] = 2 * y * z - 2 * x * w
+        m3._m[2][0] = 2 * x * z - 2 * y * w
+        m3._m[2][1] = 2 * y * z + 2 * x * w
+        m3._m[2][2] = 1 - 2 * x ** 2 - 2 * y ** 2
+        return m3
+        
     def toMatrix4(self):
-        pass
+        m4 = Matrix.Matrix4()
+        x = self.x
+        y = self.y
+        z = self.z
+        w = self.w
+        m4._m[0][0] = 1 - 2 * y ** 2 - 2 * z ** 2
+        m4._m[0][1] = 2 * x * y - 2 * z * w
+        m4._m[0][2] = 2 * x * z + 2 * y * w
+        m4._m[1][0] = 2 * x * y + 2 * z * w
+        m4._m[1][1] = 1 - 2 * x ** 2 - 2 * z ** 2
+        m4._m[1][2] = 2 * y * z - 2 * x * w
+        m4._m[2][0] = 2 * x * z - 2 * y * w
+        m4._m[2][1] = 2 * y * z + 2 * x * w
+        m4._m[2][2] = 1 - 2 * x ** 2 - 2 * y ** 2
+        m4._m[0][3] = m4._m[1][3] = m4._m[2][3] = 0
+        m4._m[3][0] = m4._m[3][1] = m4._m[3][2] = 0
+        m4._m[3][3] = 1
+        return m4
 
     def fromEuler(self, vectororvals):
         pass
@@ -131,3 +214,5 @@ class Quaternion:
 
     def SLERP(self, undefined):
         pass
+        
+
