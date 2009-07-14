@@ -3,8 +3,7 @@ Quaternion math
 """
 
 __version__ = '0.1'
-__authors__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)' ,\
-              'Laura-Mihaela Vasilescu (vasilescu.laura@gmail.com)'
+__authors__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
 
 import math
 from pyglet.gl import *
@@ -23,7 +22,7 @@ class Quaternion:
             self.y = args[2]
             self.z = args[3]
             self.w = args[0]
-        elif len(args) == 1:
+        else:
             arg = args[0]
             if isinstance(arg, Quaternion):
                 self.x = arg.x
@@ -31,14 +30,11 @@ class Quaternion:
                 self.z = arg.z
                 self.w = arg.w
             elif isinstance(arg, Matrix.Matrix3):
-                raise NotImplemented("Not implemented yet")                    
+                self = self.fromMatrix(self, arg)
             elif isinstance(arg, Matrix.Matrix4):
-                raise NotImplemented("Not implemented yet")
+                self = self.fromMatrix(self, arg)
             else:
                 raise TypeError("Invalid argument")
-        else:
-            raise TypeError("Invalid argument")
-                
 
     def __add__(self, other):
         return Qauternion(self.w + other.w,
@@ -101,7 +97,7 @@ class Quaternion:
         y = self.y ** 2
         z = self.z ** 2
         w = self.w ** 2
-        return math.sqrt(x + y + z +w)
+        return math.math.sqrt(x + y + z +w)
 
     def normalize(self):
         l = self.length()
@@ -116,16 +112,16 @@ class Quaternion:
                ' ' + str(self.y) + \
                ' ' + str(self.z) + ')]'
 
-    def fromMatrix(self, matrix4or3):       
-        trace = matrix4or3._m[0][0] + matrix4or3._m[1][1] +\ 
-                matrix4or3._m[2][2] + 1
+    @staticmethod
+    def fromMatrix(self, matrix4or3):
+        trace = matrix4or3._m[0][0] + matrix4or3._m[1][1] + matrix4or3._m[2][2] + 1
         if trace > 0:
-            S = 0.5 / sqrt(trace)
+            S = 0.5 / math.sqrt(trace)
             self.w = 0.25 / S
             self.x = (matrix4or3._m[2][1] - matrix4or3._m[1][2]) * S
             self.y = (matrix4or3._m[0][2] - matrix4or3._m[2][0]) * S
             self.z = (matrix4or3._m[1][0] - matrix4or3._m[0][1]) * S
-        else
+        else:
             maxd = matrix4or3._m[0][0]
             column = 0
             if matrix4or3._m[1][1] > maxd:
@@ -134,37 +130,36 @@ class Quaternion:
             if matrix4or3._m[2][2] > maxd:
                 maxd = matrix4or3._m[2][2]
                 column = 2
-                
+                    
             if column == 0:
-                S = sqrt(1.0 + matrix4or3._m[0][0] - matrix4or3._m[1][1] \
-                        - matrix4or3._m[2][2]) * 2
+                S = math.sqrt(1.0 + matrix4or3._m[0][0] - matrix4or3._m[1][1] \
+                           - matrix4or3._m[2][2]) * 2
                 Qx = 0.5 / S
                 Qy = (matrix4or3._m[0][1] + matrix4or3._m[1][0]) / S
                 Qz = (matrix4or3._m[0][2] + matrix4or3._m[2][0]) / S
                 Qw = (matrix4or3._m[1][2] + matrix4or3._m[2][1]) / S
-                
+                   
             if column == 1:
-                S = sqrt(1.0 - matrix4or3._m[0][0] + matrix4or3._m[1][1] \
-                        - matrix4or3._m[2][2]) * 2
+                S = math.sqrt(1.0 - matrix4or3._m[0][0] + matrix4or3._m[1][1] \
+                            - matrix4or3._m[2][2]) * 2
                 Qy = 0.5 / S
                 Qx = (matrix4or3._m[0][1] + matrix4or3._m[1][0]) / S
                 Qw = (matrix4or3._m[0][2] + matrix4or3._m[2][0]) / S
                 Qz = (matrix4or3._m[1][2] + matrix4or3._m[2][1]) / S    
                 
             if column == 2:
-                S = sqrt(1.0 - matrix4or3._m[0][0] - matrix4or3._m[1][1] \
-                        + matrix4or3._m[2][2]) * 2
+                S = math.sqrt(1.0 - matrix4or3._m[0][0] - matrix4or3._m[1][1] \
+                            + matrix4or3._m[2][2]) * 2
                 Qz = 0.5 / S
                 Qw = (matrix4or3._m[0][1] + matrix4or3._m[1][0]) / S
                 Qx = (matrix4or3._m[0][2] + matrix4or3._m[2][0]) / S
                 Qy = (matrix4or3._m[1][2] + matrix4or3._m[2][1]) / S
-            
+                
             self.x = Qx
             self.y = Qy
             self.z = Qz
             self.w = Qw
-            return self
-        
+        return self
 
     def toMatrix3(self):
         m3 = Matrix.Matrix3()
@@ -204,15 +199,57 @@ class Quaternion:
         return m4
 
     def fromEuler(self, vectororvals):
-        pass
+    # The order of rotations is important
+    # If we apply a sequence of rotations, but change the order, the result is different
+    # For exemple:
+    # 1. Rotate 90gr about x axis ; 2. Rotate 90gr about y axis ; 3. Rotate -90gr about x axis
+    # This gives 90gr rotation about z axis
+    # whereas
+    # 1. Rotate 90gr about x axis ; 2. Rotate -90gr about x axis ; 3. Rotate 90gr about y axis
+    # This gives 90gr rotation about y axis
+    # So, I'll consider:
+    #       x axis - vectorvals[0]
+    #       y axis - vectorvals[1]
+    #       z axis - vectorvals[2]
+        c1 = cos(vectorvals.y / 2)
+        c2 = cos(vectorvals.z / 2)
+        c3 = cos(vectorvals.x / 2)
+        s1 = sin(vectorvals.y / 2)
+        s2 = sin(vectorvals.z / 2)
+        s3 = sin(vectorvals.x / 2)
+        self.x = s1 * s2 * c3 + c1 * c2 * s3
+        self.y = s1 * c2 * c3 + c1 * s2 * s3
+        self.z = c1 * s2 * c3 - s1 * c2 * s3
+        self.w = c1 * c2 * c3 - s1 * s2 * s3
+        return self
 
     def toEuler(self):
-        pass
+        vectorvals = Vector.Vector3()
+        x = self.x
+        y = self.y
+        z = self.z
+        w = self.w
+        # north pole
+        if x * y + z * w > 0.499:
+            vectorvals.y = 2 * math.atan2(x,w)
+            vectorvals.z = math.pi / 2
+            vectorvals.x = 0
+        else:
+            # south pole
+            if x * y + z * w < -0.499:
+                vectorvals.y = -2 * math.atan2(x,w)
+                vectorvals.z = -1 * math.pi / 2
+                vectorvals.x = 0
+            else:
+                vectorvals.y = math.atan2(2 * y * w - 2 * x * z, 
+                                            1 - 2 * y ** 2 - 2 * z ** 2)
+                vectorvals.z = math.asin(2 * x * y + 2 * z * w)
+                vectorvals.x = math.atan2(2 * x * w - 2 * y * z,
+                                            1 - 2 * x ** 2 - 2 * z ** 2)
+        return vectorvals
 
     def LERP(self, undefined):
         pass
 
     def SLERP(self, undefined):
         pass
-        
-
