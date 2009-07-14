@@ -26,7 +26,7 @@ sys.path.insert(0, "../trunk/hfall")
 sys.path.insert(0, "../trunk/hfall/Engine")
 sys.path.insert(0, "../trunk/hfall/UI")
 import math
-
+import Model
 import pyglet
 
 import base
@@ -116,7 +116,7 @@ class Hammer(base.Task):
                 hf.setHeight(i, j, (1-math.exp(math.sin((i+j/2.1)/42.0))))
         patch = Terrain.TerrainPatch(x_origin = -100, hfield = hf)
         terrain.addPatch(kernel, patch)
-        kernel.insert(terrain) # we can insert other modules anywhere we want
+        #kernel.insert(terrain) # we can insert other modules anywhere we want
                                # after we entered the run or start phase of
                                # another one
 
@@ -133,7 +133,10 @@ class Hammer(base.Task):
 ##        self.memo = GUI.HMemo(self.render.batch, 50, 50, 142, 120,\
 ##                            text = "")
         self.frame = 0
-        
+        self.m_model = Model.Model()
+        self.m_model.Load("dwarf.b3d")
+        self.m_model.Render()
+        self.render.addRenderingFunction(kernel,self.m_model.Render)
     def stop(self, kernel):
         kernel.log.msg("Hammer stopped falling")
         
@@ -152,6 +155,7 @@ class Hammer(base.Task):
 ##                print self.memo.getText()
 ##                self.memo.clearText()
 ##                self.frame = 0
+        
         pass
 
     def name(self):

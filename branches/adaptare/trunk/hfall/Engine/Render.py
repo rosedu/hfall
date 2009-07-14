@@ -114,8 +114,10 @@ class Render(base.Task):
             if self.enableAxes:
                 self.ogl.drawAxes()
 
+            #print "starting:"
             for drawingfunction in self._dfcts:
                 drawingfunction()
+                #print "called"
 
             self.ogl.activateOrtho()
             for drawingfunction in self._dofcts:
