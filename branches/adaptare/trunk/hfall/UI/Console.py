@@ -48,12 +48,14 @@ class Console(base.Task):
         self.batch = pyglet.graphics.Batch()
         self.consolePanel = GUI.HPanel(self.batch, 0, self.top - self.h,
                                        self.w, self.h)
-        self.memo = self.consolePanel.addMemo(0, 0, self.w, self.h - CPH,
-                                  bcolor = (150, 150, 150, 255),
-                                  text = "Welcome to Hammerfall engine!\n")
-        self.tf = self.consolePanel.addTextField(0, self.h - CPH + 5, self.w, CPH,
-                                       text = '> ', startPos = 2,
-                                       multiline = True)
+        
+        self.memo = self.consolePanel.add('Memo', 0, 0, self.w, self.h - CPH, 
+                                        bcolor = (150, 150, 150, 225),
+                                        text = "Welcome to Hammerfall engine!\n")
+        self.tf = self.consolePanel.add('TextField', 0, self.h - CPH + 5, 
+                                        self.w, CPH, text = '> ', startPos = 2,
+                                        multiline = True)
+
         """
         A dictionary representing the Hammerfall commands. help, clear, quit
         and set are in by default. Use addCommand to add new Commands.

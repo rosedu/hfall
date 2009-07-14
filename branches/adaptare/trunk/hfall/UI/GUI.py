@@ -51,34 +51,32 @@ class HPanel(HComponent):
         self.y = y
         self.w = w
         self.h = h
-
-    def addMemo(self, x, y, w, h, bcolor = (200, 200, 200, 255),
-                fcolor = (0, 0, 0, 255), text = 'HMemo', border = 0):
-        x = self.x + x
-        y = self.y + self.h - y - h
-       # self.componentlist.append(HMemo(self.batch, x, y, w, h,
-        #                                    bcolor, fcolor, border, text))
-        memo = HMemo(self.batch, x, y, w, h,
-                                            bcolor, fcolor, border, text)
-        self.componentlist.append(memo)
-        return memo
-
-    def addLabel(self, x, y, w, h, bcolor = (200, 200, 200, 255),
-                 fcolor = (0, 0, 0, 255), text = 'HLabel', multiline = False):
-        x = self.x + x
-        y = self.y + self.h - y - h
-        self.componentlist.append(HMemo(self.batch, x, y, w, h, bcolor,
-                                        fcolor, text, multiline))
+    
+    def add(self, string, x, y, w, h, bcolor = (200, 200, 200, 255), 
+            fcolor = (0, 0, 0, 255), text = '', border = 0, multiline = False, 
+            startPos = 0):
+            
+        if string == 'Memo':
+            x = self.x + x
+            y = self.y + self.h - y -h
+            memo = HMemo(self.batch, x, y, w, h,
+                                bcolor, fcolor, border, text)
+            self.componentlist.append(memo)
+            return memo
         
-    def addTextField(self, x, y, w, h, bcolor = (200, 200, 200, 255),
-                     fcolor = (0, 0, 0, 255), text = 'Text Field',
-                     border = 0, multiline = False, startPos = 0):
-        x = self.x + x
-        y = self.y + self.h - y - h
-        tf = HTextField(self.batch, x, y, w, h, bcolor,
+        if string == 'Label':
+            x = self.x + x
+            y = self.y + self.h - y - h
+            self.componentlist.append(HMemo(self.batch, x, y, w, h, bcolor,
+                                            fcolor, text, multiline))
+                                            
+        if string == 'TextField':
+            x = self.x + x
+            y = self.y + self.h - y - h
+            tf = HTextField(self.batch, x, y, w, h, bcolor,
                         fcolor, border, text, multiline, startPos)
-        self.componentlist.append(tf)
-        return tf
+            self.componentlist.append(tf)
+            return tf            
 
 class HLabel(HComponent):
     """
