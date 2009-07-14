@@ -24,7 +24,7 @@ def Joint_SetInitialRotation(self,alph,beta,theta):
 
 
 def Model_Render(self):
-    aa"""Render a model"""
+    """Render a model"""
     #print len(self._meshes),"<"
     rnd = open("RENDER","w")
         

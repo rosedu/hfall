@@ -25,6 +25,7 @@ if sys.argv[0].rfind('/') > 0:
 sys.path.insert(0, "../trunk/hfall")
 sys.path.insert(0, "../trunk/hfall/Engine")
 sys.path.insert(0, "../trunk/hfall/UI")
+sys.path.insert(0, "../trunk/hfall/Parser")
 import math
 import Model
 import pyglet
