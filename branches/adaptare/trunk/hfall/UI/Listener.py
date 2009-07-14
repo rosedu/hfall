@@ -284,8 +284,7 @@ class Listener(base.Task):
         def changeAxesState(symbol, modifiers):
             if symbol == key.X:
                 self.render.enableAxes = not self.render.enableAxes
-			    
-		self.staticBind(kernel, key.X, changeAxesState)
+	self.staticBind(kernel, key.X, changeAxesState)
 
     def addWidget(self, widget):
         self.widgets.append(widget)
