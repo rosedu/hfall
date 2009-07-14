@@ -107,7 +107,7 @@ class Hammer(base.Task):
                                  255, 255, 0,\
                                  255, 255, 0)))
             glPopMatrix()
-        self.render.addRenderingFunction(kernel, drawCube)
+        #self.render.addRenderingFunction(kernel, drawCube)
         terrain = Terrain.Terrain(self.render)
         patch = Terrain.TerrainPatch()
         terrain.addPatch(kernel, patch)
@@ -134,10 +134,13 @@ class Hammer(base.Task):
 ##        self.memo = GUI.HMemo(self.render.batch, 50, 50, 142, 120,\
 ##                            text = "")
         self.frame = 0
-        self.m_model = Model.Model()
-        self.m_model.Load("dwarf.b3d")
-        self.m_model.Render()
-        self.render.addRenderingFunction(kernel,self.m_model.Render)
+        # to be restarted when we have the models
+##        self.m_model = Model.Model()
+##        self.m_model.Load("dwarf.b3d")
+##        self.m_model.Render()
+##        self.render.addRenderingFunction(kernel,self.m_model.Render)
+        # till here
+
     def stop(self, kernel):
         kernel.log.msg("Hammer stopped falling")
         
