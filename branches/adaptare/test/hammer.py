@@ -135,10 +135,10 @@ class Hammer(base.Task):
 ##                            text = "")
         self.frame = 0
         # to be restarted when we have the models
-##        self.m_model = Model.Model()
-##        self.m_model.Load("dwarf.b3d")
-##        self.m_model.Render()
-##        self.render.addRenderingFunction(kernel,self.m_model.Render)
+        self.m_model = Model.Model()
+        self.m_model.Load("dwarf.b3d")
+        self.m_model.Render()
+        self.render.addRenderingFunction(kernel,self.m_model.Render)
         # till here
 
     def stop(self, kernel):

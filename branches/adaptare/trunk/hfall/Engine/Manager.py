@@ -17,6 +17,7 @@ class Manager(base.Task):
         """
         resourceList - a dictionary. resource name => resource object
         """
+        print 1/0
         self.kernel = kernel
         self.listener = listener
         self.resourceList = {}
