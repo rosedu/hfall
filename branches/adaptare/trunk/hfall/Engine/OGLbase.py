@@ -48,6 +48,7 @@ class OGL:
 	self.far = far
 	self.near = near
 	self.fov = fov
+	
 
         self.render = render
         self.w = render.w
@@ -58,6 +59,7 @@ class OGL:
             glLoadIdentity()
             if height == 0:
                 height = 1
+            self.aspect = width / float(height);
             gluPerspective(fov, width / float(height), near, far)
             glMatrixMode(GL_MODELVIEW)
             OGL.setModelViewMatrix(render.camera.modelView)

@@ -17,6 +17,7 @@ from pyglet.gl import *
 from Object import *
 from Matrix import *
 import OGLbase
+from GeometricObject import Plane
 
 class Camera(Object):
     """
@@ -124,14 +125,76 @@ class Camera(Object):
         if (self.enabled):
             OGLbase.OGL.setModelViewMatrix(self.modelView)
 
+    #y
     def upVector(self):
-	return Vector3(self.modelView[0][1], self.modelView[1][1],\
+	    return Vector3(self.modelView[0][1], self.modelView[1][1],\
                        self.modelView[2][1])
 	
+	#z
     def viewVector(self):
-	return Vector3(-self.modelView[0][2], -self.modelView[1][2],\
+	    return Vector3(-self.modelView[0][2], -self.modelView[1][2],\
                        -self.modelView[2][2])
-
+    #x
     def rightVector(self):
-	return Vector3(self.modelView[0][0], self.modelView[1][0],\
+	    return Vector3(self.modelView[0][0], self.modelView[1][0],\
                        self.modelView[2][0])
+    
+    def perspectivePlane(self, string):
+        cameraPosition = self.position
+        
+        fov = OGLbase.OGL.fov 
+        aspect = OGLbase.OGL.aspect
+        near = OGLbase.OGL.near
+        far = OGLbase.OGL.far
+        
+        auxPoint = CameraPosition + far * self.viewVector()
+        axPoint = CameraPosition + near * self.viewVector()
+        
+        auxH = math.tan(math.radians(fov / 2)) * far
+        auxW = auxH / aspect
+        
+        auxABPoint = auxPoint + auxH * self.upVector()
+        auxCDPoint = auxPoint - auxH * self.upVector()
+        
+        APoint = auxABPoint + auxW * self.rightVector()
+        BPoint = auxABPoint - auxW * self.rightVector()
+        CPoint = auxCDPoint - auxW * self.rightVector()
+        DPoint = auxCDPoint + auxW * self.rightVector()
+        
+        VA = APoint - cameraPosition
+        VB = BPoint - cameraPosition
+        VC = CPoint - cameraPosition
+        VD = DPoint - cameraPosition
+        
+        if string == 'left':
+            normal = VA.crossProduct(VD)
+            normal.normalize()
+            plane = Plane(cameraPosition, normal)
+            return plane
+        
+        if string == 'right':
+            normal = VB.crossProduct(VC)
+            normal.normalize()
+            plane = Plane(cameraPosition, normal)
+            return plane
+        
+        if string == 'top':
+            normal = VA.crossProduct(VB)
+            normal.normalize()
+            plane = Plane(cameraPosition, normal)
+            return plane
+        
+        if string == 'bottom':
+            normal == VC.crossProduct(VD)
+            normal.normalize()
+            plane = Plane(cameraPosition, normal)
+            return plane
+        
+        if string == 'near':
+            plane = Plane(axPoint, self.viewVector())
+            return plane
+        
+        if string == 'far':
+            plane = Plane(auxPoint, -self.viewVector())
+            return plane
+

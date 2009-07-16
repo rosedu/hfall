@@ -173,6 +173,7 @@ class Vector3:
         self.y /= l
         self.z /= l
 
+
     def __str__(self):
         return '[' + str(self.x) +\
                ' ' + str(self.y) +\

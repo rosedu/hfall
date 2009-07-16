@@ -2,8 +2,9 @@
 Quaternion math
 """
 
-__version__ = '0.1'
-__authors__ = 'Mihai Maruseac (mihai.maruseac@gmail.com)'
+__version__ =   '0.1'
+__authors__ =   'Mihai Maruseac (mihai.maruseac@gmail.com)' ,\
+                'Laura-Mihaela Vasilescu (vasilescu.laura@gmail.com)'
 
 import math
 from pyglet.gl import *
@@ -259,9 +260,11 @@ class Quaternion:
         else:
             raise TypeError("Invalid argument")
 
-    # Linearly interpolate each component, then normalize the Quaternion
     @staticmethod
     def LERP(Q1, Q2, t):
+        """
+        Linearly interpolate each component, then normalize the Quaternion
+        """
         if isinstance(Q1, Quaternion):
             if isinstance(Q2, Quaternion):
                 return (Q1 * (1-t) + Q2 * t).normalize()
@@ -270,9 +273,12 @@ class Quaternion:
         else:
             raise TypeError("Invalid argument")
         
-    #Spherical linear interpolation
+
     @staticmethod
     def SLERP(Q1, Q2, t):
+        """
+        Spherical linear interpolation
+        """
         if isinstance(Q1, Quaternion):
             if isinstance(Q2, Quaternion):
             
