@@ -107,6 +107,7 @@ class ShaderResource(Manager.Resource):
         f = open(self.filename)
         try:
             self.fileContent = f.read()
+            self.loaded = True
         finally:
             f.close()
         return self.fileContent
@@ -182,7 +183,8 @@ class Shader(Manager.Instance):
         if self.type == None:
             return
         self.shaderId = glCreateShader(self.type)
-        self.resource.loadResource()
+        if self.resource.loaded == False:
+            self.resource.loadResource()
         shaderContent = (c_char_p)(self.resource.fileContent)
         shaderContentP = cast(pointer(shaderContent), POINTER(POINTER(c_char)))
         glShaderSource(self.shaderId, 1, shaderContentP, None)
