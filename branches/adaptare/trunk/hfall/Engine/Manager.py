@@ -1,9 +1,18 @@
 """
 Hammerfall Resource Manager class. 
-Note: The classes in this file are NOT tested yet.
+This is a template for dedicated managers. The following methods must be\
+defined (or added instrunctions) for the classes which inherent these ones:
+Manager:
+    addInstance()
+Resource:
+    __del__()
+    loadResource()
+Instance:
+    __del__()
 """
 
-__version__ = '0.1'
+
+__version__ = '0.7'
 __authors__ = 'Dragos Dena (dragos.dena@gmail.com)'
 
 import pyglet
@@ -13,30 +22,34 @@ import Listener
 
 class Manager(base.Task):
     
-    def __init__(self, kernel, listener):
+    def __init__(self, kernel = None):
         """
         resourceList - a dictionary. resource name => resource object
         """
-        print 1/0
         self.kernel = kernel
-        self.listener = listener
         self.resourceList = {}
         
     def addInstance(self, resourceFileName):
         """
         Adding an instance requires the file name from which the instance gets\
         it's resources.
-        """
+        The method must look like in the following code, but changing\
+        InstanceClassName with the inherented Instance class (for example,\
+        instance = TextureInstance(TextureResource), where TextureInstance\
+        inherents the Instance class here). Simmilar for ResourceClassName.
+        
         if resourceFileName in self.resourceList:
             resource = self.resourceList[resourceFileName]
-            instance = Instance(resource)
+            instance = InstanceClassName(resource)
             resource.incrementAppearences()
         else:
-            resource = Resource(resourceFileName, self)
+            resource = ResourceClassName(resourceFileName, self)
             self.resourceList[resourceFileName] = resource
-            instance = Instance(resource)
+            instance = InstanceClassName(resource)
         return instance
-            
+        """ 
+        pass
+        
     def deleteInstance(self, instance):
         """
         Delets an instance object.
@@ -61,9 +74,14 @@ class Manager(base.Task):
 class Resource():
     
     def __init__(self, filename, manager):
+        """
+        fileContent is set when the resource is loaded.
+        """
         self.filename = filename
+        self.fileContent = None
         self.count = 1
         self.manager = manager
+        self.loaded = False
     
     def __del__(self):
         """
