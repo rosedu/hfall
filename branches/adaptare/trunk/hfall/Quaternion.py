@@ -252,53 +252,32 @@ class Quaternion:
         
     @staticmethod
     def dot(Q1, Q2):
-        if isinstance(Q1, Quaternion):
-            if isinstance(Q2, Quaternion):
-                return Q1.x * Q2.x + Q1.y * Q2.y + Q1.z * Q2.z + Q1.w * Q2.w
-            else:
-                raise TypeError("Invalid argument")
-        else:
-            raise TypeError("Invalid argument")
+        return Q1.x * Q2.x + Q1.y * Q2.y + Q1.z * Q2.z + Q1.w * Q2.w
 
     @staticmethod
     def LERP(Q1, Q2, t):
         """
         Linearly interpolate each component, then normalize the Quaternion
         """
-        if isinstance(Q1, Quaternion):
-            if isinstance(Q2, Quaternion):
-                return (Q1 * (1-t) + Q2 * t).normalize()
-            else:
-                raise TypeError("Invalid argument")
-        else:
-            raise TypeError("Invalid argument")
-        
+        return (Q1 * (1-t) + Q2 * t).normalize()        
 
     @staticmethod
     def SLERP(Q1, Q2, t):
         """
         Spherical linear interpolation
-        """
-        if isinstance(Q1, Quaternion):
-            if isinstance(Q2, Quaternion):
-            
-                dot = Quaternion.dot(Q1, Q2)
-                if dot < 0:
-                    dot = -dot
-                    Q3 = -Q2
-                else:
-                    Q3 = Q2
-                
-                if dot < 0.95:
-                    angle = math.acos(dot)
-                    w1 = math.sin(angle * (1-t)) / math.sin(angle)
-                    w2 = math.sin(angle * t) / math.sin(angle)
-                    return Q1 * w1 + Q3 * w2
-                else:
-                # The angle is small. We use linear interpolation
-                    Quaternion.LERP(Q1, Q3, t)
-                    
-            else:
-                raise TypeError("Invalid argument")
+        """           
+        dot = Quaternion.dot(Q1, Q2)
+        if dot < 0:
+            dot = -dot
+            Q3 = -Q2
         else:
-            raise TypeError("Invalid argument")            
+            Q3 = Q2
+                
+        if dot < 0.95:
+            angle = math.acos(dot)
+            w1 = math.sin(angle * (1-t)) / math.sin(angle)
+            w2 = math.sin(angle * t) / math.sin(angle)
+            return Q1 * w1 + Q3 * w2
+        else:
+        # The angle is small. We use linear interpolation
+            Quaternion.LERP(Q1, Q3, t)

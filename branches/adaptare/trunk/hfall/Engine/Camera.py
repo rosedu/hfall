@@ -169,32 +169,25 @@ class Camera(Object):
         if string == 'left':
             normal = VA.crossProduct(VD)
             normal.normalize()
-            plane = Plane(cameraPosition, normal)
-            return plane
+            return Plane(cameraPosition, normal)
         
         if string == 'right':
             normal = VB.crossProduct(VC)
             normal.normalize()
-            plane = Plane(cameraPosition, normal)
-            return plane
+            return Plane(cameraPosition, normal)
         
         if string == 'top':
             normal = VA.crossProduct(VB)
             normal.normalize()
-            plane = Plane(cameraPosition, normal)
-            return plane
+            return Plane(cameraPosition, normal)
         
         if string == 'bottom':
             normal == VC.crossProduct(VD)
             normal.normalize()
-            plane = Plane(cameraPosition, normal)
-            return plane
+            return Plane(cameraPosition, normal)
         
         if string == 'near':
-            plane = Plane(axPoint, self.viewVector())
-            return plane
+            return Plane(axPoint, self.viewVector())
         
         if string == 'far':
-            plane = Plane(auxPoint, -self.viewVector())
-            return plane
-
+            return Plane(auxPoint, -self.viewVector())

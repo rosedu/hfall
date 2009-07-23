@@ -97,5 +97,3 @@ class Object:
 		     0,	   0,	  0,    1])
 			   
 	self.projection *= m
-
-	
